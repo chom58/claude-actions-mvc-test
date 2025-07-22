@@ -1,0 +1,47 @@
+name: Claude AI Assistant
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
+  pull_request_review_comment:
+    types: [created, edited]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  claude-assist:
+    runs-on: ubuntu-latest
+    # @claudeメンションが含まれているかチェック
+    if: contains(github.event.comment.body || github.event.issue.body || github.event.pull_request.body, '@claude')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # PRの場合は、そのPRのブランチをチェックアウト
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Claude AI Assistant
+        uses: anthropics/claude-github-action@v1
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # モデルを指定（オプション）
+          model: claude-3-5-sonnet-20241022
+          # 最大トークン数（オプション）
+          max-tokens: 4096
+        env:
+          # プロジェクト固有の環境変数をここに追加できます
+          NODE_ENV: development
