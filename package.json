@@ -1,0 +1,16 @@
+{
+  "name": "claude-web-server",
+  "version": "1.0.0",
+  "description": "Express.jsを使った簡単なWebサーバー",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": ["express", "web-server", "nodejs"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
