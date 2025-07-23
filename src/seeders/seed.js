@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { User, Post, sequelize } = require('../models');
+const { seedCreativeCommunity } = require('./creativeCommunitySeed');
 
 const seedData = async () => {
   try {
@@ -77,11 +78,21 @@ const seedData = async () => {
     await Post.bulkCreate(posts);
     console.log(`✅ ${posts.length}件の投稿を作成しました`);
 
+    // 原宿クリエイティブコミュニティデータの投入
+    console.log('\n🎨 原宿クリエイティブコミュニティデータを投入中...');
+    const creativeData = await seedCreativeCommunity();
+
     console.log('\n🎉 シードデータの投入が完了しました！');
     console.log('\n📝 作成されたユーザー:');
     users.forEach(user => {
       console.log(`   - ${user.username} (${user.email})`);
     });
+    console.log('\n🎨 クリエイティブコミュニティデータ:');
+    console.log(`   - デザイン会社: ${creativeData.designCompanies.length}社`);
+    console.log(`   - アパレルブランド: ${creativeData.apparelBrands.length}ブランド`);
+    console.log(`   - イベント: ${creativeData.events.length}件`);
+    console.log(`   - コラボレーション: ${creativeData.collaborations.length}件`);
+    console.log(`   - マッチングリクエスト: ${creativeData.matchingRequests.length}件`);
     console.log('\n💡 全てのユーザーのパスワードは元のパスワードを使用してください');
 
   } catch (error) {

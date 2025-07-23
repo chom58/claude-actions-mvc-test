@@ -17,13 +17,13 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 静的ファイル配信設定
+app.use(express.static('public'));
+
 app.use('/api', routes);
 
 app.get('/', (req, res) => {
-  res.json({
-    message: 'Claude MVC Application',
-    environment: process.env.NODE_ENV || 'development'
-  });
+  res.sendFile('index.html', { root: 'public' });
 });
 
 app.use((req, res) => {
