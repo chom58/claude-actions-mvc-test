@@ -12,6 +12,13 @@ on:
   pull_request:
     types: [opened]
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: read
+  checks: read
+  
 jobs:
   claude-response:
     runs-on: ubuntu-latest
@@ -20,8 +27,11 @@ jobs:
       contains(github.event.comment.body || github.event.issue.body || github.event.pull_request.body || github.event.review.body, '@claude')
     
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
       - name: Claude Code Action
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT_TOKEN }}
