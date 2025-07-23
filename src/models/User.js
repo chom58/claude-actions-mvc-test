@@ -31,6 +31,14 @@ const User = sequelize.define('User', {
   isActive: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  designCompanyId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'DesignCompanies',
+      key: 'id'
+    }
   }
 }, {
   timestamps: true,

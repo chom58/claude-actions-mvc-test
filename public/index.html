@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原宿デザイナーの会 - Harajuku Designers Association</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-left: 1rem;
+        }
+
+        .card li {
+            color: #555;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .card li:before {
+            content: "🎨";
+            position: absolute;
+            left: -1.5rem;
+        }
+
+        .api-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .api-section h2 {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .endpoints {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .endpoint {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .endpoint h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .endpoint code {
+            background: rgba(0,0,0,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 原宿デザイナーの会</h1>
+            <p>Harajuku Designers Association - Creative Community Platform</p>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <h3>🏢 デザイン会社コミュニティ</h3>
+                <p>原宿エリアを中心としたデザイン会社のネットワーキングプラットフォームです。</p>
+                <ul>
+                    <li>グラフィックデザイン会社</li>
+                    <li>Webデザインスタジオ</li>
+                    <li>UI/UXデザインチーム</li>
+                    <li>ブランディング会社</li>
+                    <li>パッケージデザイン</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>📅 ネットワーキングイベント</h3>
+                <p>原宿のイベントスペースを活用した定期的な交流イベントを開催しています。</p>
+                <ul>
+                    <li>月例ネットワーキング</li>
+                    <li>デザインワークショップ</li>
+                    <li>作品展示会</li>
+                    <li>業界カンファレンス</li>
+                    <li>カジュアルミートアップ</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🤝 コラボレーション機会</h3>
+                <p>同業他社との協業やプロジェクト参加の機会を提供します。</p>
+                <ul>
+                    <li>プロジェクトマッチング</li>
+                    <li>スキルシェアリング</li>
+                    <li>共同制作企画</li>
+                    <li>業界情報交換</li>
+                    <li>新人育成支援</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="api-section">
+            <h2>🛠️ API エンドポイント</h2>
+            <div class="endpoints">
+                <div class="endpoint">
+                    <h4>デザイン会社管理</h4>
+                    <code>GET /api/design-companies</code><br>
+                    <code>POST /api/design-companies</code><br>
+                    <code>GET /api/design-companies/harajuku</code>
+                </div>
+                <div class="endpoint">
+                    <h4>イベント管理</h4>
+                    <code>GET /api/events</code><br>
+                    <code>POST /api/events</code><br>
+                    <code>GET /api/events/upcoming</code>
+                </div>
+                <div class="endpoint">
+                    <h4>参加登録</h4>
+                    <code>POST /api/events/:id/register</code><br>
+                    <code>GET /api/events/:id</code>
+                </div>
+                <div class="endpoint">
+                    <h4>ユーザー管理</h4>
+                    <code>GET /api/users</code><br>
+                    <code>POST /api/users</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 原宿デザイナーの会 - Powered by Claude Code 🤖</p>
+            <p>原宿イベントスペース（東京都渋谷区神宮前）でお会いしましょう！</p>
+        </div>
+    </div>
+
+    <script>
+        // 簡単なアニメーション効果
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 200);
+            });
+        });
+
+        // API情報を動的に表示
+        fetch('/api')
+            .then(response => response.json())
+            .then(data => {
+                console.log('原宿デザイナーの会 API:', data);
+            })
+            .catch(error => {
+                console.log('APIサーバーが起動していません');
+            });
+    </script>
+</body>
+</html>
