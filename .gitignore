@@ -43,6 +43,14 @@ dist/
 build/
 out/
 
+# Database
+database.sqlite
+*.sqlite3
+
+# Test coverage
+coverage/
+.nyc_output/
+
 # Package manager locks (optional - uncomment if you don't want to track)
 # package-lock.json
 # yarn.lock
