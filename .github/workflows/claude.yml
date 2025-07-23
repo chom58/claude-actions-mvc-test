@@ -30,12 +30,23 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Debug Environment
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Checking secrets..."
+          if [ -n "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            echo "ANTHROPIC_API_KEY is set"
+          else
+            echo "ANTHROPIC_API_KEY is NOT set"
+          fi
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@main
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          debug: true
 
           # This is an optional setting that allows Claude to read CI results on PRs
           additional_permissions: |
