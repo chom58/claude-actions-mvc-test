@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原宿クリエイティブコミュニティ | CREATE. CONNECT. INSPIRE.</title>
+    <style>
+        /* CSS Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* メインカラー：ニュートラル基調 */
+            --color-primary: #2d2d2d;
+            --color-secondary: #f8f7f4;
+            --color-warm-beige: #e6ddd4;
+            --color-deep-gray: #4a4a4a;
+            
+            /* アクセントカラー：原宿の多様性 */
+            --color-neon-pink: #ff6b9d;
+            --color-neon-blue: #4dabf7;
+            --color-neon-purple: #9775fa;
+            --color-millennial-pink: #f06292;
+            --color-cobalt-blue: #1e88e5;
+            
+            /* グラデーション */
+            --gradient-main: linear-gradient(135deg, var(--color-neon-pink) 0%, var(--color-neon-blue) 50%, var(--color-neon-purple) 100%);
+            --gradient-subtle: linear-gradient(135deg, var(--color-warm-beige) 0%, var(--color-secondary) 100%);
+            
+            /* タイポグラフィ */
+            --font-main: 'Hiragino Sans', 'ヒラギノ角ゴシック Pro', 'Yu Gothic Medium', '游ゴシック Medium', YuGothic, '游ゴシック体', 'Meiryo', sans-serif;
+            --font-accent: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+            
+            /* シャドウ */
+            --shadow-subtle: 0 2px 20px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 8px 40px rgba(0, 0, 0, 0.12);
+            --shadow-strong: 0 16px 60px rgba(0, 0, 0, 0.15);
+            
+            /* トランジション */
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.7;
+            color: var(--color-primary);
+            background: var(--gradient-subtle);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: var(--transition-smooth);
+        }
+
+        .header.scrolled {
+            box-shadow: var(--shadow-medium);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--color-deep-gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-main);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--color-neon-pink), transparent, var(--color-neon-blue), transparent, var(--color-neon-purple), transparent);
+            animation: rotate 20s linear infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: var(--color-deep-gray);
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-bounce);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-primary);
+            border: 2px solid var(--color-neon-pink);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-neon-pink);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Category Selection */
+        .category-section {
+            padding: 8rem 2rem;
+            background: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--color-deep-gray);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-subtle);
+            transition: var(--transition-smooth);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-main);
+            transform: scaleX(0);
+            transition: var(--transition-smooth);
+        }
+
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-strong);
+            border-color: var(--color-neon-pink);
+        }
+
+        .category-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+        }
+
+        .category-description {
+            color: var(--color-deep-gray);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* API Information */
+        .api-section {
+            padding: 8rem 2rem;
+            background: var(--gradient-subtle);
+        }
+
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .api-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-subtle);
+            transition: var(--transition-smooth);
+        }
+
+        .api-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .api-method {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .api-method.get {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .api-method.post {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .api-endpoint {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--color-deep-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .api-description {
+            font-size: 0.95rem;
+            color: var(--color-deep-gray);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .api-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">原宿クリエイティブ</a>
+            <ul class="nav-links">
+                <li><a href="#home">ホーム</a></li>
+                <li><a href="#categories">カテゴリ</a></li>
+                <li><a href="#api">API</a></li>
+                <li><a href="#contact">コンタクト</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">CREATE. CONNECT. INSPIRE.</h1>
+            <p class="hero-subtitle">
+                原宿から発信するデザインとファッションの最前線。<br>
+                多様なクリエイターが出会い、新たな価値を生み出すハブ。
+            </p>
+            <div class="cta-buttons">
+                <a href="#categories" class="btn btn-primary">コミュニティに参加</a>
+                <a href="#api" class="btn btn-secondary">API を探索</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Selection -->
+    <section class="category-section" id="categories">
+        <div class="container">
+            <h2 class="section-title">クリエイティブカテゴリ</h2>
+            <p class="section-subtitle">
+                デザインとファッション、2つの分野が交差するプラットフォーム
+            </p>
+
+            <div class="category-grid">
+                <div class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3 class="category-title">デザイン会社</h3>
+                    <p class="category-description">
+                        グラフィック、Web、UI/UX、ブランディング、パッケージデザインなど、
+                        原宿エリアの最先端デザイン会社が集結。
+                    </p>
+                    <a href="#" class="btn btn-primary" onclick="exploreDesignCompanies()">探索する</a>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-icon">👗</div>
+                    <h3 class="category-title">アパレルブランド</h3>
+                    <p class="category-description">
+                        ストリート、エレガント、アバンギャルドまで。
+                        原宿カルチャーを体現する多様なアパレルブランド。
+                    </p>
+                    <a href="#" class="btn btn-primary" onclick="exploreApparelBrands()">探索する</a>
+                </div>
+            </div>
+
+            <div class="api-grid">
+                <div class="api-card">
+                    <h4>📅 クリエイティブイベント</h4>
+                    <p>ネットワーキング、ワークショップ、展示会、ファッションショーなど、原宿エリアのイベント情報。</p>
+                    <button class="btn btn-secondary" onclick="loadUpcomingEvents()">近日開催イベント</button>
+                </div>
+
+                <div class="api-card">
+                    <h4>🤝 コラボレーション事例</h4>
+                    <p>デザイン会社×アパレルブランドの成功事例。新たなプロジェクトのインスピレーション源。</p>
+                    <button class="btn btn-secondary" onclick="loadFeaturedCollaborations()">注目プロジェクト</button>
+                </div>
+
+                <div class="api-card">
+                    <h4>🎯 マッチング掲示板</h4>
+                    <p>パートナー募集、スキル交換、コラボレーション提案など、クリエイター同士の出会いの場。</p>
+                    <button class="btn btn-secondary" onclick="loadMatchingRequests()">募集案件を見る</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Information -->
+    <section class="api-section" id="api">
+        <div class="container">
+            <h2 class="section-title">API エンドポイント</h2>
+            <p class="section-subtitle">
+                開発者向け：原宿クリエイティブコミュニティの豊富なデータにアクセス
+            </p>
+
+            <div class="api-grid">
+                <div class="api-card">
+                    <span class="api-method get">GET</span>
+                    <div class="api-endpoint">/api/design-companies/harajuku</div>
+                    <p class="api-description">原宿エリアのデザイン会社一覧</p>
+                </div>
+
+                <div class="api-card">
+                    <span class="api-method get">GET</span>
+                    <div class="api-endpoint">/api/apparel-brands/harajuku</div>
+                    <p class="api-description">原宿エリアのアパレルブランド一覧</p>
+                </div>
+
+                <div class="api-card">
+                    <span class="api-method get">GET</span>
+                    <div class="api-endpoint">/api/events/upcoming</div>
+                    <p class="api-description">近日開催予定のクリエイティブイベント</p>
+                </div>
+
+                <div class="api-card">
+                    <span class="api-method get">GET</span>
+                    <div class="api-endpoint">/api/collaborations/featured</div>
+                    <p class="api-description">注目のコラボレーションプロジェクト</p>
+                </div>
+
+                <div class="api-card">
+                    <span class="api-method get">GET</span>
+                    <div class="api-endpoint">/api/matching/high-priority</div>
+                    <p class="api-description">高優先度のマッチングリクエスト</p>
+                </div>
+
+                <div class="api-card">
+                    <span class="api-method post">POST</span>
+                    <div class="api-endpoint">/api/design-companies</div>
+                    <p class="api-description">新規デザイン会社の登録</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <h3 class="footer-title">原宿クリエイティブコミュニティ</h3>
+            <p>
+                デザインとファッションが交差する場所で、<br>
+                新たなクリエイティブの可能性を探求しよう。
+            </p>
+            <p style="margin-top: 2rem; opacity: 0.7;">
+                © 2024 原宿クリエイティブコミュニティ. Generated with Claude Code.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // API interaction functions
+        async function exploreDesignCompanies() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.innerHTML = '<span class="loading"></span> 読み込み中...';
+            
+            try {
+                const response = await fetch('/api/design-companies/harajuku');
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`原宿エリアに ${data.total} 社のデザイン会社が登録されています！\n\n詳細は開発者コンソールをご確認ください。`);
+                    console.log('デザイン会社データ:', data);
+                } else {
+                    alert('データの取得に失敗しました。');
+                }
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('接続エラーが発生しました。');
+            }
+            
+            btn.textContent = originalText;
+        }
+
+        async function exploreApparelBrands() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.innerHTML = '<span class="loading"></span> 読み込み中...';
+            
+            try {
+                const response = await fetch('/api/apparel-brands/harajuku');
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`原宿エリアに ${data.total} ブランドのアパレルブランドが登録されています！\n\n詳細は開発者コンソールをご確認ください。`);
+                    console.log('アパレルブランドデータ:', data);
+                } else {
+                    alert('データの取得に失敗しました。');
+                }
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('接続エラーが発生しました。');
+            }
+            
+            btn.textContent = originalText;
+        }
+
+        async function loadUpcomingEvents() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.innerHTML = '<span class="loading"></span> 読み込み中...';
+            
+            try {
+                const response = await fetch('/api/events/upcoming');
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`${data.total} 件の近日開催イベントがあります！\n\n詳細は開発者コンソールをご確認ください。`);
+                    console.log('近日開催イベント:', data);
+                } else {
+                    alert('データの取得に失敗しました。');
+                }
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('接続エラーが発生しました。');
+            }
+            
+            btn.textContent = originalText;
+        }
+
+        async function loadFeaturedCollaborations() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.innerHTML = '<span class="loading"></span> 読み込み中...';
+            
+            try {
+                const response = await fetch('/api/collaborations/featured');
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`${data.total} 件の注目コラボレーション事例があります！\n\n詳細は開発者コンソールをご確認ください。`);
+                    console.log('注目コラボレーション:', data);
+                } else {
+                    alert('データの取得に失敗しました。');
+                }
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('接続エラーが発生しました。');
+            }
+            
+            btn.textContent = originalText;
+        }
+
+        async function loadMatchingRequests() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.innerHTML = '<span class="loading"></span> 読み込み中...';
+            
+            try {
+                const response = await fetch('/api/matching/high-priority');
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`${data.total} 件の高優先度マッチングリクエストがあります！\n\n詳細は開発者コンソールをご確認ください。`);
+                    console.log('マッチングリクエスト:', data);
+                } else {
+                    alert('データの取得に失敗しました。');
+                }
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('接続エラーが発生しました。');
+            }
+            
+            btn.textContent = originalText;
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards for animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.category-card, .api-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>
