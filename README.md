@@ -1,3 +1,6 @@
+# このプロジェクトについて
+Claude GitHub Actionsのテストプロジェクトです。
+
 # Claude Code Action プロジェクト
 
 このリポジトリはClaude Code Actionを使用して、AIアシスタントによる自動化を実現します。
