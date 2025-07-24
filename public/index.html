@@ -707,15 +707,22 @@
             transform: scaleX(1);
         }
 
-        .stat-number {
-            font-size: clamp(2.5rem, 5vw, 4rem);
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-sm);
+            filter: drop-shadow(0 0 20px var(--neon-pink));
+        }
+
+        .stat-text {
+            font-size: clamp(1.5rem, 3vw, 2rem);
             font-weight: 900;
             background: var(--gradient-neon);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: var(--spacing-sm);
-            text-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
+            margin-bottom: var(--spacing-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .stat-label {
@@ -727,14 +734,14 @@
         }
 
         /* Success Cards */
-        .success-grid {
+        .vision-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: var(--spacing-xl);
             margin-bottom: var(--spacing-3xl);
         }
 
-        .success-card {
+        .vision-card {
             background: var(--color-surface);
             border: 2px solid var(--color-border);
             overflow: hidden;
@@ -742,13 +749,13 @@
             position: relative;
         }
 
-        .success-card:hover {
+        .vision-card:hover {
             border-color: var(--neon-pink);
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(255, 20, 147, 0.3);
         }
 
-        .success-image {
+        .vision-image {
             height: 200px;
             overflow: hidden;
             position: relative;
@@ -769,11 +776,11 @@
             opacity: 0.5;
         }
 
-        .success-content {
+        .vision-content {
             padding: var(--spacing-lg);
         }
 
-        .success-content h4 {
+        .vision-content h4 {
             font-size: 1.25rem;
             font-weight: 900;
             color: var(--color-primary);
@@ -782,92 +789,131 @@
             letter-spacing: 0.05em;
         }
 
-        .success-partners {
+        .vision-concept {
             font-size: 0.9rem;
             color: var(--neon-blue);
             margin-bottom: var(--spacing-sm);
             text-shadow: 0 0 10px var(--neon-blue);
         }
 
-        .success-result {
+        .vision-description {
             font-size: 0.95rem;
             color: var(--color-secondary);
         }
 
-        /* Partners Section */
-        .partners-section {
+        /* Founding Members Section */
+        .founding-section {
             margin-top: var(--spacing-3xl);
-            overflow: hidden;
-            position: relative;
+            text-align: center;
         }
 
-        .partners-title {
-            text-align: center;
-            font-size: 2rem;
+        .founding-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
             font-weight: 900;
-            margin-bottom: var(--spacing-xl);
+            margin-bottom: var(--spacing-sm);
             background: var(--gradient-neon);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-transform: uppercase;
             letter-spacing: 0.1em;
+            text-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
         }
 
-        .partners-slider {
+        .founding-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-secondary);
+            margin-bottom: var(--spacing-2xl);
+            opacity: 0.8;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .benefit-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            padding: var(--spacing-xl);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
-            padding: var(--spacing-lg) 0;
         }
 
-        .partners-track {
-            display: flex;
-            animation: slide 20s linear infinite;
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient-neon);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
         }
 
-        @keyframes slide {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
+        .benefit-card:hover {
+            border-color: transparent;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 20, 147, 0.3);
         }
 
-        .partner-logo {
-            flex: 0 0 200px;
-            height: 80px;
-            margin: 0 var(--spacing-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            filter: grayscale(100%);
-            opacity: 0.5;
-            transition: var(--transition);
-        }
-
-        .partner-logo:hover {
-            filter: grayscale(0%);
+        .benefit-card:hover::before {
             opacity: 1;
-            transform: scale(1.1);
         }
 
-        .logo-placeholder {
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            filter: drop-shadow(0 0 20px var(--neon-blue));
+        }
+
+        .benefit-card h4 {
             font-size: 1.25rem;
             font-weight: 900;
             color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: var(--spacing-sm) var(--spacing-lg);
-            border: 2px solid var(--color-border);
-            position: relative;
-            overflow: hidden;
+            letter-spacing: 0.05em;
         }
 
-        .partner-logo:hover .logo-placeholder {
+        .benefit-card p {
+            color: var(--color-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .cta-founding {
+            margin-top: var(--spacing-2xl);
+        }
+
+        .limited-text {
+            font-size: 0.9rem;
             color: var(--neon-pink);
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 20px var(--neon-pink);
+            margin-bottom: var(--spacing-md);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 20px var(--neon-pink);
+            }
+        }
+
+        .btn-large {
+            font-size: 1.1rem;
+            padding: var(--spacing-md) var(--spacing-2xl);
+            min-width: 300px;
         }
 
         /* Footer */
@@ -991,7 +1037,7 @@
     <section class="section" id="categories">
         <div class="parallax-bg"></div>
         <div class="container">
-            <h2 class="section-title">クリエイティブカテゴリ</h2>
+            <h2 class="section-title">CREATIVE CATEGORIES</h2>
             <p class="section-subtitle">
                 原宿から発信するデザインとファッションの融合プラットフォーム
             </p>
@@ -1021,7 +1067,7 @@
     <!-- Features Section -->
     <section class="section section-alt" id="features">
         <div class="container">
-            <h2 class="section-title">コミュニティ機能</h2>
+            <h2 class="section-title">COMMUNITY FEATURES</h2>
             <p class="section-subtitle">
                 クリエイター同士の出会いとコラボレーションを促進する機能
             </p>
@@ -1048,114 +1094,100 @@
         </div>
     </section>
 
-    <!-- Success Stories -->
-    <section class="section" id="success">
+    <!-- Future Vision -->
+    <section class="section" id="vision">
         <div class="parallax-bg"></div>
         <div class="container">
-            <h2 class="section-title">SUCCESS STORIES</h2>
+            <h2 class="section-title">FUTURE VISION</h2>
             <p class="section-subtitle">
-                原宿から生まれたコラボレーションの成果
+                これから生まれる、原宿発のクリエイティブな未来
             </p>
 
-            <!-- 統計データ -->
+            <!-- 期待される成果 -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" data-count="150">ローディング...</div>
-                    <div class="stat-label">ACTIVE CREATORS</div>
+                    <div class="stat-icon">🚀</div>
+                    <div class="stat-text">LAUNCH 2024</div>
+                    <div class="stat-label">コミュニティ始動</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" data-count="50">ローディング...</div>
-                    <div class="stat-label">SUCCESSFUL COLLABS</div>
+                    <div class="stat-icon">🎨</div>
+                    <div class="stat-text">100+ CREATORS</div>
+                    <div class="stat-label">参加予定のクリエイター</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" data-count="1000">ローディング...</div>
-                    <div class="stat-label">MILLION YEN CREATED</div>
+                    <div class="stat-icon">💡</div>
+                    <div class="stat-text">∞ POSSIBILITIES</div>
+                    <div class="stat-label">無限の可能性</div>
                 </div>
             </div>
 
-            <!-- 成功事例カード -->
-            <div class="success-grid">
-                <div class="success-card">
-                    <div class="success-image">
+            <!-- 実現したい未来 -->
+            <div class="vision-grid">
+                <div class="vision-card">
+                    <div class="vision-image">
                         <div class="image-placeholder">
-                            <span class="placeholder-icon">🎨</span>
+                            <span class="placeholder-icon">🌆</span>
                         </div>
                     </div>
-                    <div class="success-content">
-                        <h4>NEON TOKYO COLLECTION</h4>
-                        <p class="success-partners">Design Studio A × Fashion Brand B</p>
-                        <p class="success-result">売上150%増加、SNSで話題に</p>
+                    <div class="vision-content">
+                        <h4>STREET × HIGH FASHION</h4>
+                        <p class="vision-concept">ストリートカルチャーとハイファッションの融合</p>
+                        <p class="vision-description">原宿の街から世界のランウェイへ</p>
                     </div>
                 </div>
-                <div class="success-card">
-                    <div class="success-image">
+                <div class="vision-card">
+                    <div class="vision-image">
                         <div class="image-placeholder">
-                            <span class="placeholder-icon">👗</span>
+                            <span class="placeholder-icon">🎭</span>
                         </div>
                     </div>
-                    <div class="success-content">
-                        <h4>HARAJUKU STREET WEAR</h4>
-                        <p class="success-partners">Creative Agency C × Apparel Brand D</p>
-                        <p class="success-result">国際的なファッション賞受賞</p>
+                    <div class="vision-content">
+                        <h4>DIGITAL × TRADITIONAL</h4>
+                        <p class="vision-concept">デジタルアートと伝統工芸のコラボ</p>
+                        <p class="vision-description">最新技術で伝統をアップデート</p>
                     </div>
                 </div>
-                <div class="success-card">
-                    <div class="success-image">
+                <div class="vision-card">
+                    <div class="vision-image">
                         <div class="image-placeholder">
-                            <span class="placeholder-icon">✨</span>
+                            <span class="placeholder-icon">🌱</span>
                         </div>
                     </div>
-                    <div class="success-content">
-                        <h4>POP CULTURE FUSION</h4>
-                        <p class="success-partners">Graphic Designer E × Street Brand F</p>
-                        <p class="success-result">新たなブランドライン誕生</p>
+                    <div class="vision-content">
+                        <h4>SUSTAINABLE × CREATIVE</h4>
+                        <p class="vision-concept">サステナブルとクリエイティブの新提案</p>
+                        <p class="vision-description">地球と共存する新しいファッション</p>
                     </div>
                 </div>
             </div>
 
-            <!-- パートナーロゴ -->
-            <div class="partners-section">
-                <h3 class="partners-title">TRUSTED PARTNERS</h3>
-                <div class="partners-slider">
-                    <div class="partners-track">
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">BRAND A</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">STUDIO B</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">AGENCY C</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">BRAND D</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">DESIGN E</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">CREATIVE F</span>
-                        </div>
-                        <!-- ループ用に同じロゴを繰り返し -->
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">BRAND A</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">STUDIO B</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">AGENCY C</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">BRAND D</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">DESIGN E</span>
-                        </div>
-                        <div class="partner-logo">
-                            <span class="logo-placeholder">CREATIVE F</span>
-                        </div>
+            <!-- 創設メンバー募集 -->
+            <div class="founding-section">
+                <h3 class="founding-title">BE THE FIRST</h3>
+                <p class="founding-subtitle">創設メンバーとして、新しい歴史を一緒に作りませんか？</p>
+                
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🌟</div>
+                        <h4>特別メンバーシップ</h4>
+                        <p>初期メンバー限定の特別な権利と特典</p>
                     </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">🤝</div>
+                        <h4>優先マッチング</h4>
+                        <p>最初に最適なパートナーを見つけるチャンス</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon">💡</div>
+                        <h4>コミュニティの方向性</h4>
+                        <p>プラットフォームの未来を一緒に決める</p>
+                    </div>
+                </div>
+                
+                <div class="cta-founding">
+                    <p class="limited-text">※ 先着100名限定</p>
+                    <button class="btn btn-primary btn-large"><span>創設メンバーに申し込む</span></button>
                 </div>
             </div>
         </div>
@@ -1201,56 +1233,38 @@
             });
         });
 
-        // カウンターアニメーション
-        function animateCounter(element, target) {
-            const duration = 2000;
-            const start = 0;
-            const increment = target / (duration / 16);
-            let current = start;
-
-            const updateCounter = () => {
-                current += increment;
-                if (current < target) {
-                    element.textContent = Math.floor(current) + (element.dataset.suffix || '');
-                    requestAnimationFrame(updateCounter);
-                } else {
-                    element.textContent = target + (element.dataset.suffix || '');
-                }
-            };
-
-            updateCounter();
-        }
-
-        // Intersection Observer for stats animation
+        // Intersection Observer for animations
         const observerOptions = {
-            threshold: 0.5,
+            threshold: 0.3,
             rootMargin: '0px'
         };
 
-        const statsObserver = new IntersectionObserver((entries) => {
+        const animationObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
                     entry.target.classList.add('animated');
-                    const statNumbers = entry.target.querySelectorAll('.stat-number');
-                    statNumbers.forEach(stat => {
-                        const target = parseInt(stat.dataset.count);
-                        if (stat.dataset.count === '1000') {
-                            stat.dataset.suffix = '万円+';
-                        } else {
-                            stat.dataset.suffix = '+';
-                        }
-                        animateCounter(stat, target);
+                    // アイコンのアニメーション
+                    const icons = entry.target.querySelectorAll('.stat-icon, .benefit-icon');
+                    icons.forEach((icon, index) => {
+                        setTimeout(() => {
+                            icon.style.transform = 'scale(1.2)';
+                            setTimeout(() => {
+                                icon.style.transform = 'scale(1)';
+                            }, 300);
+                        }, index * 200);
                     });
                 }
             });
         }, observerOptions);
 
-        // 統計カードを監視
+        // セクションを監視
         document.addEventListener('DOMContentLoaded', () => {
-            const statsGrid = document.querySelector('.stats-grid');
-            if (statsGrid) {
-                statsObserver.observe(statsGrid);
-            }
+            const sections = document.querySelectorAll('.stats-grid, .benefits-grid');
+            sections.forEach(section => {
+                if (section) {
+                    animationObserver.observe(section);
+                }
+            });
         });
 
         // API interaction functions
