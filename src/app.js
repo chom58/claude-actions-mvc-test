@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const { syncDatabase } = require('./models');
@@ -21,6 +22,9 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
   credentials: true
 }));
+
+// クッキーパーサーミドルウェアを追加（HTTP-onlyクッキー認証のため）
+app.use(cookieParser());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
