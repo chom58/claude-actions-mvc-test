@@ -134,19 +134,36 @@
         }
 
         .logo {
-            font-family: var(--font-display);
-            font-size: 2rem;
-            font-weight: var(--font-weight-regular);
-            background: var(--gradient-neon);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             text-decoration: none;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
+            display: inline-block;
             position: relative;
-            animation: neonFlicker 2s infinite alternate;
-            text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+        }
+
+        .logo-svg {
+            height: 40px;
+            width: auto;
+            transition: var(--transition);
+        }
+
+        .logo:hover .logo-svg {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .logo-dot {
+            filter: drop-shadow(0 0 5px currentColor);
         }
 
         @keyframes neonFlicker {
@@ -1038,6 +1055,10 @@
             .nav-links {
                 display: none;
             }
+            
+            .logo-svg {
+                height: 35px;
+            }
 
             .hero {
                 min-height: 80vh;
@@ -1092,7 +1113,50 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav-container">
-            <a href="#" class="logo">原宿クリエイティブ</a>
+            <a href="#" class="logo">
+                <svg class="logo-svg" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF1493;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#00FFFF;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00FF00;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="neonBlur">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- H icon -->
+                    <g class="logo-icon">
+                        <path d="M 10 10 L 10 40 M 10 25 L 25 25 M 25 10 L 25 40" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="3" 
+                              fill="none" 
+                              stroke-linecap="round"
+                              filter="url(#neonBlur)"/>
+                        
+                        <!-- Decorative elements -->
+                        <circle cx="10" cy="10" r="2" fill="#FF1493" class="logo-dot">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="25" cy="40" r="2" fill="#00FFFF" class="logo-dot">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                    
+                    <!-- Text -->
+                    <text x="40" y="30" font-family="Bebas Neue, sans-serif" font-size="20" fill="url(#logoGradient)" filter="url(#neonBlur)">
+                        HARAJUKU
+                    </text>
+                    <text x="40" y="45" font-family="Montserrat, sans-serif" font-size="10" font-weight="600" fill="#ffffff" opacity="0.8">
+                        CREATIVE COMMUNITY
+                    </text>
+                </svg>
+            </a>
             <ul class="nav-links">
                 <li><a href="#home">ホーム</a></li>
                 <li><a href="#categories">カテゴリ</a></li>
