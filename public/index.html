@@ -13,56 +13,61 @@
         }
 
         :root {
-            /* メインカラー：ニュートラル基調 */
-            --color-primary: #2d2d2d;
-            --color-secondary: #f8f7f4;
-            --color-warm-beige: #e6ddd4;
-            --color-deep-gray: #4a4a4a;
+            /* シンプル・洗練されたカラーパレット */
+            --color-primary: #1a1a1a;
+            --color-secondary: #4a4a4a;
+            --color-tertiary: #8a8a8a;
+            --color-background: #ffffff;
+            --color-surface: #fafafa;
+            --color-border: #e5e5e5;
             
-            /* アクセントカラー：原宿の多様性 */
-            --color-neon-pink: #ff6b9d;
-            --color-neon-blue: #4dabf7;
-            --color-neon-purple: #9775fa;
-            --color-millennial-pink: #f06292;
-            --color-cobalt-blue: #1e88e5;
-            
-            /* グラデーション */
-            --gradient-main: linear-gradient(135deg, var(--color-neon-pink) 0%, var(--color-neon-blue) 50%, var(--color-neon-purple) 100%);
-            --gradient-subtle: linear-gradient(135deg, var(--color-warm-beige) 0%, var(--color-secondary) 100%);
+            /* アクセントカラー：控えめで上品 */
+            --color-accent: #2c5aa0;
+            --color-accent-light: #f0f4f8;
+            --color-accent-hover: #1e3d6f;
             
             /* タイポグラフィ */
-            --font-main: 'Hiragino Sans', 'ヒラギノ角ゴシック Pro', 'Yu Gothic Medium', '游ゴシック Medium', YuGothic, '游ゴシック体', 'Meiryo', sans-serif;
-            --font-accent: 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'ヒラギノ角ゴシック Pro', 'Yu Gothic Medium', '游ゴシック Medium', YuGothic, '游ゴシック体', 'Meiryo', sans-serif;
+            --font-weight-regular: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
             
-            /* シャドウ */
-            --shadow-subtle: 0 2px 20px rgba(0, 0, 0, 0.08);
-            --shadow-medium: 0 8px 40px rgba(0, 0, 0, 0.12);
-            --shadow-strong: 0 16px 60px rgba(0, 0, 0, 0.15);
+            /* スペーシング */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-2xl: 4rem;
+            --spacing-3xl: 6rem;
+            
+            /* シャドウ：より控えめ */
+            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
             
             /* トランジション */
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --transition: all 0.2s ease-in-out;
         }
 
         body {
             font-family: var(--font-main);
-            line-height: 1.7;
+            line-height: 1.6;
             color: var(--color-primary);
-            background: var(--gradient-subtle);
-            overflow-x: hidden;
+            background: var(--color-background);
+            font-weight: var(--font-weight-regular);
         }
 
         /* Header */
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+            background: var(--color-background);
+            border-bottom: 1px solid var(--color-border);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
         }
 
         .header.scrolled {
@@ -72,157 +77,123 @@
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 var(--spacing-lg);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 80px;
+            height: 70px;
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 900;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.25rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
             text-decoration: none;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: var(--spacing-xl);
             list-style: none;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: var(--color-deep-gray);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: var(--transition-smooth);
+            color: var(--color-secondary);
+            font-weight: var(--font-weight-medium);
+            font-size: 0.9rem;
+            transition: var(--transition);
             position: relative;
         }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-main);
-            transition: var(--transition-smooth);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
+        .nav-links a:hover {
+            color: var(--color-accent);
         }
 
         /* Hero Section */
         .hero {
-            min-height: 100vh;
+            min-height: 90vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 0 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, var(--color-neon-pink), transparent, var(--color-neon-blue), transparent, var(--color-neon-purple), transparent);
-            animation: rotate 20s linear infinite;
-            opacity: 0.05;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            padding: var(--spacing-3xl) var(--spacing-lg);
+            background: var(--color-background);
         }
 
         .hero-content {
-            max-width: 800px;
-            z-index: 2;
-            position: relative;
+            max-width: 720px;
         }
 
         .hero-title {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeInUp 1s ease-out;
+            font-size: clamp(2.5rem, 6vw, 3.5rem);
+            font-weight: var(--font-weight-bold);
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-primary);
+            letter-spacing: -0.02em;
         }
 
         .hero-subtitle {
-            font-size: clamp(1.1rem, 3vw, 1.4rem);
-            color: var(--color-deep-gray);
-            margin-bottom: 3rem;
-            animation: fadeInUp 1s ease-out 0.2s both;
+            font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+            color: var(--color-secondary);
+            margin-bottom: var(--spacing-2xl);
+            line-height: 1.6;
+            font-weight: var(--font-weight-regular);
         }
 
         .cta-buttons {
             display: flex;
-            gap: 1.5rem;
+            gap: var(--spacing-md);
             justify-content: center;
             flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.4s both;
         }
 
         .btn {
-            padding: 1rem 2.5rem;
+            padding: var(--spacing-sm) var(--spacing-xl);
             border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: var(--font-weight-medium);
             text-decoration: none;
-            transition: var(--transition-bounce);
+            transition: var(--transition);
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 140px;
+            font-family: inherit;
         }
 
         .btn-primary {
-            background: var(--gradient-main);
+            background: var(--color-accent);
             color: white;
-            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--color-accent);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-strong);
+            background: var(--color-accent-hover);
+            border-color: var(--color-accent-hover);
         }
 
         .btn-secondary {
-            background: white;
-            color: var(--color-primary);
-            border: 2px solid var(--color-neon-pink);
-            box-shadow: var(--shadow-subtle);
+            background: transparent;
+            color: var(--color-accent);
+            border: 1px solid var(--color-accent);
         }
 
         .btn-secondary:hover {
-            background: var(--color-neon-pink);
-            color: white;
-            transform: translateY(-3px);
+            background: var(--color-accent-light);
         }
 
-        /* Category Selection */
-        .category-section {
-            padding: 8rem 2rem;
-            background: white;
+        /* Main Sections */
+        .section {
+            padding: var(--spacing-3xl) var(--spacing-lg);
+        }
+
+        .section-alt {
+            background: var(--color-surface);
         }
 
         .container {
@@ -232,140 +203,148 @@
 
         .section-title {
             text-align: center;
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
+            letter-spacing: -0.01em;
         }
 
         .section-subtitle {
             text-align: center;
-            font-size: 1.2rem;
-            color: var(--color-deep-gray);
-            margin-bottom: 4rem;
+            font-size: 1.1rem;
+            color: var(--color-secondary);
+            margin-bottom: var(--spacing-2xl);
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            line-height: 1.5;
         }
 
+        /* Category Grid */
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 3rem;
-            margin-bottom: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
         }
 
         .category-card {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem 2rem;
+            background: var(--color-background);
+            border-radius: 12px;
+            padding: var(--spacing-2xl) var(--spacing-lg);
             text-align: center;
-            box-shadow: var(--shadow-subtle);
-            transition: var(--transition-smooth);
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-main);
-            transform: scaleX(0);
-            transition: var(--transition-smooth);
-        }
-
-        .category-card:hover::before {
-            transform: scaleX(1);
+            border: 1px solid var(--color-border);
+            transition: var(--transition);
         }
 
         .category-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-strong);
-            border-color: var(--color-neon-pink);
+            border-color: var(--color-accent);
+            box-shadow: var(--shadow-medium);
         }
 
         .category-icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            display: block;
         }
 
         .category-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
         }
 
         .category-description {
-            color: var(--color-deep-gray);
-            line-height: 1.6;
-            margin-bottom: 2rem;
+            color: var(--color-secondary);
+            line-height: 1.5;
+            margin-bottom: var(--spacing-lg);
+            font-size: 0.95rem;
         }
 
-        /* API Information */
-        .api-section {
-            padding: 8rem 2rem;
-            background: var(--gradient-subtle);
-        }
-
+        /* Feature Grid */
         .api-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
+            gap: var(--spacing-lg);
         }
 
         .api-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: var(--shadow-subtle);
-            transition: var(--transition-smooth);
+            background: var(--color-background);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            border: 1px solid var(--color-border);
+            transition: var(--transition);
         }
 
         .api-card:hover {
-            transform: translateY(-4px);
+            border-color: var(--color-accent);
             box-shadow: var(--shadow-medium);
+        }
+
+        .api-card h4 {
+            font-size: 1.1rem;
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-sm);
+            color: var(--color-primary);
+        }
+
+        .api-card p {
+            color: var(--color-secondary);
+            line-height: 1.5;
+            margin-bottom: var(--spacing-md);
+            font-size: 0.95rem;
+        }
+
+        /* API Endpoints Section */
+        .endpoints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .endpoint-card {
+            background: var(--color-background);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-border);
         }
 
         .api-method {
             display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .api-method.get {
-            background: #e3f2fd;
-            color: #1976d2;
+            background: var(--color-accent-light);
+            color: var(--color-accent);
         }
 
         .api-method.post {
-            background: #f3e5f5;
-            color: #7b1fa2;
+            background: #f0f4f8;
+            color: #4a5568;
         }
 
         .api-endpoint {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: var(--color-deep-gray);
-            margin-bottom: 0.5rem;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-xs);
+            background: var(--color-surface);
+            padding: var(--spacing-xs);
+            border-radius: 4px;
         }
 
         .api-description {
-            font-size: 0.95rem;
-            color: var(--color-deep-gray);
+            font-size: 0.9rem;
+            color: var(--color-secondary);
         }
 
         /* Footer */
@@ -373,34 +352,31 @@
             background: var(--color-primary);
             color: white;
             text-align: center;
-            padding: 3rem 2rem;
+            padding: var(--spacing-2xl) var(--spacing-lg);
         }
 
         .footer-content {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
         .footer-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.25rem;
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-sm);
+            color: white;
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .footer p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .footer p:last-child {
+            margin-top: var(--spacing-lg);
+            opacity: 0.6;
+            font-size: 0.85rem;
         }
 
         /* Responsive Design */
@@ -408,13 +384,26 @@
             .nav-links {
                 display: none;
             }
+
+            .hero {
+                min-height: 80vh;
+                padding: var(--spacing-2xl) var(--spacing-md);
+            }
+            
+            .section {
+                padding: var(--spacing-2xl) var(--spacing-md);
+            }
             
             .category-grid {
                 grid-template-columns: 1fr;
-                gap: 2rem;
+                gap: var(--spacing-lg);
             }
             
             .api-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .endpoints-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -422,14 +411,19 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .btn {
+                width: 100%;
+                max-width: 280px;
+            }
         }
 
         /* Loading Animation */
         .loading {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
@@ -448,8 +442,8 @@
             <ul class="nav-links">
                 <li><a href="#home">ホーム</a></li>
                 <li><a href="#categories">カテゴリ</a></li>
+                <li><a href="#features">機能</a></li>
                 <li><a href="#api">API</a></li>
-                <li><a href="#contact">コンタクト</a></li>
             </ul>
         </nav>
     </header>
@@ -463,18 +457,18 @@
                 多様なクリエイターが出会い、新たな価値を生み出すハブ。
             </p>
             <div class="cta-buttons">
-                <a href="#categories" class="btn btn-primary">コミュニティに参加</a>
-                <a href="#api" class="btn btn-secondary">API を探索</a>
+                <a href="#categories" class="btn btn-primary">参加企業・ブランドを見る</a>
+                <a href="#features" class="btn btn-secondary">機能を確認する</a>
             </div>
         </div>
     </section>
 
-    <!-- Category Selection -->
-    <section class="category-section" id="categories">
+    <!-- Categories Section -->
+    <section class="section" id="categories">
         <div class="container">
             <h2 class="section-title">クリエイティブカテゴリ</h2>
             <p class="section-subtitle">
-                デザインとファッション、2つの分野が交差するプラットフォーム
+                原宿から発信するデザインとファッションの融合プラットフォーム
             </p>
 
             <div class="category-grid">
@@ -482,39 +476,47 @@
                     <div class="category-icon">🎨</div>
                     <h3 class="category-title">デザイン会社</h3>
                     <p class="category-description">
-                        グラフィック、Web、UI/UX、ブランディング、パッケージデザインなど、
-                        原宿エリアの最先端デザイン会社が集結。
+                        グラフィック、Web、UI/UX、ブランディング、パッケージデザインなど、原宿エリアの最先端デザイン会社が集結。
                     </p>
-                    <a href="#" class="btn btn-primary" onclick="exploreDesignCompanies()">探索する</a>
+                    <button class="btn btn-primary" onclick="exploreDesignCompanies()">参加企業を見る</button>
                 </div>
 
                 <div class="category-card">
                     <div class="category-icon">👗</div>
                     <h3 class="category-title">アパレルブランド</h3>
                     <p class="category-description">
-                        ストリート、エレガント、アバンギャルドまで。
-                        原宿カルチャーを体現する多様なアパレルブランド。
+                        ストリート、エレガント、アバンギャルドまで。原宿カルチャーを体現する多様なアパレルブランド。
                     </p>
-                    <a href="#" class="btn btn-primary" onclick="exploreApparelBrands()">探索する</a>
+                    <button class="btn btn-primary" onclick="exploreApparelBrands()">参加ブランドを見る</button>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section section-alt" id="features">
+        <div class="container">
+            <h2 class="section-title">コミュニティ機能</h2>
+            <p class="section-subtitle">
+                クリエイター同士の出会いとコラボレーションを促進する機能
+            </p>
 
             <div class="api-grid">
                 <div class="api-card">
                     <h4>📅 クリエイティブイベント</h4>
-                    <p>ネットワーキング、ワークショップ、展示会、ファッションショーなど、原宿エリアのイベント情報。</p>
+                    <p>ネットワーキング、ワークショップ、展示会、ファッションショーなど、原宿エリアのイベント情報をお届けします。</p>
                     <button class="btn btn-secondary" onclick="loadUpcomingEvents()">近日開催イベント</button>
                 </div>
 
                 <div class="api-card">
                     <h4>🤝 コラボレーション事例</h4>
-                    <p>デザイン会社×アパレルブランドの成功事例。新たなプロジェクトのインスピレーション源。</p>
+                    <p>デザイン会社×アパレルブランドの成功事例。新たなプロジェクトのインスピレーション源としてご活用ください。</p>
                     <button class="btn btn-secondary" onclick="loadFeaturedCollaborations()">注目プロジェクト</button>
                 </div>
 
                 <div class="api-card">
                     <h4>🎯 マッチング掲示板</h4>
-                    <p>パートナー募集、スキル交換、コラボレーション提案など、クリエイター同士の出会いの場。</p>
+                    <p>パートナー募集、スキル交換、コラボレーション提案など、クリエイター同士の出会いの場を提供します。</p>
                     <button class="btn btn-secondary" onclick="loadMatchingRequests()">募集案件を見る</button>
                 </div>
             </div>
@@ -522,45 +524,45 @@
     </section>
 
     <!-- API Information -->
-    <section class="api-section" id="api">
+    <section class="section" id="api">
         <div class="container">
             <h2 class="section-title">API エンドポイント</h2>
             <p class="section-subtitle">
                 開発者向け：原宿クリエイティブコミュニティの豊富なデータにアクセス
             </p>
 
-            <div class="api-grid">
-                <div class="api-card">
+            <div class="endpoints-grid">
+                <div class="endpoint-card">
                     <span class="api-method get">GET</span>
                     <div class="api-endpoint">/api/design-companies/harajuku</div>
                     <p class="api-description">原宿エリアのデザイン会社一覧</p>
                 </div>
 
-                <div class="api-card">
+                <div class="endpoint-card">
                     <span class="api-method get">GET</span>
                     <div class="api-endpoint">/api/apparel-brands/harajuku</div>
                     <p class="api-description">原宿エリアのアパレルブランド一覧</p>
                 </div>
 
-                <div class="api-card">
+                <div class="endpoint-card">
                     <span class="api-method get">GET</span>
                     <div class="api-endpoint">/api/events/upcoming</div>
                     <p class="api-description">近日開催予定のクリエイティブイベント</p>
                 </div>
 
-                <div class="api-card">
+                <div class="endpoint-card">
                     <span class="api-method get">GET</span>
                     <div class="api-endpoint">/api/collaborations/featured</div>
                     <p class="api-description">注目のコラボレーションプロジェクト</p>
                 </div>
 
-                <div class="api-card">
+                <div class="endpoint-card">
                     <span class="api-method get">GET</span>
                     <div class="api-endpoint">/api/matching/high-priority</div>
                     <p class="api-description">高優先度のマッチングリクエスト</p>
                 </div>
 
-                <div class="api-card">
+                <div class="endpoint-card">
                     <span class="api-method post">POST</span>
                     <div class="api-endpoint">/api/design-companies</div>
                     <p class="api-description">新規デザイン会社の登録</p>
@@ -725,31 +727,6 @@
             btn.textContent = originalText;
         }
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe all cards for animation
-        document.addEventListener('DOMContentLoaded', () => {
-            const cards = document.querySelectorAll('.category-card, .api-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-                observer.observe(card);
-            });
-        });
     </script>
 </body>
 </html>
