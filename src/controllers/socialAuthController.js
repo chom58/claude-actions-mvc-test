@@ -1,5 +1,8 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
+const OAuthService = require('../services/oauthService');
+const { sessionHelpers } = require('../config/session');
+const logger = require('../utils/logger');
 
 const generateToken = (userId) => {
   return jwt.sign(
@@ -20,10 +23,12 @@ const generateRefreshToken = (userId) => {
 // Google OAuth認証のコールバック処理
 exports.googleCallback = async (req, res) => {
   try {
-    // 実際の実装では、GoogleのOAuth2ライブラリを使用してユーザー情報を取得
-    // ここでは基本的な構造のみを示す
+    const { code, state, error: oauthError } = req.query;
     
-    const { code } = req.query;
+    if (oauthError) {
+      logger.error('Google OAuth error:', oauthError);
+      return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?error=${encodeURIComponent(oauthError)}`);
+    }
     
     if (!code) {
       return res.status(400).json({
@@ -31,18 +36,14 @@ exports.googleCallback = async (req, res) => {
       });
     }
 
-    // Google OAuth2 APIからユーザー情報を取得（実装必要）
-    // const googleUser = await getGoogleUserInfo(code);
+    // 実際のGoogle OAuth2 APIからユーザー情報を取得
+    const googleUser = await OAuthService.getGoogleUserInfo(code);
     
-    // 開発用のモックデータ
-    const googleUser = {
-      id: 'google_123456',
-      email: 'user@gmail.com',
-      name: 'Google User',
-      verified_email: true
-    };
+    if (!googleUser.email) {
+      throw new Error('Googleアカウントからメールアドレスを取得できませんでした');
+    }
 
-    // 既存ユーザーの確認
+    // 既存ユーザーの確認（メールアドレスで検索）
     let user = await User.findOne({
       where: { email: googleUser.email }
     });
@@ -56,33 +57,49 @@ exports.googleCallback = async (req, res) => {
         isActive: true,
         lastLoginAt: new Date()
       });
+      
+      logger.info(`New Google user created: ${user.email}`);
     } else {
       // 最終ログイン時刻を更新
       user.lastLoginAt = new Date();
       await user.save();
+      
+      logger.info(`Existing Google user logged in: ${user.email}`);
     }
 
-    // トークンを生成
+    // セッションにユーザー情報を設定
+    sessionHelpers.setUserSession(req, user);
+    
+    // JWTトークンを生成
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
     
     user.refreshToken = refreshToken;
     await user.save();
 
-    // フロントエンドにリダイレクト（トークンをクエリパラメータで渡す）
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&refreshToken=${refreshToken}`;
+    // セッション再生成（セキュリティ強化）
+    await sessionHelpers.regenerateSession(req);
+    sessionHelpers.setUserSession(req, user);
+
+    // フロントエンドにリダイレクト
+    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&refreshToken=${refreshToken}&provider=google`;
     
     res.redirect(redirectUrl);
   } catch (error) {
-    console.error('Google OAuth callback error:', error);
-    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error`);
+    logger.error('Google OAuth callback error:', error);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?message=${encodeURIComponent(error.message)}`);
   }
 };
 
 // GitHub OAuth認証のコールバック処理
 exports.githubCallback = async (req, res) => {
   try {
-    const { code } = req.query;
+    const { code, state, error: oauthError } = req.query;
+    
+    if (oauthError) {
+      logger.error('GitHub OAuth error:', oauthError);
+      return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?error=${encodeURIComponent(oauthError)}`);
+    }
     
     if (!code) {
       return res.status(400).json({
@@ -90,18 +107,14 @@ exports.githubCallback = async (req, res) => {
       });
     }
 
-    // GitHub OAuth APIからユーザー情報を取得（実装必要）
-    // const githubUser = await getGitHubUserInfo(code);
+    // 実際のGitHub OAuth APIからユーザー情報を取得
+    const githubUser = await OAuthService.getGitHubUserInfo(code);
     
-    // 開発用のモックデータ
-    const githubUser = {
-      id: 'github_789012',
-      email: 'user@users.noreply.github.com',
-      login: 'githubuser',
-      name: 'GitHub User'
-    };
+    if (!githubUser.email) {
+      throw new Error('GitHubアカウントからメールアドレスを取得できませんでした');
+    }
 
-    // 既存ユーザーの確認
+    // 既存ユーザーの確認（メールアドレスで検索）
     let user = await User.findOne({
       where: { email: githubUser.email }
     });
@@ -109,76 +122,119 @@ exports.githubCallback = async (req, res) => {
     if (!user) {
       // 新規ユーザーの作成
       user = await User.create({
-        username: githubUser.name || githubUser.login || `github_${githubUser.id}`,
+        username: githubUser.name || githubUser.username || `github_${githubUser.id}`,
         email: githubUser.email,
         password: `github_oauth_${githubUser.id}`, // OAuth用の仮パスワード
         isActive: true,
         lastLoginAt: new Date()
       });
+      
+      logger.info(`New GitHub user created: ${user.email}`);
     } else {
       // 最終ログイン時刻を更新
       user.lastLoginAt = new Date();
       await user.save();
+      
+      logger.info(`Existing GitHub user logged in: ${user.email}`);
     }
 
-    // トークンを生成
+    // セッションにユーザー情報を設定
+    sessionHelpers.setUserSession(req, user);
+    
+    // JWTトークンを生成
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
     
     user.refreshToken = refreshToken;
     await user.save();
 
+    // セッション再生成（セキュリティ強化）
+    await sessionHelpers.regenerateSession(req);
+    sessionHelpers.setUserSession(req, user);
+
     // フロントエンドにリダイレクト
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&refreshToken=${refreshToken}`;
+    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&refreshToken=${refreshToken}&provider=github`;
     
     res.redirect(redirectUrl);
   } catch (error) {
-    console.error('GitHub OAuth callback error:', error);
-    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error`);
+    logger.error('GitHub OAuth callback error:', error);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?message=${encodeURIComponent(error.message)}`);
   }
 };
 
 // ソーシャルログインの開始URL取得
 exports.getSocialLoginUrls = (req, res) => {
-  const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-    `client_id=${process.env.GOOGLE_CLIENT_ID}&` +
-    `redirect_uri=${process.env.GOOGLE_REDIRECT_URI}&` +
-    `response_type=code&` +
-    `scope=email profile&` +
-    `state=google_login`;
+  try {
+    const configStatus = OAuthService.getConfigStatus();
+    const urls = {};
+    const errors = {};
+    
+    // Google URL生成
+    if (configStatus.google.valid) {
+      const state = `google_login_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      urls.google = OAuthService.generateAuthUrl('google', state);
+    } else {
+      errors.google = configStatus.google.error;
+    }
+    
+    // GitHub URL生成
+    if (configStatus.github.valid) {
+      const state = `github_login_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      urls.github = OAuthService.generateAuthUrl('github', state);
+    } else {
+      errors.github = configStatus.github.error;
+    }
 
-  const githubLoginUrl = `https://github.com/login/oauth/authorize?` +
-    `client_id=${process.env.GITHUB_CLIENT_ID}&` +
-    `redirect_uri=${process.env.GITHUB_REDIRECT_URI}&` +
-    `scope=user:email&` +
-    `state=github_login`;
+    const response = {
+      message: 'ソーシャルログインURLを取得しました',
+      urls,
+      configStatus: Object.keys(configStatus).reduce((acc, provider) => {
+        acc[provider] = configStatus[provider].valid ? 'OK' : 'ERROR';
+        return acc;
+      }, {})
+    };
+    
+    if (Object.keys(errors).length > 0) {
+      response.errors = errors;
+      response.note = 'エラーがあるプロバイダーは使用できません。環境変数を確認してください。';
+    }
 
-  res.json({
-    message: 'ソーシャルログインURLを取得しました',
-    urls: {
-      google: googleLoginUrl,
-      github: githubLoginUrl
-    },
-    note: '環境変数の設定が必要です: GOOGLE_CLIENT_ID, GOOGLE_REDIRECT_URI, GITHUB_CLIENT_ID, GITHUB_REDIRECT_URI'
-  });
+    res.json(response);
+  } catch (error) {
+    logger.error('Social login URLs generation error:', error);
+    res.status(500).json({
+      error: 'ソーシャルログインURL生成に失敗しました',
+      message: error.message
+    });
+  }
 };
 
-// 実際のGoogle OAuth2 API実装用のヘルパー関数（未実装）
-// const getGoogleUserInfo = async (code) => {
-//   // 1. 認証コードをアクセストークンに交換
-//   // 2. アクセストークンを使用してユーザー情報を取得
-//   // 3. ユーザー情報を返す
-// };
-
-// 実際のGitHub OAuth API実装用のヘルパー関数（未実装）
-// const getGitHubUserInfo = async (code) => {
-//   // 1. 認証コードをアクセストークンに交換
-//   // 2. アクセストークンを使用してユーザー情報を取得
-//   // 3. ユーザー情報を返す
-// };
+// OAuth設定状態確認エンドポイント
+exports.getOAuthConfigStatus = (req, res) => {
+  try {
+    const configStatus = OAuthService.getConfigStatus();
+    
+    res.json({
+      message: 'OAuth設定状態を取得しました',
+      providers: configStatus,
+      summary: {
+        total: Object.keys(configStatus).length,
+        configured: Object.values(configStatus).filter(status => status.valid).length,
+        errors: Object.values(configStatus).filter(status => !status.valid).length
+      }
+    });
+  } catch (error) {
+    logger.error('OAuth config status error:', error);
+    res.status(500).json({
+      error: 'OAuth設定状態の取得に失敗しました',
+      message: error.message
+    });
+  }
+};
 
 module.exports = {
   googleCallback: exports.googleCallback,
   githubCallback: exports.githubCallback,
-  getSocialLoginUrls: exports.getSocialLoginUrls
+  getSocialLoginUrls: exports.getSocialLoginUrls,
+  getOAuthConfigStatus: exports.getOAuthConfigStatus
 };

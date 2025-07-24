@@ -5,8 +5,9 @@ const helmet = require('helmet');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const { syncDatabase } = require('./models');
-const { securityHeaders, sanitizeInput } = require('./middleware/security');
+const { securityHeaders, sanitizeInput, csrfProtection } = require('./middleware/security');
 const { generalRateLimit } = require('./middleware/rateLimit');
+const { initializeSession } = require('./config/session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -47,6 +48,14 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await syncDatabase();
+    
+    // セッション初期化
+    await initializeSession(app);
+    
+    // CSRF保護ミドルウェアをAPIルートに適用
+    app.use('/api', csrfProtection({
+      skipPaths: ['/api/auth/csrf-token', '/api/auth/social']
+    }));
     
     app.listen(PORT, () => {
       console.log(`サーバーがポート${PORT}で起動しました`);

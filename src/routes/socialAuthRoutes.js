@@ -21,4 +21,10 @@ router.get('/github/callback',
   socialAuthController.githubCallback
 );
 
+// OAuth設定状態確認
+router.get('/config-status', 
+  generalRateLimit,
+  socialAuthController.getOAuthConfigStatus
+);
+
 module.exports = router;

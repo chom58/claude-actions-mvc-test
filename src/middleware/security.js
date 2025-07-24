@@ -88,23 +88,125 @@ const generateCSRFToken = () => {
   return crypto.randomBytes(32).toString('hex');
 };
 
-// CSRF保護ミドルウェア
-const csrfProtection = (req, res, next) => {
-  // GET, HEAD, OPTIONS は除外
-  if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
-    return next();
+// CSRFトークンのハッシュ化（セキュリティ強化）
+const hashCSRFToken = (token, secret) => {
+  const crypto = require('crypto');
+  return crypto.createHmac('sha256', secret).update(token).digest('hex');
+};
+
+// CSRFトークンの検証
+const verifyCSRFToken = (token, hashedToken, secret) => {
+  try {
+    const expectedHash = hashCSRFToken(token, secret);
+    return crypto.timingSafeEqual(Buffer.from(expectedHash), Buffer.from(hashedToken));
+  } catch (error) {
+    return false;
   }
+};
 
-  const token = req.headers['x-csrf-token'] || req.body._csrf;
-  const sessionToken = req.session?.csrfToken;
+// CSRF保護ミドルウェア（改良版）
+const csrfProtection = (options = {}) => {
+  const {
+    generateToken = true,
+    validateToken = true,
+    tokenName = 'csrfToken',
+    headerName = 'x-csrf-token',
+    bodyField = '_csrf',
+    skipMethods = ['GET', 'HEAD', 'OPTIONS'],
+    skipPaths = [],
+    errorMessage = 'CSRF保護: 無効なトークンです'
+  } = options;
 
-  if (!token || !sessionToken || token !== sessionToken) {
-    return res.status(403).json({
-      error: 'CSRF保護: 無効なトークンです'
+  return (req, res, next) => {
+    const { sessionHelpers } = require('../config/session');
+    
+    // セッションが必要
+    if (!req.session) {
+      return res.status(500).json({
+        error: 'セッションが初期化されていません'
+      });
+    }
+
+    // スキップするパスの確認
+    if (skipPaths.some(path => req.path.startsWith(path))) {
+      return next();
+    }
+
+    // GETリクエストなどでトークンを生成
+    if (skipMethods.includes(req.method)) {
+      if (generateToken && !sessionHelpers.getCSRFToken(req)) {
+        const token = generateCSRFToken();
+        const secret = process.env.CSRF_SECRET || 'csrf-secret-key';
+        const hashedToken = hashCSRFToken(token, secret);
+        
+        sessionHelpers.setCSRFToken(req, hashedToken);
+        
+        // レスポンスヘッダーにトークンを含める
+        res.setHeader('X-CSRF-Token', token);
+        
+        // APIレスポンスにトークンを含める場合
+        if (req.path.startsWith('/api/')) {
+          res.locals.csrfToken = token;
+        }
+      }
+      return next();
+    }
+
+    // POST、PUT、DELETE等でトークンを検証
+    if (validateToken) {
+      const token = req.headers[headerName] || req.body[bodyField];
+      const sessionToken = sessionHelpers.getCSRFToken(req);
+      const secret = process.env.CSRF_SECRET || 'csrf-secret-key';
+
+      if (!token) {
+        return res.status(403).json({
+          error: 'CSRFトークンが提供されていません',
+          code: 'CSRF_TOKEN_MISSING'
+        });
+      }
+
+      if (!sessionToken) {
+        return res.status(403).json({
+          error: 'セッションにCSRFトークンがありません',
+          code: 'CSRF_SESSION_MISSING'
+        });
+      }
+
+      if (!verifyCSRFToken(token, sessionToken, secret)) {
+        return res.status(403).json({
+          error: errorMessage,
+          code: 'CSRF_TOKEN_INVALID'
+        });
+      }
+    }
+    
+    next();
+  };
+};
+
+// CSRFトークン取得エンドポイント用ミドルウェア
+const csrfTokenEndpoint = (req, res) => {
+  const { sessionHelpers } = require('../config/session');
+  
+  if (!req.session) {
+    return res.status(500).json({
+      error: 'セッションが初期化されていません'
     });
   }
+
+  let token = generateCSRFToken();
+  let sessionToken = sessionHelpers.getCSRFToken(req);
   
-  next();
+  // 新しいトークンを生成してセッションに保存
+  const secret = process.env.CSRF_SECRET || 'csrf-secret-key';
+  const hashedToken = hashCSRFToken(token, secret);
+  sessionHelpers.setCSRFToken(req, hashedToken);
+
+  res.json({
+    message: 'CSRFトークンを取得しました',
+    csrfToken: token,
+    expires: new Date(Date.now() + (req.session.cookie.maxAge || 24 * 60 * 60 * 1000))
+  });
 };
 
 // セキュリティヘッダーの設定
@@ -158,7 +260,10 @@ module.exports = {
   sanitizeInput,
   preventSqlInjection,
   generateCSRFToken,
+  hashCSRFToken,
+  verifyCSRFToken,
   csrfProtection,
+  csrfTokenEndpoint,
   securityHeaders,
   createIPWhitelist
 };
