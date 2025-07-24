@@ -1,20 +1,57 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const https = require('https');
+const { URL } = require('url');
+
+// JWT秘密鍵の検証
+const validateJWTSecrets = () => {
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-secret-key') {
+    throw new Error('JWT_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
+  }
+  if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET === 'your-refresh-secret-key') {
+    throw new Error('JWT_REFRESH_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
+  }
+};
 
 const generateToken = (userId) => {
+  validateJWTSecrets();
   return jwt.sign(
     { userId },
-    process.env.JWT_SECRET || 'your-secret-key',
+    process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRE || '15m' }
   );
 };
 
 const generateRefreshToken = (userId) => {
+  validateJWTSecrets();
   return jwt.sign(
     { userId, type: 'refresh' },
-    process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key',
+    process.env.JWT_REFRESH_SECRET,
     { expiresIn: process.env.JWT_REFRESH_EXPIRE || '7d' }
   );
+};
+
+// リフレッシュトークンの暗号化
+const encryptRefreshToken = (token) => {
+  if (!process.env.REFRESH_TOKEN_ENCRYPTION_KEY) {
+    throw new Error('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
+  }
+  const cipher = crypto.createCipher('aes-256-cbc', process.env.REFRESH_TOKEN_ENCRYPTION_KEY);
+  let encrypted = cipher.update(token, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+};
+
+// リフレッシュトークンの復号化
+const decryptRefreshToken = (encryptedToken) => {
+  if (!process.env.REFRESH_TOKEN_ENCRYPTION_KEY) {
+    throw new Error('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
+  }
+  const decipher = crypto.createDecipher('aes-256-cbc', process.env.REFRESH_TOKEN_ENCRYPTION_KEY);
+  let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
 };
 
 // Google OAuth認証のコールバック処理
@@ -34,13 +71,12 @@ exports.googleCallback = async (req, res) => {
     // Google OAuth2 APIからユーザー情報を取得（実装必要）
     // const googleUser = await getGoogleUserInfo(code);
     
-    // 開発用のモックデータ
-    const googleUser = {
-      id: 'google_123456',
-      email: 'user@gmail.com',
-      name: 'Google User',
-      verified_email: true
-    };
+    // Google OAuth2 APIからユーザー情報を取得
+    const googleUser = await getGoogleUserInfo(code);
+    
+    if (!googleUser) {
+      return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?message=oauth_failed`);
+    }
 
     // 既存ユーザーの確認
     let user = await User.findOne({
@@ -65,13 +101,29 @@ exports.googleCallback = async (req, res) => {
     // トークンを生成
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
-    
-    user.refreshToken = refreshToken;
+
+    // リフレッシュトークンを暗号化してデータベースに保存
+    const encryptedRefreshToken = encryptRefreshToken(refreshToken);
+    user.refreshToken = encryptedRefreshToken;
     await user.save();
 
-    // フロントエンドにリダイレクト（トークンをクエリパラメータで渡す）
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&refreshToken=${refreshToken}`;
+    // トークンをHTTP-onlyクッキーとして設定（URLパラメータの代わり）
+    res.cookie('accessToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15分
+    });
     
+    res.cookie('refreshToken', encryptedRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict', 
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
+    });
+    
+    // セキュアなリダイレクト（トークンをクッキーで送信）
+    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?success=true`;
     res.redirect(redirectUrl);
   } catch (error) {
     console.error('Google OAuth callback error:', error);
@@ -93,13 +145,12 @@ exports.githubCallback = async (req, res) => {
     // GitHub OAuth APIからユーザー情報を取得（実装必要）
     // const githubUser = await getGitHubUserInfo(code);
     
-    // 開発用のモックデータ
-    const githubUser = {
-      id: 'github_789012',
-      email: 'user@users.noreply.github.com',
-      login: 'githubuser',
-      name: 'GitHub User'
-    };
+    // GitHub OAuth APIからユーザー情報を取得
+    const githubUser = await getGitHubUserInfo(code);
+    
+    if (!githubUser) {
+      return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/error?message=oauth_failed`);
+    }
 
     // 既存ユーザーの確認
     let user = await User.findOne({
@@ -124,13 +175,29 @@ exports.githubCallback = async (req, res) => {
     // トークンを生成
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
-    
-    user.refreshToken = refreshToken;
+
+    // リフレッシュトークンを暗号化してデータベースに保存
+    const encryptedRefreshToken = encryptRefreshToken(refreshToken);
+    user.refreshToken = encryptedRefreshToken;
     await user.save();
 
-    // フロントエンドにリダイレクト
-    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&refreshToken=${refreshToken}`;
+    // トークンをHTTP-onlyクッキーとして設定
+    res.cookie('accessToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15分
+    });
     
+    res.cookie('refreshToken', encryptedRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
+    });
+    
+    // セキュアなリダイレクト
+    const redirectUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?success=true`;
     res.redirect(redirectUrl);
   } catch (error) {
     console.error('GitHub OAuth callback error:', error);
@@ -163,19 +230,134 @@ exports.getSocialLoginUrls = (req, res) => {
   });
 };
 
-// 実際のGoogle OAuth2 API実装用のヘルパー関数（未実装）
-// const getGoogleUserInfo = async (code) => {
-//   // 1. 認証コードをアクセストークンに交換
-//   // 2. アクセストークンを使用してユーザー情報を取得
-//   // 3. ユーザー情報を返す
-// };
+// Google OAuth2 API実装
+const getGoogleUserInfo = async (code) => {
+  try {
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      throw new Error('Google OAuth設定が不完全です');
+    }
 
-// 実際のGitHub OAuth API実装用のヘルパー関数（未実装）
-// const getGitHubUserInfo = async (code) => {
-//   // 1. 認証コードをアクセストークンに交換
-//   // 2. アクセストークンを使用してユーザー情報を取得
-//   // 3. ユーザー情報を返す
-// };
+    // 1. 認証コードをアクセストークンに交換
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        code: code,
+        grant_type: 'authorization_code',
+        redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      console.error('Google token exchange failed:', await tokenResponse.text());
+      return null;
+    }
+
+    const tokenData = await tokenResponse.json();
+
+    // 2. アクセストークンを使用してユーザー情報を取得
+    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+    });
+
+    if (!userResponse.ok) {
+      console.error('Google user info fetch failed:', await userResponse.text());
+      return null;
+    }
+
+    const userData = await userResponse.json();
+    
+    // 3. 必要な情報のみを返す
+    return {
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      verified_email: userData.verified_email,
+    };
+  } catch (error) {
+    console.error('Google OAuth error:', error);
+    return null;
+  }
+};
+
+// GitHub OAuth API実装
+const getGitHubUserInfo = async (code) => {
+  try {
+    if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+      throw new Error('GitHub OAuth設定が不完全です');
+    }
+
+    // 1. 認証コードをアクセストークンに交換
+    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code: code,
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      console.error('GitHub token exchange failed:', await tokenResponse.text());
+      return null;
+    }
+
+    const tokenData = await tokenResponse.json();
+
+    // 2. アクセストークンを使用してユーザー情報を取得
+    const userResponse = await fetch('https://api.github.com/user', {
+      headers: {
+        Authorization: `token ${tokenData.access_token}`,
+        'User-Agent': 'Claude-Web-Server',
+      },
+    });
+
+    if (!userResponse.ok) {
+      console.error('GitHub user info fetch failed:', await userResponse.text());
+      return null;
+    }
+
+    const userData = await userResponse.json();
+
+    // 3. メールアドレスを別途取得（プライマリメールが必要）
+    const emailResponse = await fetch('https://api.github.com/user/emails', {
+      headers: {
+        Authorization: `token ${tokenData.access_token}`,
+        'User-Agent': 'Claude-Web-Server',
+      },
+    });
+
+    let primaryEmail = userData.email; // 公開メールアドレス
+    if (emailResponse.ok) {
+      const emails = await emailResponse.json();
+      const primary = emails.find(email => email.primary);
+      if (primary) {
+        primaryEmail = primary.email;
+      }
+    }
+
+    // 4. 必要な情報のみを返す
+    return {
+      id: userData.id.toString(),
+      email: primaryEmail,
+      login: userData.login,
+      name: userData.name || userData.login,
+    };
+  } catch (error) {
+    console.error('GitHub OAuth error:', error);
+    return null;
+  }
+};
 
 module.exports = {
   googleCallback: exports.googleCallback,
