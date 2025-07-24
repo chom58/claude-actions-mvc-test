@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userRoutes = require('./userRoutes');
 const socialAuthRoutes = require('./socialAuthRoutes');
+const authRoutes = require('./authRoutes');
 const postRoutes = require('./postRoutes');
 const designCompanyRoutes = require('./designCompanyRoutes');
 const apparelBrandRoutes = require('./apparelBrandRoutes');
@@ -18,6 +19,7 @@ router.get('/', (req, res) => {
       // 認証
       users: '/api/users',
       socialAuth: '/api/social-auth',
+      auth: '/api/auth',
       posts: '/api/posts',
       // クリエイティブコミュニティ
       designCompanies: '/api/design-companies',
@@ -39,6 +41,7 @@ router.get('/', (req, res) => {
 // 認証ルート
 router.use('/users', userRoutes);
 router.use('/social-auth', socialAuthRoutes);
+router.use('/auth', authRoutes);
 router.use('/posts', postRoutes);
 
 // 新しいクリエイティブコミュニティルート
