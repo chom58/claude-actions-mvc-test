@@ -25,7 +25,8 @@
     "jsonwebtoken": "^9.0.2",
     "express-validator": "^7.0.1",
     "winston": "^3.11.0",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "cookie-parser": "^1.4.6"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

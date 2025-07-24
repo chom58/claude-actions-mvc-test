@@ -1,21 +1,56 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
+const crypto = require('crypto');
+
+// JWT秘密鍵の検証
+const validateJWTSecrets = () => {
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-secret-key') {
+    throw new Error('JWT_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
+  }
+  if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET === 'your-refresh-secret-key') {
+    throw new Error('JWT_REFRESH_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
+  }
+};
 
 const generateToken = (userId) => {
+  validateJWTSecrets();
   return jwt.sign(
     { userId },
-    process.env.JWT_SECRET || 'your-secret-key',
-    { expiresIn: process.env.JWT_EXPIRE || '15m' } // アクセストークンを短く設定
+    process.env.JWT_SECRET,
+    { expiresIn: process.env.JWT_EXPIRE || '15m' }
   );
 };
 
 const generateRefreshToken = (userId) => {
+  validateJWTSecrets();
   return jwt.sign(
     { userId, type: 'refresh' },
-    process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key',
+    process.env.JWT_REFRESH_SECRET,
     { expiresIn: process.env.JWT_REFRESH_EXPIRE || '7d' }
   );
+};
+
+// リフレッシュトークンの暗号化
+const encryptRefreshToken = (token) => {
+  if (!process.env.REFRESH_TOKEN_ENCRYPTION_KEY) {
+    throw new Error('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
+  }
+  const cipher = crypto.createCipher('aes-256-cbc', process.env.REFRESH_TOKEN_ENCRYPTION_KEY);
+  let encrypted = cipher.update(token, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+};
+
+// リフレッシュトークンの復号化
+const decryptRefreshToken = (encryptedToken) => {
+  if (!process.env.REFRESH_TOKEN_ENCRYPTION_KEY) {
+    throw new Error('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
+  }
+  const decipher = crypto.createDecipher('aes-256-cbc', process.env.REFRESH_TOKEN_ENCRYPTION_KEY);
+  let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
 };
 
 exports.register = async (req, res) => {
@@ -46,15 +81,30 @@ exports.register = async (req, res) => {
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
     
-    // リフレッシュトークンをユーザーに保存
-    user.refreshToken = refreshToken;
+    // リフレッシュトークンを暗号化してデータベースに保存
+    const encryptedRefreshToken = encryptRefreshToken(refreshToken);
+    user.refreshToken = encryptedRefreshToken;
     await user.save();
+
+    // トークンをHTTP-onlyクッキーとして設定
+    res.cookie('accessToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15分
+    });
+    
+    res.cookie('refreshToken', encryptedRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
+    });
 
     res.status(201).json({
       message: 'ユーザー登録が完了しました',
-      user: user.toJSON(),
-      token,
-      refreshToken
+      user: user.toJSON()
+      // トークンは安全なHTTP-onlyクッキーとして送信
     });
   } catch (error) {
     console.error('Registration error:', error);
@@ -86,16 +136,31 @@ exports.login = async (req, res) => {
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
     
-    // リフレッシュトークンと最終ログイン時刻を更新
-    user.refreshToken = refreshToken;
+    // リフレッシュトークンを暗号化してデータベースに保存
+    const encryptedRefreshToken = encryptRefreshToken(refreshToken);
+    user.refreshToken = encryptedRefreshToken;
     user.lastLoginAt = new Date();
     await user.save();
 
+    // トークンをHTTP-onlyクッキーとして設定
+    res.cookie('accessToken', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15分
+    });
+    
+    res.cookie('refreshToken', encryptedRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
+    });
+
     res.json({
       message: 'ログインに成功しました',
-      user: user.toJSON(),
-      token,
-      refreshToken
+      user: user.toJSON()
+      // トークンは安全なHTTP-onlyクッキーとして送信
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -214,6 +279,10 @@ exports.logout = async (req, res) => {
     user.refreshToken = null;
     await user.save();
 
+    // HTTP-onlyクッキーをクリア
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
     res.json({
       message: 'ログアウトが完了しました'
     });
@@ -228,18 +297,32 @@ exports.logout = async (req, res) => {
 // リフレッシュトークンを使用してアクセストークンを更新
 exports.refreshToken = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
+    // JWT秘密鍵の検証
+    validateJWTSecrets();
 
-    if (!refreshToken) {
+    // リフレッシュトークンをクッキーまたはボディから取得
+    let encryptedRefreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+
+    if (!encryptedRefreshToken) {
       return res.status(401).json({
         error: 'リフレッシュトークンが提供されていません'
+      });
+    }
+
+    // 暗号化されたリフレッシュトークンを復号化
+    let refreshToken;
+    try {
+      refreshToken = decryptRefreshToken(encryptedRefreshToken);
+    } catch (error) {
+      return res.status(401).json({
+        error: '無効なリフレッシュトークンです'
       });
     }
 
     // リフレッシュトークンを検証
     const decoded = jwt.verify(
       refreshToken,
-      process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-key'
+      process.env.JWT_REFRESH_SECRET
     );
 
     if (decoded.type !== 'refresh') {
@@ -251,7 +334,7 @@ exports.refreshToken = async (req, res) => {
     // ユーザーのリフレッシュトークンと照合
     const user = await User.findByPk(decoded.userId);
     
-    if (!user || user.refreshToken !== refreshToken) {
+    if (!user || user.refreshToken !== encryptedRefreshToken) {
       return res.status(401).json({
         error: '無効なリフレッシュトークンです'
       });
@@ -261,14 +344,29 @@ exports.refreshToken = async (req, res) => {
     const newToken = generateToken(user.id);
     const newRefreshToken = generateRefreshToken(user.id);
     
-    // 新しいリフレッシュトークンを保存
-    user.refreshToken = newRefreshToken;
+    // 新しいリフレッシュトークンを暗号化して保存
+    const newEncryptedRefreshToken = encryptRefreshToken(newRefreshToken);
+    user.refreshToken = newEncryptedRefreshToken;
     await user.save();
 
+    // 新しいトークンをHTTP-onlyクッキーとして設定
+    res.cookie('accessToken', newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15分
+    });
+    
+    res.cookie('refreshToken', newEncryptedRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
+    });
+
     res.json({
-      message: 'トークンが更新されました',
-      token: newToken,
-      refreshToken: newRefreshToken
+      message: 'トークンが更新されました'
+      // トークンは安全なHTTP-onlyクッキーとして送信
     });
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
