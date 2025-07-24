@@ -13,18 +13,24 @@
         }
 
         :root {
-            /* シンプル・洗練されたカラーパレット */
-            --color-primary: #1a1a1a;
-            --color-secondary: #4a4a4a;
-            --color-tertiary: #8a8a8a;
-            --color-background: #ffffff;
-            --color-surface: #fafafa;
-            --color-border: #e5e5e5;
+            /* 原宿ネオンカラーパレット */
+            --color-primary: #ffffff;
+            --color-secondary: #f0f0f0;
+            --color-background: #0a0a0a;
+            --color-surface: #1a1a1a;
+            --color-border: #333333;
             
-            /* アクセントカラー：控えめで上品 */
-            --color-accent: #2c5aa0;
-            --color-accent-light: #f0f4f8;
-            --color-accent-hover: #1e3d6f;
+            /* ネオンカラー */
+            --neon-pink: #FF1493;
+            --neon-blue: #00FFFF;
+            --neon-green: #00FF00;
+            --neon-purple: #FF00FF;
+            --neon-yellow: #FFFF00;
+            --neon-orange: #FF6B35;
+            
+            /* グラデーション */
+            --gradient-neon: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green));
+            --gradient-dark: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
             
             /* タイポグラフィ */
             --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'ヒラギノ角ゴシック Pro', 'Yu Gothic Medium', '游ゴシック Medium', YuGothic, '游ゴシック体', 'Meiryo', sans-serif;
@@ -42,12 +48,13 @@
             --spacing-2xl: 4rem;
             --spacing-3xl: 6rem;
             
-            /* シャドウ：より控えめ */
-            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            /* ネオンシャドウ */
+            --shadow-neon-pink: 0 0 20px rgba(255, 20, 147, 0.8);
+            --shadow-neon-blue: 0 0 20px rgba(0, 255, 255, 0.8);
+            --shadow-neon-green: 0 0 20px rgba(0, 255, 0, 0.8);
             
             /* トランジション */
-            --transition: all 0.2s ease-in-out;
+            --transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         body {
@@ -56,18 +63,49 @@
             color: var(--color-primary);
             background: var(--color-background);
             font-weight: var(--font-weight-regular);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景アニメーション */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 20, 147, 0.03) 2px,
+                    rgba(255, 20, 147, 0.03) 4px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 255, 255, 0.03) 2px,
+                    rgba(0, 255, 255, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
         }
 
         /* Header */
         .header {
-            background: var(--color-background);
-            border-bottom: 1px solid var(--color-border);
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--neon-pink);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
             transition: var(--transition);
+            box-shadow: 0 2px 20px rgba(255, 20, 147, 0.3);
         }
 
         .header.scrolled {
@@ -85,11 +123,32 @@
         }
 
         .logo {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: var(--font-weight-bold);
-            color: var(--color-primary);
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-decoration: none;
-            letter-spacing: -0.01em;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            animation: neonFlicker 2s infinite alternate;
+        }
+
+        @keyframes neonFlicker {
+            0%, 100% {
+                text-shadow: 
+                    0 0 5px var(--neon-pink),
+                    0 0 10px var(--neon-pink),
+                    0 0 20px var(--neon-pink);
+            }
+            50% {
+                text-shadow: 
+                    0 0 10px var(--neon-blue),
+                    0 0 20px var(--neon-blue),
+                    0 0 30px var(--neon-blue);
+            }
         }
 
         .nav-links {
@@ -100,47 +159,163 @@
 
         .nav-links a {
             text-decoration: none;
-            color: var(--color-secondary);
+            color: var(--color-primary);
             font-weight: var(--font-weight-medium);
             font-size: 0.9rem;
             transition: var(--transition);
             position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-neon);
+            transition: width 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: var(--color-accent);
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* Hero Section */
         .hero {
-            min-height: 90vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: var(--spacing-3xl) var(--spacing-lg);
             background: var(--color-background);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 動的背景 */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg at 50% 50%,
+                transparent,
+                var(--neon-pink),
+                transparent,
+                var(--neon-blue),
+                transparent,
+                var(--neon-green),
+                transparent
+            );
+            animation: rotate 20s linear infinite;
+            opacity: 0.1;
+            filter: blur(100px);
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .hero-content {
-            max-width: 720px;
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-title {
-            font-size: clamp(2.5rem, 6vw, 3.5rem);
-            font-weight: var(--font-weight-bold);
-            line-height: 1.2;
-            margin-bottom: var(--spacing-md);
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 900;
+            line-height: 0.9;
+            margin-bottom: var(--spacing-lg);
             color: var(--color-primary);
             letter-spacing: -0.02em;
+            text-transform: uppercase;
+            position: relative;
+            animation: glitch 2s infinite;
+        }
+
+        /* グリッチエフェクト */
+        .hero-title::before,
+        .hero-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-title::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--neon-pink);
+            z-index: -1;
+        }
+
+        .hero-title::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--neon-blue);
+            z-index: -2;
+        }
+
+        @keyframes glitch {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px var(--neon-pink),
+                    0 0 20px var(--neon-pink),
+                    0 0 30px var(--neon-pink);
+            }
+            50% {
+                text-shadow: 
+                    0 0 10px var(--neon-blue),
+                    0 0 20px var(--neon-blue),
+                    0 0 30px var(--neon-blue);
+            }
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% {
+                clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+                transform: translate(0);
+            }
+            20% {
+                clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+                transform: translate(-2px, 2px);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% {
+                clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+                transform: translate(0);
+            }
+            20% {
+                clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+                transform: translate(2px, -2px);
+            }
         }
 
         .hero-subtitle {
-            font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             color: var(--color-secondary);
             margin-bottom: var(--spacing-2xl);
             line-height: 1.6;
-            font-weight: var(--font-weight-regular);
+            font-weight: var(--font-weight-medium);
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .cta-buttons {
@@ -151,49 +326,165 @@
         }
 
         .btn {
-            padding: var(--spacing-sm) var(--spacing-xl);
-            border: none;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: var(--font-weight-medium);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: 2px solid transparent;
+            border-radius: 0;
+            font-size: 1rem;
+            font-weight: var(--font-weight-bold);
             text-decoration: none;
             transition: var(--transition);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 140px;
+            min-width: 180px;
             font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            overflow: hidden;
+            transform: skewX(-10deg);
+        }
+
+        .btn span {
+            transform: skewX(10deg);
+            position: relative;
+            z-index: 2;
         }
 
         .btn-primary {
-            background: var(--color-accent);
-            color: white;
-            border: 1px solid var(--color-accent);
+            background: transparent;
+            color: var(--neon-pink);
+            border: 2px solid var(--neon-pink);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 20, 147, 0.2),
+                0 0 20px rgba(255, 20, 147, 0.5);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-pink);
+            transition: left 0.3s ease;
+            z-index: 1;
         }
 
         .btn-primary:hover {
-            background: var(--color-accent-hover);
-            border-color: var(--color-accent-hover);
+            color: var(--color-background);
+            text-shadow: none;
+            animation: neon-pulse 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 0;
+        }
+
+        @keyframes neon-pulse {
+            0%, 100% {
+                box-shadow: 
+                    inset 0 0 20px rgba(255, 20, 147, 0.2),
+                    0 0 30px rgba(255, 20, 147, 0.8);
+            }
+            50% {
+                box-shadow: 
+                    inset 0 0 30px rgba(255, 20, 147, 0.4),
+                    0 0 40px rgba(255, 20, 147, 1);
+            }
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--color-accent);
-            border: 1px solid var(--color-accent);
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 
+                inset 0 0 20px rgba(0, 255, 255, 0.2),
+                0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-blue);
+            transition: left 0.3s ease;
+            z-index: 1;
         }
 
         .btn-secondary:hover {
-            background: var(--color-accent-light);
+            color: var(--color-background);
+            animation: neon-pulse-blue 0.5s ease;
+        }
+
+        .btn-secondary:hover::before {
+            left: 0;
+        }
+
+        @keyframes neon-pulse-blue {
+            0%, 100% {
+                box-shadow: 
+                    inset 0 0 20px rgba(0, 255, 255, 0.2),
+                    0 0 30px rgba(0, 255, 255, 0.8);
+            }
+            50% {
+                box-shadow: 
+                    inset 0 0 30px rgba(0, 255, 255, 0.4),
+                    0 0 40px rgba(0, 255, 255, 1);
+            }
         }
 
         /* Main Sections */
         .section {
             padding: var(--spacing-3xl) var(--spacing-lg);
+            position: relative;
         }
 
         .section-alt {
             background: var(--color-surface);
+        }
+
+        /* パララックス背景 */
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .parallax-bg::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: 
+                radial-gradient(circle at 20% 50%, var(--neon-pink) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--neon-blue) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, var(--neon-green) 0%, transparent 50%);
+            opacity: 0.05;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
         }
 
         .container {
@@ -203,11 +494,28 @@
 
         .section-title {
             text-align: center;
-            font-size: clamp(1.75rem, 4vw, 2.25rem);
-            font-weight: var(--font-weight-bold);
-            margin-bottom: var(--spacing-sm);
-            color: var(--color-primary);
-            letter-spacing: -0.01em;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-neon);
+            box-shadow: 0 0 20px var(--neon-pink);
         }
 
         .section-subtitle {
@@ -227,33 +535,90 @@
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: var(--spacing-xl);
             margin-bottom: var(--spacing-2xl);
+            margin-top: var(--spacing-2xl);
         }
 
         .category-card {
-            background: var(--color-background);
-            border-radius: 12px;
+            background: var(--color-surface);
+            border-radius: 0;
             padding: var(--spacing-2xl) var(--spacing-lg);
             text-align: center;
-            border: 1px solid var(--color-border);
+            border: 2px solid transparent;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            transform: skewY(-2deg);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, var(--neon-pink) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            opacity: 0.1;
         }
 
         .category-card:hover {
-            border-color: var(--color-accent);
-            box-shadow: var(--shadow-medium);
+            border-color: var(--neon-pink);
+            box-shadow: 
+                0 0 30px var(--neon-pink),
+                inset 0 0 30px rgba(255, 20, 147, 0.1);
+            transform: skewY(-2deg) translateY(-5px);
+        }
+
+        .category-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .category-card:nth-child(2) {
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%);
+        }
+
+        .category-card:nth-child(2):hover {
+            border-color: var(--neon-blue);
+            box-shadow: 
+                0 0 30px var(--neon-blue),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .category-card:nth-child(2)::before {
+            background: linear-gradient(45deg, transparent 30%, var(--neon-blue) 50%, transparent 70%);
+        }
+
+        .category-card > * {
+            transform: skewY(2deg);
         }
 
         .category-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: var(--spacing-md);
             display: block;
+            filter: drop-shadow(0 0 20px currentColor);
+            animation: icon-float 3s ease-in-out infinite;
+        }
+
+        @keyframes icon-float {
+            0%, 100% {
+                transform: translateY(0) skewY(2deg);
+            }
+            50% {
+                transform: translateY(-10px) skewY(2deg);
+            }
         }
 
         .category-title {
-            font-size: 1.25rem;
-            font-weight: var(--font-weight-semibold);
+            font-size: 1.75rem;
+            font-weight: 900;
             margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
         .category-description {
@@ -451,20 +816,21 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1 class="hero-title">CREATE. CONNECT. INSPIRE.</h1>
+            <h1 class="hero-title" data-text="CREATE. CONNECT. INSPIRE.">CREATE. CONNECT. INSPIRE.</h1>
             <p class="hero-subtitle">
                 原宿から発信するデザインとファッションの最前線。<br>
                 多様なクリエイターが出会い、新たな価値を生み出すハブ。
             </p>
             <div class="cta-buttons">
-                <a href="#categories" class="btn btn-primary">参加企業・ブランドを見る</a>
-                <a href="#features" class="btn btn-secondary">機能を確認する</a>
+                <a href="#categories" class="btn btn-primary"><span>参加企業・ブランドを見る</span></a>
+                <a href="#features" class="btn btn-secondary"><span>機能を確認する</span></a>
             </div>
         </div>
     </section>
 
     <!-- Categories Section -->
     <section class="section" id="categories">
+        <div class="parallax-bg"></div>
         <div class="container">
             <h2 class="section-title">クリエイティブカテゴリ</h2>
             <p class="section-subtitle">
@@ -478,7 +844,7 @@
                     <p class="category-description">
                         グラフィック、Web、UI/UX、ブランディング、パッケージデザインなど、原宿エリアの最先端デザイン会社が集結。
                     </p>
-                    <button class="btn btn-primary" onclick="exploreDesignCompanies()">参加企業を見る</button>
+                    <button class="btn btn-primary" onclick="exploreDesignCompanies()"><span>参加企業を見る</span></button>
                 </div>
 
                 <div class="category-card">
@@ -487,7 +853,7 @@
                     <p class="category-description">
                         ストリート、エレガント、アバンギャルドまで。原宿カルチャーを体現する多様なアパレルブランド。
                     </p>
-                    <button class="btn btn-primary" onclick="exploreApparelBrands()">参加ブランドを見る</button>
+                    <button class="btn btn-primary" onclick="exploreApparelBrands()"><span>参加ブランドを見る</span></button>
                 </div>
             </div>
         </div>
@@ -505,19 +871,19 @@
                 <div class="api-card">
                     <h4>📅 クリエイティブイベント</h4>
                     <p>ネットワーキング、ワークショップ、展示会、ファッションショーなど、原宿エリアのイベント情報をお届けします。</p>
-                    <button class="btn btn-secondary" onclick="loadUpcomingEvents()">近日開催イベント</button>
+                    <button class="btn btn-secondary" onclick="loadUpcomingEvents()"><span>近日開催イベント</span></button>
                 </div>
 
                 <div class="api-card">
                     <h4>🤝 コラボレーション事例</h4>
                     <p>デザイン会社×アパレルブランドの成功事例。新たなプロジェクトのインスピレーション源としてご活用ください。</p>
-                    <button class="btn btn-secondary" onclick="loadFeaturedCollaborations()">注目プロジェクト</button>
+                    <button class="btn btn-secondary" onclick="loadFeaturedCollaborations()"><span>注目プロジェクト</span></button>
                 </div>
 
                 <div class="api-card">
                     <h4>🎯 マッチング掲示板</h4>
                     <p>パートナー募集、スキル交換、コラボレーション提案など、クリエイター同士の出会いの場を提供します。</p>
-                    <button class="btn btn-secondary" onclick="loadMatchingRequests()">募集案件を見る</button>
+                    <button class="btn btn-secondary" onclick="loadMatchingRequests()"><span>募集案件を見る</span></button>
                 </div>
             </div>
         </div>
