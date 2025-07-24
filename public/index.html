@@ -673,54 +673,201 @@
             font-size: 0.95rem;
         }
 
-        /* API Endpoints Section */
-        .endpoints-grid {
+        /* Success Stories Section */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-md);
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin: var(--spacing-3xl) 0;
         }
 
-        .endpoint-card {
-            background: var(--color-background);
-            border-radius: 8px;
-            padding: var(--spacing-md);
-            border: 1px solid var(--color-border);
-        }
-
-        .api-method {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: var(--font-weight-semibold);
-            margin-bottom: var(--spacing-xs);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .api-method.get {
-            background: var(--color-accent-light);
-            color: var(--color-accent);
-        }
-
-        .api-method.post {
-            background: #f0f4f8;
-            color: #4a5568;
-        }
-
-        .api-endpoint {
-            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: var(--color-primary);
-            margin-bottom: var(--spacing-xs);
+        .stat-card {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
             background: var(--color-surface);
-            padding: var(--spacing-xs);
-            border-radius: 4px;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
         }
 
-        .api-description {
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-neon);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-number {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-sm);
+            text-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
+        }
+
+        .stat-label {
             font-size: 0.9rem;
             color: var(--color-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+        }
+
+        /* Success Cards */
+        .success-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .success-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .success-card:hover {
+            border-color: var(--neon-pink);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 20, 147, 0.3);
+        }
+
+        .success-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.1;
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+
+        .success-content {
+            padding: var(--spacing-lg);
+        }
+
+        .success-content h4 {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .success-partners {
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+            margin-bottom: var(--spacing-sm);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .success-result {
+            font-size: 0.95rem;
+            color: var(--color-secondary);
+        }
+
+        /* Partners Section */
+        .partners-section {
+            margin-top: var(--spacing-3xl);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .partners-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-xl);
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .partners-slider {
+            position: relative;
+            overflow: hidden;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .partners-track {
+            display: flex;
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .partner-logo {
+            flex: 0 0 200px;
+            height: 80px;
+            margin: 0 var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            filter: grayscale(100%);
+            opacity: 0.5;
+            transition: var(--transition);
+        }
+
+        .partner-logo:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .logo-placeholder {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: 2px solid var(--color-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .partner-logo:hover .logo-placeholder {
+            color: var(--neon-pink);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink);
         }
 
         /* Footer */
@@ -901,49 +1048,114 @@
         </div>
     </section>
 
-    <!-- API Information -->
-    <section class="section" id="api">
+    <!-- Success Stories -->
+    <section class="section" id="success">
+        <div class="parallax-bg"></div>
         <div class="container">
-            <h2 class="section-title">API エンドポイント</h2>
+            <h2 class="section-title">SUCCESS STORIES</h2>
             <p class="section-subtitle">
-                開発者向け：原宿クリエイティブコミュニティの豊富なデータにアクセス
+                原宿から生まれたコラボレーションの成果
             </p>
 
-            <div class="endpoints-grid">
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/design-companies/harajuku</div>
-                    <p class="api-description">原宿エリアのデザイン会社一覧</p>
+            <!-- 統計データ -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" data-count="150">ローディング...</div>
+                    <div class="stat-label">ACTIVE CREATORS</div>
                 </div>
-
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/apparel-brands/harajuku</div>
-                    <p class="api-description">原宿エリアのアパレルブランド一覧</p>
+                <div class="stat-card">
+                    <div class="stat-number" data-count="50">ローディング...</div>
+                    <div class="stat-label">SUCCESSFUL COLLABS</div>
                 </div>
-
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/events/upcoming</div>
-                    <p class="api-description">近日開催予定のクリエイティブイベント</p>
+                <div class="stat-card">
+                    <div class="stat-number" data-count="1000">ローディング...</div>
+                    <div class="stat-label">MILLION YEN CREATED</div>
                 </div>
+            </div>
 
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/collaborations/featured</div>
-                    <p class="api-description">注目のコラボレーションプロジェクト</p>
+            <!-- 成功事例カード -->
+            <div class="success-grid">
+                <div class="success-card">
+                    <div class="success-image">
+                        <div class="image-placeholder">
+                            <span class="placeholder-icon">🎨</span>
+                        </div>
+                    </div>
+                    <div class="success-content">
+                        <h4>NEON TOKYO COLLECTION</h4>
+                        <p class="success-partners">Design Studio A × Fashion Brand B</p>
+                        <p class="success-result">売上150%増加、SNSで話題に</p>
+                    </div>
                 </div>
-
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/matching/high-priority</div>
-                    <p class="api-description">高優先度のマッチングリクエスト</p>
+                <div class="success-card">
+                    <div class="success-image">
+                        <div class="image-placeholder">
+                            <span class="placeholder-icon">👗</span>
+                        </div>
+                    </div>
+                    <div class="success-content">
+                        <h4>HARAJUKU STREET WEAR</h4>
+                        <p class="success-partners">Creative Agency C × Apparel Brand D</p>
+                        <p class="success-result">国際的なファッション賞受賞</p>
+                    </div>
                 </div>
+                <div class="success-card">
+                    <div class="success-image">
+                        <div class="image-placeholder">
+                            <span class="placeholder-icon">✨</span>
+                        </div>
+                    </div>
+                    <div class="success-content">
+                        <h4>POP CULTURE FUSION</h4>
+                        <p class="success-partners">Graphic Designer E × Street Brand F</p>
+                        <p class="success-result">新たなブランドライン誕生</p>
+                    </div>
+                </div>
+            </div>
 
-                <div class="endpoint-card">
-                    <span class="api-method post">POST</span>
-                    <div class="api-endpoint">/api/design-companies</div>
-                    <p class="api-description">新規デザイン会社の登録</p>
+            <!-- パートナーロゴ -->
+            <div class="partners-section">
+                <h3 class="partners-title">TRUSTED PARTNERS</h3>
+                <div class="partners-slider">
+                    <div class="partners-track">
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">BRAND A</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">STUDIO B</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">AGENCY C</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">BRAND D</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">DESIGN E</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">CREATIVE F</span>
+                        </div>
+                        <!-- ループ用に同じロゴを繰り返し -->
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">BRAND A</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">STUDIO B</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">AGENCY C</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">BRAND D</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">DESIGN E</span>
+                        </div>
+                        <div class="partner-logo">
+                            <span class="logo-placeholder">CREATIVE F</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -987,6 +1199,58 @@
                     });
                 }
             });
+        });
+
+        // カウンターアニメーション
+        function animateCounter(element, target) {
+            const duration = 2000;
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current) + (element.dataset.suffix || '');
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target + (element.dataset.suffix || '');
+                }
+            };
+
+            updateCounter();
+        }
+
+        // Intersection Observer for stats animation
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px'
+        };
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                    entry.target.classList.add('animated');
+                    const statNumbers = entry.target.querySelectorAll('.stat-number');
+                    statNumbers.forEach(stat => {
+                        const target = parseInt(stat.dataset.count);
+                        if (stat.dataset.count === '1000') {
+                            stat.dataset.suffix = '万円+';
+                        } else {
+                            stat.dataset.suffix = '+';
+                        }
+                        animateCounter(stat, target);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        // 統計カードを監視
+        document.addEventListener('DOMContentLoaded', () => {
+            const statsGrid = document.querySelector('.stats-grid');
+            if (statsGrid) {
+                statsObserver.observe(statsGrid);
+            }
         });
 
         // API interaction functions
