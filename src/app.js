@@ -5,17 +5,27 @@ const helmet = require('helmet');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const { syncDatabase } = require('./models');
+const { securityHeaders, sanitizeInput } = require('./middleware/security');
+const { generalRateLimit } = require('./middleware/rateLimit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// セキュリティミドルウェア
 app.use(helmet());
+app.use(securityHeaders);
+app.use(generalRateLimit);
+
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// 入力サニタイゼーション（APIルートのみ）
+app.use('/api', sanitizeInput);
 
 // 静的ファイル配信設定
 app.use(express.static('public'));
