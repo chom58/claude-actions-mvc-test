@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>原宿クリエイティブコミュニティ | CREATE. CONNECT. INSPIRE.</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* CSS Reset & Base Styles */
         * {
@@ -13,25 +19,36 @@
         }
 
         :root {
-            /* シンプル・洗練されたカラーパレット */
-            --color-primary: #1a1a1a;
-            --color-secondary: #4a4a4a;
-            --color-tertiary: #8a8a8a;
-            --color-background: #ffffff;
-            --color-surface: #fafafa;
-            --color-border: #e5e5e5;
+            /* 原宿ネオンカラーパレット */
+            --color-primary: #ffffff;
+            --color-secondary: #f0f0f0;
+            --color-background: #0a0a0a;
+            --color-surface: #1a1a1a;
+            --color-border: #333333;
             
-            /* アクセントカラー：控えめで上品 */
-            --color-accent: #2c5aa0;
-            --color-accent-light: #f0f4f8;
-            --color-accent-hover: #1e3d6f;
+            /* ネオンカラー */
+            --neon-pink: #FF1493;
+            --neon-blue: #00FFFF;
+            --neon-green: #00FF00;
+            --neon-purple: #FF00FF;
+            --neon-yellow: #FFFF00;
+            --neon-orange: #FF6B35;
+            
+            /* グラデーション */
+            --gradient-neon: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green));
+            --gradient-dark: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
             
             /* タイポグラフィ */
-            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'ヒラギノ角ゴシック Pro', 'Yu Gothic Medium', '游ゴシック Medium', YuGothic, '游ゴシック体', 'Meiryo', sans-serif;
+            --font-main: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-accent: 'Montserrat', sans-serif;
+            --font-japanese: 'Noto Sans JP', sans-serif;
+            --font-weight-light: 300;
             --font-weight-regular: 400;
             --font-weight-medium: 500;
             --font-weight-semibold: 600;
             --font-weight-bold: 700;
+            --font-weight-black: 900;
             
             /* スペーシング */
             --spacing-xs: 0.5rem;
@@ -42,12 +59,13 @@
             --spacing-2xl: 4rem;
             --spacing-3xl: 6rem;
             
-            /* シャドウ：より控えめ */
-            --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
-            --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.08);
+            /* ネオンシャドウ */
+            --shadow-neon-pink: 0 0 20px rgba(255, 20, 147, 0.8);
+            --shadow-neon-blue: 0 0 20px rgba(0, 255, 255, 0.8);
+            --shadow-neon-green: 0 0 20px rgba(0, 255, 0, 0.8);
             
             /* トランジション */
-            --transition: all 0.2s ease-in-out;
+            --transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         body {
@@ -56,18 +74,49 @@
             color: var(--color-primary);
             background: var(--color-background);
             font-weight: var(--font-weight-regular);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景アニメーション */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 20, 147, 0.03) 2px,
+                    rgba(255, 20, 147, 0.03) 4px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 255, 255, 0.03) 2px,
+                    rgba(0, 255, 255, 0.03) 4px
+                );
+            pointer-events: none;
+            z-index: 1;
         }
 
         /* Header */
         .header {
-            background: var(--color-background);
-            border-bottom: 1px solid var(--color-border);
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--neon-pink);
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
             transition: var(--transition);
+            box-shadow: 0 2px 20px rgba(255, 20, 147, 0.3);
         }
 
         .header.scrolled {
@@ -85,11 +134,51 @@
         }
 
         .logo {
-            font-size: 1.25rem;
-            font-weight: var(--font-weight-bold);
-            color: var(--color-primary);
             text-decoration: none;
-            letter-spacing: -0.01em;
+            display: inline-block;
+            position: relative;
+        }
+
+        .logo-svg {
+            height: 40px;
+            width: auto;
+            transition: var(--transition);
+        }
+
+        .logo:hover .logo-svg {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+
+        .logo-dot {
+            filter: drop-shadow(0 0 5px currentColor);
+        }
+
+        @keyframes neonFlicker {
+            0%, 100% {
+                text-shadow: 
+                    0 0 5px var(--neon-pink),
+                    0 0 10px var(--neon-pink),
+                    0 0 20px var(--neon-pink);
+            }
+            50% {
+                text-shadow: 
+                    0 0 10px var(--neon-blue),
+                    0 0 20px var(--neon-blue),
+                    0 0 30px var(--neon-blue);
+            }
         }
 
         .nav-links {
@@ -99,48 +188,182 @@
         }
 
         .nav-links a {
+            font-family: var(--font-accent);
             text-decoration: none;
-            color: var(--color-secondary);
-            font-weight: var(--font-weight-medium);
-            font-size: 0.9rem;
+            color: var(--color-primary);
+            font-weight: var(--font-weight-semibold);
+            font-size: 0.85rem;
             transition: var(--transition);
             position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-neon);
+            transition: width 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: var(--color-accent);
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
         /* Hero Section */
         .hero {
-            min-height: 90vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: var(--spacing-3xl) var(--spacing-lg);
             background: var(--color-background);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 動的背景 */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg at 50% 50%,
+                transparent,
+                var(--neon-pink),
+                transparent,
+                var(--neon-blue),
+                transparent,
+                var(--neon-green),
+                transparent
+            );
+            animation: rotate 20s linear infinite;
+            opacity: 0.1;
+            filter: blur(100px);
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .hero-content {
-            max-width: 720px;
+            max-width: 900px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-title {
-            font-size: clamp(2.5rem, 6vw, 3.5rem);
-            font-weight: var(--font-weight-bold);
-            line-height: 1.2;
-            margin-bottom: var(--spacing-md);
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 12vw, 9rem);
+            font-weight: 400;
+            line-height: 0.85;
+            margin-bottom: var(--spacing-lg);
             color: var(--color-primary);
-            letter-spacing: -0.02em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            position: relative;
+            animation: glitch 2s infinite;
+            text-shadow: 
+                3px 3px 0 var(--neon-pink),
+                -3px -3px 0 var(--neon-blue),
+                3px -3px 0 var(--neon-green),
+                -3px 3px 0 var(--neon-purple);
+        }
+
+        /* グリッチエフェクト */
+        .hero-title::before,
+        .hero-title::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-title::before {
+            animation: glitch-1 0.5s infinite;
+            color: var(--neon-pink);
+            z-index: -1;
+        }
+
+        .hero-title::after {
+            animation: glitch-2 0.5s infinite;
+            color: var(--neon-blue);
+            z-index: -2;
+        }
+
+        @keyframes glitch {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px var(--neon-pink),
+                    0 0 20px var(--neon-pink),
+                    0 0 30px var(--neon-pink);
+            }
+            50% {
+                text-shadow: 
+                    0 0 10px var(--neon-blue),
+                    0 0 20px var(--neon-blue),
+                    0 0 30px var(--neon-blue);
+            }
+        }
+
+        @keyframes glitch-1 {
+            0%, 100% {
+                clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+                transform: translate(0);
+            }
+            20% {
+                clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+                transform: translate(-2px, 2px);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0%, 100% {
+                clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+                transform: translate(0);
+            }
+            20% {
+                clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+                transform: translate(2px, -2px);
+            }
         }
 
         .hero-subtitle {
-            font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
             color: var(--color-secondary);
-            margin-bottom: var(--spacing-2xl);
+            margin-bottom: var(--spacing-sm);
             line-height: 1.6;
+            font-weight: var(--font-weight-medium);
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .hero-host {
+            font-size: 0.9rem;
+            color: var(--neon-pink);
+            margin-bottom: var(--spacing-2xl);
             font-weight: var(--font-weight-regular);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.8;
+            text-shadow: 0 0 10px var(--neon-pink);
         }
 
         .cta-buttons {
@@ -151,49 +374,165 @@
         }
 
         .btn {
-            padding: var(--spacing-sm) var(--spacing-xl);
-            border: none;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            font-weight: var(--font-weight-medium);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: 2px solid transparent;
+            border-radius: 0;
+            font-size: 1rem;
+            font-weight: var(--font-weight-bold);
             text-decoration: none;
             transition: var(--transition);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 140px;
+            min-width: 180px;
             font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            overflow: hidden;
+            transform: skewX(-10deg);
+        }
+
+        .btn span {
+            transform: skewX(10deg);
+            position: relative;
+            z-index: 2;
         }
 
         .btn-primary {
-            background: var(--color-accent);
-            color: white;
-            border: 1px solid var(--color-accent);
+            background: transparent;
+            color: var(--neon-pink);
+            border: 2px solid var(--neon-pink);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 20, 147, 0.2),
+                0 0 20px rgba(255, 20, 147, 0.5);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-pink);
+            transition: left 0.3s ease;
+            z-index: 1;
         }
 
         .btn-primary:hover {
-            background: var(--color-accent-hover);
-            border-color: var(--color-accent-hover);
+            color: var(--color-background);
+            text-shadow: none;
+            animation: neon-pulse 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 0;
+        }
+
+        @keyframes neon-pulse {
+            0%, 100% {
+                box-shadow: 
+                    inset 0 0 20px rgba(255, 20, 147, 0.2),
+                    0 0 30px rgba(255, 20, 147, 0.8);
+            }
+            50% {
+                box-shadow: 
+                    inset 0 0 30px rgba(255, 20, 147, 0.4),
+                    0 0 40px rgba(255, 20, 147, 1);
+            }
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--color-accent);
-            border: 1px solid var(--color-accent);
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 
+                inset 0 0 20px rgba(0, 255, 255, 0.2),
+                0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-blue);
+            transition: left 0.3s ease;
+            z-index: 1;
         }
 
         .btn-secondary:hover {
-            background: var(--color-accent-light);
+            color: var(--color-background);
+            animation: neon-pulse-blue 0.5s ease;
+        }
+
+        .btn-secondary:hover::before {
+            left: 0;
+        }
+
+        @keyframes neon-pulse-blue {
+            0%, 100% {
+                box-shadow: 
+                    inset 0 0 20px rgba(0, 255, 255, 0.2),
+                    0 0 30px rgba(0, 255, 255, 0.8);
+            }
+            50% {
+                box-shadow: 
+                    inset 0 0 30px rgba(0, 255, 255, 0.4),
+                    0 0 40px rgba(0, 255, 255, 1);
+            }
         }
 
         /* Main Sections */
         .section {
             padding: var(--spacing-3xl) var(--spacing-lg);
+            position: relative;
         }
 
         .section-alt {
             background: var(--color-surface);
+        }
+
+        /* パララックス背景 */
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .parallax-bg::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: 
+                radial-gradient(circle at 20% 50%, var(--neon-pink) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--neon-blue) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, var(--neon-green) 0%, transparent 50%);
+            opacity: 0.05;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
         }
 
         .container {
@@ -202,12 +541,31 @@
         }
 
         .section-title {
+            font-family: var(--font-display);
             text-align: center;
-            font-size: clamp(1.75rem, 4vw, 2.25rem);
-            font-weight: var(--font-weight-bold);
-            margin-bottom: var(--spacing-sm);
-            color: var(--color-primary);
-            letter-spacing: -0.01em;
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-weight: 400;
+            margin-bottom: var(--spacing-md);
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            position: relative;
+            text-shadow: 0 0 30px rgba(255, 20, 147, 0.3);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-neon);
+            box-shadow: 0 0 20px var(--neon-pink);
         }
 
         .section-subtitle {
@@ -227,33 +585,104 @@
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: var(--spacing-xl);
             margin-bottom: var(--spacing-2xl);
+            margin-top: var(--spacing-2xl);
         }
 
         .category-card {
-            background: var(--color-background);
-            border-radius: 12px;
+            background: var(--color-surface);
+            border-radius: 0;
             padding: var(--spacing-2xl) var(--spacing-lg);
             text-align: center;
-            border: 1px solid var(--color-border);
+            border: 2px solid transparent;
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            transform: skewY(-2deg);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 30%, var(--neon-pink) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            opacity: 0.1;
         }
 
         .category-card:hover {
-            border-color: var(--color-accent);
-            box-shadow: var(--shadow-medium);
+            border-color: var(--neon-pink);
+            box-shadow: 
+                0 0 30px var(--neon-pink),
+                inset 0 0 30px rgba(255, 20, 147, 0.1);
+            transform: skewY(-2deg) translateY(-5px);
+        }
+
+        .category-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .category-card:nth-child(2) {
+            clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%);
+        }
+
+        .category-card:nth-child(2):hover {
+            border-color: var(--neon-blue);
+            box-shadow: 
+                0 0 30px var(--neon-blue),
+                inset 0 0 30px rgba(0, 255, 255, 0.1);
+        }
+
+        .category-card:nth-child(2)::before {
+            background: linear-gradient(45deg, transparent 30%, var(--neon-blue) 50%, transparent 70%);
+        }
+
+        .category-card > * {
+            transform: skewY(2deg);
         }
 
         .category-icon {
-            font-size: 2.5rem;
+            font-size: 3.5rem;
             margin-bottom: var(--spacing-md);
             display: block;
+            animation: icon-float 3s ease-in-out infinite;
+        }
+
+        .category-icon i {
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px var(--neon-pink));
+            transition: var(--transition);
+        }
+
+        .category-card:hover .category-icon i {
+            filter: drop-shadow(0 0 30px var(--neon-pink)) drop-shadow(0 0 40px var(--neon-blue));
+            transform: scale(1.1);
+        }
+
+        @keyframes icon-float {
+            0%, 100% {
+                transform: translateY(0) skewY(2deg);
+            }
+            50% {
+                transform: translateY(-10px) skewY(2deg);
+            }
         }
 
         .category-title {
-            font-size: 1.25rem;
-            font-weight: var(--font-weight-semibold);
+            font-family: var(--font-accent);
+            font-size: 1.75rem;
+            font-weight: var(--font-weight-black);
             margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
         .category-description {
@@ -284,10 +713,20 @@
         }
 
         .api-card h4 {
+            font-family: var(--font-accent);
             font-size: 1.1rem;
-            font-weight: var(--font-weight-semibold);
+            font-weight: var(--font-weight-bold);
             margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .api-card h4 i {
+            color: var(--neon-pink);
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+            filter: drop-shadow(0 0 10px var(--neon-pink));
         }
 
         .api-card p {
@@ -297,54 +736,286 @@
             font-size: 0.95rem;
         }
 
-        /* API Endpoints Section */
-        .endpoints-grid {
+        /* Success Stories Section */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-md);
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin: var(--spacing-3xl) 0;
         }
 
-        .endpoint-card {
-            background: var(--color-background);
-            border-radius: 8px;
-            padding: var(--spacing-md);
-            border: 1px solid var(--color-border);
+        .stat-card {
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            background: var(--color-surface);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
         }
 
-        .api-method {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: var(--font-weight-semibold);
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-neon);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-icon {
+            font-size: 4rem;
+            margin-bottom: var(--spacing-sm);
+            position: relative;
+        }
+
+        .stat-icon i {
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 25px var(--neon-pink));
+            animation: neon-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes neon-pulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 25px var(--neon-pink));
+            }
+            50% {
+                filter: drop-shadow(0 0 35px var(--neon-pink)) drop-shadow(0 0 45px var(--neon-blue));
+            }
+        }
+
+        .stat-text {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 900;
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: var(--spacing-xs);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.05em;
         }
 
-        .api-method.get {
-            background: var(--color-accent-light);
-            color: var(--color-accent);
-        }
-
-        .api-method.post {
-            background: #f0f4f8;
-            color: #4a5568;
-        }
-
-        .api-endpoint {
-            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: var(--color-primary);
-            margin-bottom: var(--spacing-xs);
-            background: var(--color-surface);
-            padding: var(--spacing-xs);
-            border-radius: 4px;
-        }
-
-        .api-description {
+        .stat-label {
             font-size: 0.9rem;
             color: var(--color-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+        }
+
+        /* Success Cards */
+        .vision-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .vision-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .vision-card:hover {
+            border-color: var(--neon-pink);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 20, 147, 0.3);
+        }
+
+        .vision-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--neon-pink) 0%, var(--neon-blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.1;
+        }
+
+        .placeholder-icon {
+            font-size: 5rem;
+            opacity: 0.8;
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px var(--neon-blue));
+        }
+
+        .vision-content {
+            padding: var(--spacing-lg);
+        }
+
+        .vision-content h4 {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .vision-concept {
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+            margin-bottom: var(--spacing-sm);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .vision-description {
+            font-size: 0.95rem;
+            color: var(--color-secondary);
+        }
+
+        /* Founding Members Section */
+        .founding-section {
+            margin-top: var(--spacing-3xl);
+            text-align: center;
+        }
+
+        .founding-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 400;
+            margin-bottom: var(--spacing-sm);
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
+        }
+
+        .founding-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-secondary);
+            margin-bottom: var(--spacing-2xl);
+            opacity: 0.8;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-3xl);
+        }
+
+        .benefit-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            padding: var(--spacing-xl);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefit-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient-neon);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .benefit-card:hover {
+            border-color: transparent;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 20, 147, 0.3);
+        }
+
+        .benefit-card:hover::before {
+            opacity: 1;
+        }
+
+        .benefit-icon {
+            font-size: 3.5rem;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            display: inline-block;
+        }
+
+        .benefit-icon i {
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px var(--neon-blue));
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover .benefit-icon i {
+            transform: rotateY(360deg);
+            filter: drop-shadow(0 0 30px var(--neon-pink)) drop-shadow(0 0 40px var(--neon-blue));
+        }
+
+        .benefit-card h4 {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .benefit-card p {
+            color: var(--color-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .cta-founding {
+            margin-top: var(--spacing-2xl);
+        }
+
+        .limited-text {
+            font-size: 0.9rem;
+            color: var(--neon-pink);
+            margin-bottom: var(--spacing-md);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 20px var(--neon-pink);
+            }
+        }
+
+        .btn-large {
+            font-size: 1.1rem;
+            padding: var(--spacing-md) var(--spacing-2xl);
+            min-width: 300px;
         }
 
         /* Footer */
@@ -383,6 +1054,10 @@
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
+            }
+            
+            .logo-svg {
+                height: 35px;
             }
 
             .hero {
@@ -438,7 +1113,50 @@
     <!-- Header -->
     <header class="header">
         <nav class="nav-container">
-            <a href="#" class="logo">原宿クリエイティブ</a>
+            <a href="#" class="logo">
+                <svg class="logo-svg" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF1493;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#00FFFF;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00FF00;stop-opacity:1" />
+                        </linearGradient>
+                        <filter id="neonBlur">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    
+                    <!-- H icon -->
+                    <g class="logo-icon">
+                        <path d="M 10 10 L 10 40 M 10 25 L 25 25 M 25 10 L 25 40" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="3" 
+                              fill="none" 
+                              stroke-linecap="round"
+                              filter="url(#neonBlur)"/>
+                        
+                        <!-- Decorative elements -->
+                        <circle cx="10" cy="10" r="2" fill="#FF1493" class="logo-dot">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                        <circle cx="25" cy="40" r="2" fill="#00FFFF" class="logo-dot">
+                            <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+                        </circle>
+                    </g>
+                    
+                    <!-- Text -->
+                    <text x="40" y="30" font-family="Bebas Neue, sans-serif" font-size="20" fill="url(#logoGradient)" filter="url(#neonBlur)">
+                        HARAJUKU
+                    </text>
+                    <text x="40" y="45" font-family="Montserrat, sans-serif" font-size="10" font-weight="600" fill="#ffffff" opacity="0.8">
+                        CREATIVE COMMUNITY
+                    </text>
+                </svg>
+            </a>
             <ul class="nav-links">
                 <li><a href="#home">ホーム</a></li>
                 <li><a href="#categories">カテゴリ</a></li>
@@ -451,43 +1169,45 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1 class="hero-title">CREATE. CONNECT. INSPIRE.</h1>
+            <h1 class="hero-title" data-text="CREATE. CONNECT. INSPIRE.">CREATE. CONNECT. INSPIRE.</h1>
             <p class="hero-subtitle">
                 原宿から発信するデザインとファッションの最前線。<br>
                 多様なクリエイターが出会い、新たな価値を生み出すハブ。
             </p>
+            <p class="hero-host">hosted by Value Create</p>
             <div class="cta-buttons">
-                <a href="#categories" class="btn btn-primary">参加企業・ブランドを見る</a>
-                <a href="#features" class="btn btn-secondary">機能を確認する</a>
+                <a href="#categories" class="btn btn-primary"><span>参加企業・ブランドを見る</span></a>
+                <a href="#features" class="btn btn-secondary"><span>機能を確認する</span></a>
             </div>
         </div>
     </section>
 
     <!-- Categories Section -->
     <section class="section" id="categories">
+        <div class="parallax-bg"></div>
         <div class="container">
-            <h2 class="section-title">クリエイティブカテゴリ</h2>
+            <h2 class="section-title">CREATIVE CATEGORIES</h2>
             <p class="section-subtitle">
                 原宿から発信するデザインとファッションの融合プラットフォーム
             </p>
 
             <div class="category-grid">
                 <div class="category-card">
-                    <div class="category-icon">🎨</div>
+                    <div class="category-icon"><i class="fas fa-paint-brush"></i></div>
                     <h3 class="category-title">デザイン会社</h3>
                     <p class="category-description">
                         グラフィック、Web、UI/UX、ブランディング、パッケージデザインなど、原宿エリアの最先端デザイン会社が集結。
                     </p>
-                    <button class="btn btn-primary" onclick="exploreDesignCompanies()">参加企業を見る</button>
+                    <button class="btn btn-primary" onclick="exploreDesignCompanies()"><span>参加企業を見る</span></button>
                 </div>
 
                 <div class="category-card">
-                    <div class="category-icon">👗</div>
+                    <div class="category-icon"><i class="fas fa-tshirt"></i></div>
                     <h3 class="category-title">アパレルブランド</h3>
                     <p class="category-description">
                         ストリート、エレガント、アバンギャルドまで。原宿カルチャーを体現する多様なアパレルブランド。
                     </p>
-                    <button class="btn btn-primary" onclick="exploreApparelBrands()">参加ブランドを見る</button>
+                    <button class="btn btn-primary" onclick="exploreApparelBrands()"><span>参加ブランドを見る</span></button>
                 </div>
             </div>
         </div>
@@ -496,76 +1216,127 @@
     <!-- Features Section -->
     <section class="section section-alt" id="features">
         <div class="container">
-            <h2 class="section-title">コミュニティ機能</h2>
+            <h2 class="section-title">COMMUNITY FEATURES</h2>
             <p class="section-subtitle">
                 クリエイター同士の出会いとコラボレーションを促進する機能
             </p>
 
             <div class="api-grid">
                 <div class="api-card">
-                    <h4>📅 クリエイティブイベント</h4>
+                    <h4><i class="fas fa-calendar-alt"></i> クリエイティブイベント</h4>
                     <p>ネットワーキング、ワークショップ、展示会、ファッションショーなど、原宿エリアのイベント情報をお届けします。</p>
-                    <button class="btn btn-secondary" onclick="loadUpcomingEvents()">近日開催イベント</button>
+                    <button class="btn btn-secondary" onclick="loadUpcomingEvents()"><span>近日開催イベント</span></button>
                 </div>
 
                 <div class="api-card">
-                    <h4>🤝 コラボレーション事例</h4>
+                    <h4><i class="fas fa-handshake"></i> コラボレーション事例</h4>
                     <p>デザイン会社×アパレルブランドの成功事例。新たなプロジェクトのインスピレーション源としてご活用ください。</p>
-                    <button class="btn btn-secondary" onclick="loadFeaturedCollaborations()">注目プロジェクト</button>
+                    <button class="btn btn-secondary" onclick="loadFeaturedCollaborations()"><span>注目プロジェクト</span></button>
                 </div>
 
                 <div class="api-card">
-                    <h4>🎯 マッチング掲示板</h4>
+                    <h4><i class="fas fa-bullseye"></i> マッチング掲示板</h4>
                     <p>パートナー募集、スキル交換、コラボレーション提案など、クリエイター同士の出会いの場を提供します。</p>
-                    <button class="btn btn-secondary" onclick="loadMatchingRequests()">募集案件を見る</button>
+                    <button class="btn btn-secondary" onclick="loadMatchingRequests()"><span>募集案件を見る</span></button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- API Information -->
-    <section class="section" id="api">
+    <!-- Future Vision -->
+    <section class="section" id="vision">
+        <div class="parallax-bg"></div>
         <div class="container">
-            <h2 class="section-title">API エンドポイント</h2>
+            <h2 class="section-title">FUTURE VISION</h2>
             <p class="section-subtitle">
-                開発者向け：原宿クリエイティブコミュニティの豊富なデータにアクセス
+                これから生まれる、原宿発のクリエイティブな未来
             </p>
 
-            <div class="endpoints-grid">
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/design-companies/harajuku</div>
-                    <p class="api-description">原宿エリアのデザイン会社一覧</p>
+            <!-- 期待される成果 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-rocket"></i></div>
+                    <div class="stat-text">LAUNCH 2024</div>
+                    <div class="stat-label">コミュニティ始動</div>
                 </div>
-
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/apparel-brands/harajuku</div>
-                    <p class="api-description">原宿エリアのアパレルブランド一覧</p>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-palette"></i></div>
+                    <div class="stat-text">100+ CREATORS</div>
+                    <div class="stat-label">参加予定のクリエイター</div>
                 </div>
-
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/events/upcoming</div>
-                    <p class="api-description">近日開催予定のクリエイティブイベント</p>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-lightbulb"></i></div>
+                    <div class="stat-text">∞ POSSIBILITIES</div>
+                    <div class="stat-label">無限の可能性</div>
                 </div>
+            </div>
 
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/collaborations/featured</div>
-                    <p class="api-description">注目のコラボレーションプロジェクト</p>
+            <!-- 実現したい未来 -->
+            <div class="vision-grid">
+                <div class="vision-card">
+                    <div class="vision-image">
+                        <div class="image-placeholder">
+                            <i class="placeholder-icon fas fa-city"></i>
+                        </div>
+                    </div>
+                    <div class="vision-content">
+                        <h4>STREET × HIGH FASHION</h4>
+                        <p class="vision-concept">ストリートカルチャーとハイファッションの融合</p>
+                        <p class="vision-description">原宿の街から世界のランウェイへ</p>
+                    </div>
                 </div>
-
-                <div class="endpoint-card">
-                    <span class="api-method get">GET</span>
-                    <div class="api-endpoint">/api/matching/high-priority</div>
-                    <p class="api-description">高優先度のマッチングリクエスト</p>
+                <div class="vision-card">
+                    <div class="vision-image">
+                        <div class="image-placeholder">
+                            <i class="placeholder-icon fas fa-theater-masks"></i>
+                        </div>
+                    </div>
+                    <div class="vision-content">
+                        <h4>DIGITAL × TRADITIONAL</h4>
+                        <p class="vision-concept">デジタルアートと伝統工芸のコラボ</p>
+                        <p class="vision-description">最新技術で伝統をアップデート</p>
+                    </div>
                 </div>
+                <div class="vision-card">
+                    <div class="vision-image">
+                        <div class="image-placeholder">
+                            <i class="placeholder-icon fas fa-seedling"></i>
+                        </div>
+                    </div>
+                    <div class="vision-content">
+                        <h4>SUSTAINABLE × CREATIVE</h4>
+                        <p class="vision-concept">サステナブルとクリエイティブの新提案</p>
+                        <p class="vision-description">地球と共存する新しいファッション</p>
+                    </div>
+                </div>
+            </div>
 
-                <div class="endpoint-card">
-                    <span class="api-method post">POST</span>
-                    <div class="api-endpoint">/api/design-companies</div>
-                    <p class="api-description">新規デザイン会社の登録</p>
+            <!-- 創設メンバー募集 -->
+            <div class="founding-section">
+                <h3 class="founding-title">BE THE FIRST</h3>
+                <p class="founding-subtitle">創設メンバーとして、新しい歴史を一緒に作りませんか？</p>
+                
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="benefit-icon"><i class="fas fa-star"></i></div>
+                        <h4>特別メンバーシップ</h4>
+                        <p>初期メンバー限定の特別な権利と特典</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon"><i class="fas fa-handshake-angle"></i></div>
+                        <h4>優先マッチング</h4>
+                        <p>最初に最適なパートナーを見つけるチャンス</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="benefit-icon"><i class="fas fa-lightbulb"></i></div>
+                        <h4>コミュニティの方向性</h4>
+                        <p>プラットフォームの未来を一緒に決める</p>
+                    </div>
+                </div>
+                
+                <div class="cta-founding">
+                    <p class="limited-text">※ 先着100名限定</p>
+                    <button class="btn btn-primary btn-large"><span>創設メンバーに申し込む</span></button>
                 </div>
             </div>
         </div>
@@ -607,6 +1378,40 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px'
+        };
+
+        const animationObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                    entry.target.classList.add('animated');
+                    // アイコンのアニメーション
+                    const icons = entry.target.querySelectorAll('.stat-icon, .benefit-icon');
+                    icons.forEach((icon, index) => {
+                        setTimeout(() => {
+                            icon.style.transform = 'scale(1.2)';
+                            setTimeout(() => {
+                                icon.style.transform = 'scale(1)';
+                            }, 300);
+                        }, index * 200);
+                    });
+                }
+            });
+        }, observerOptions);
+
+        // セクションを監視
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.stats-grid, .benefits-grid');
+            sections.forEach(section => {
+                if (section) {
+                    animationObserver.observe(section);
                 }
             });
         });
