@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>原宿クリエイティブコミュニティ | CREATE. CONNECT. INSPIRE.</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* CSS Reset & Base Styles */
         * {
@@ -33,11 +39,16 @@
             --gradient-dark: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
             
             /* タイポグラフィ */
-            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'ヒラギノ角ゴシック Pro', 'Yu Gothic Medium', '游ゴシック Medium', YuGothic, '游ゴシック体', 'Meiryo', sans-serif;
+            --font-main: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-accent: 'Montserrat', sans-serif;
+            --font-japanese: 'Noto Sans JP', sans-serif;
+            --font-weight-light: 300;
             --font-weight-regular: 400;
             --font-weight-medium: 500;
             --font-weight-semibold: 600;
             --font-weight-bold: 700;
+            --font-weight-black: 900;
             
             /* スペーシング */
             --spacing-xs: 0.5rem;
@@ -123,17 +134,19 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: var(--font-weight-bold);
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: var(--font-weight-regular);
             background: var(--gradient-neon);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-decoration: none;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
             position: relative;
             animation: neonFlicker 2s infinite alternate;
+            text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
         }
 
         @keyframes neonFlicker {
@@ -158,14 +171,15 @@
         }
 
         .nav-links a {
+            font-family: var(--font-accent);
             text-decoration: none;
             color: var(--color-primary);
-            font-weight: var(--font-weight-medium);
-            font-size: 0.9rem;
+            font-weight: var(--font-weight-semibold);
+            font-size: 0.85rem;
             transition: var(--transition);
             position: relative;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
         }
 
         .nav-links a::after {
@@ -237,15 +251,21 @@
         }
 
         .hero-title {
-            font-size: clamp(3rem, 10vw, 7rem);
-            font-weight: 900;
-            line-height: 0.9;
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 12vw, 9rem);
+            font-weight: 400;
+            line-height: 0.85;
             margin-bottom: var(--spacing-lg);
             color: var(--color-primary);
-            letter-spacing: -0.02em;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
             position: relative;
             animation: glitch 2s infinite;
+            text-shadow: 
+                3px 3px 0 var(--neon-pink),
+                -3px -3px 0 var(--neon-blue),
+                3px -3px 0 var(--neon-green),
+                -3px 3px 0 var(--neon-purple);
         }
 
         /* グリッチエフェクト */
@@ -504,17 +524,19 @@
         }
 
         .section-title {
+            font-family: var(--font-display);
             text-align: center;
-            font-size: clamp(2.5rem, 6vw, 4rem);
-            font-weight: 900;
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-weight: 400;
             margin-bottom: var(--spacing-md);
             background: var(--gradient-neon);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.15em;
             position: relative;
+            text-shadow: 0 0 30px rgba(255, 20, 147, 0.3);
         }
 
         .section-title::after {
@@ -607,11 +629,24 @@
         }
 
         .category-icon {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: var(--spacing-md);
             display: block;
-            filter: drop-shadow(0 0 20px currentColor);
             animation: icon-float 3s ease-in-out infinite;
+        }
+
+        .category-icon i {
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px var(--neon-pink));
+            transition: var(--transition);
+        }
+
+        .category-card:hover .category-icon i {
+            filter: drop-shadow(0 0 30px var(--neon-pink)) drop-shadow(0 0 40px var(--neon-blue));
+            transform: scale(1.1);
         }
 
         @keyframes icon-float {
@@ -624,8 +659,9 @@
         }
 
         .category-title {
+            font-family: var(--font-accent);
             font-size: 1.75rem;
-            font-weight: 900;
+            font-weight: var(--font-weight-black);
             margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
             text-transform: uppercase;
@@ -660,10 +696,20 @@
         }
 
         .api-card h4 {
+            font-family: var(--font-accent);
             font-size: 1.1rem;
-            font-weight: var(--font-weight-semibold);
+            font-weight: var(--font-weight-bold);
             margin-bottom: var(--spacing-sm);
             color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .api-card h4 i {
+            color: var(--neon-pink);
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+            filter: drop-shadow(0 0 10px var(--neon-pink));
         }
 
         .api-card p {
@@ -708,9 +754,27 @@
         }
 
         .stat-icon {
-            font-size: 3rem;
+            font-size: 4rem;
             margin-bottom: var(--spacing-sm);
-            filter: drop-shadow(0 0 20px var(--neon-pink));
+            position: relative;
+        }
+
+        .stat-icon i {
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 25px var(--neon-pink));
+            animation: neon-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes neon-pulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 25px var(--neon-pink));
+            }
+            50% {
+                filter: drop-shadow(0 0 35px var(--neon-pink)) drop-shadow(0 0 45px var(--neon-blue));
+            }
         }
 
         .stat-text {
@@ -772,8 +836,13 @@
         }
 
         .placeholder-icon {
-            font-size: 4rem;
-            opacity: 0.5;
+            font-size: 5rem;
+            opacity: 0.8;
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 30px var(--neon-blue));
         }
 
         .vision-content {
@@ -808,15 +877,16 @@
         }
 
         .founding-title {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 900;
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 400;
             margin-bottom: var(--spacing-sm);
             background: var(--gradient-neon);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.2em;
             text-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
         }
 
@@ -867,9 +937,24 @@
         }
 
         .benefit-icon {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: var(--spacing-md);
+            position: relative;
+            display: inline-block;
+        }
+
+        .benefit-icon i {
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             filter: drop-shadow(0 0 20px var(--neon-blue));
+            transition: var(--transition);
+        }
+
+        .benefit-card:hover .benefit-icon i {
+            transform: rotateY(360deg);
+            filter: drop-shadow(0 0 30px var(--neon-pink)) drop-shadow(0 0 40px var(--neon-blue));
         }
 
         .benefit-card h4 {
@@ -1044,7 +1129,7 @@
 
             <div class="category-grid">
                 <div class="category-card">
-                    <div class="category-icon">🎨</div>
+                    <div class="category-icon"><i class="fas fa-paint-brush"></i></div>
                     <h3 class="category-title">デザイン会社</h3>
                     <p class="category-description">
                         グラフィック、Web、UI/UX、ブランディング、パッケージデザインなど、原宿エリアの最先端デザイン会社が集結。
@@ -1053,7 +1138,7 @@
                 </div>
 
                 <div class="category-card">
-                    <div class="category-icon">👗</div>
+                    <div class="category-icon"><i class="fas fa-tshirt"></i></div>
                     <h3 class="category-title">アパレルブランド</h3>
                     <p class="category-description">
                         ストリート、エレガント、アバンギャルドまで。原宿カルチャーを体現する多様なアパレルブランド。
@@ -1074,19 +1159,19 @@
 
             <div class="api-grid">
                 <div class="api-card">
-                    <h4>📅 クリエイティブイベント</h4>
+                    <h4><i class="fas fa-calendar-alt"></i> クリエイティブイベント</h4>
                     <p>ネットワーキング、ワークショップ、展示会、ファッションショーなど、原宿エリアのイベント情報をお届けします。</p>
                     <button class="btn btn-secondary" onclick="loadUpcomingEvents()"><span>近日開催イベント</span></button>
                 </div>
 
                 <div class="api-card">
-                    <h4>🤝 コラボレーション事例</h4>
+                    <h4><i class="fas fa-handshake"></i> コラボレーション事例</h4>
                     <p>デザイン会社×アパレルブランドの成功事例。新たなプロジェクトのインスピレーション源としてご活用ください。</p>
                     <button class="btn btn-secondary" onclick="loadFeaturedCollaborations()"><span>注目プロジェクト</span></button>
                 </div>
 
                 <div class="api-card">
-                    <h4>🎯 マッチング掲示板</h4>
+                    <h4><i class="fas fa-bullseye"></i> マッチング掲示板</h4>
                     <p>パートナー募集、スキル交換、コラボレーション提案など、クリエイター同士の出会いの場を提供します。</p>
                     <button class="btn btn-secondary" onclick="loadMatchingRequests()"><span>募集案件を見る</span></button>
                 </div>
@@ -1106,17 +1191,17 @@
             <!-- 期待される成果 -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">🚀</div>
+                    <div class="stat-icon"><i class="fas fa-rocket"></i></div>
                     <div class="stat-text">LAUNCH 2024</div>
                     <div class="stat-label">コミュニティ始動</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🎨</div>
+                    <div class="stat-icon"><i class="fas fa-palette"></i></div>
                     <div class="stat-text">100+ CREATORS</div>
                     <div class="stat-label">参加予定のクリエイター</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">💡</div>
+                    <div class="stat-icon"><i class="fas fa-lightbulb"></i></div>
                     <div class="stat-text">∞ POSSIBILITIES</div>
                     <div class="stat-label">無限の可能性</div>
                 </div>
@@ -1127,7 +1212,7 @@
                 <div class="vision-card">
                     <div class="vision-image">
                         <div class="image-placeholder">
-                            <span class="placeholder-icon">🌆</span>
+                            <i class="placeholder-icon fas fa-city"></i>
                         </div>
                     </div>
                     <div class="vision-content">
@@ -1139,7 +1224,7 @@
                 <div class="vision-card">
                     <div class="vision-image">
                         <div class="image-placeholder">
-                            <span class="placeholder-icon">🎭</span>
+                            <i class="placeholder-icon fas fa-theater-masks"></i>
                         </div>
                     </div>
                     <div class="vision-content">
@@ -1151,7 +1236,7 @@
                 <div class="vision-card">
                     <div class="vision-image">
                         <div class="image-placeholder">
-                            <span class="placeholder-icon">🌱</span>
+                            <i class="placeholder-icon fas fa-seedling"></i>
                         </div>
                     </div>
                     <div class="vision-content">
@@ -1169,17 +1254,17 @@
                 
                 <div class="benefits-grid">
                     <div class="benefit-card">
-                        <div class="benefit-icon">🌟</div>
+                        <div class="benefit-icon"><i class="fas fa-star"></i></div>
                         <h4>特別メンバーシップ</h4>
                         <p>初期メンバー限定の特別な権利と特典</p>
                     </div>
                     <div class="benefit-card">
-                        <div class="benefit-icon">🤝</div>
+                        <div class="benefit-icon"><i class="fas fa-handshake-angle"></i></div>
                         <h4>優先マッチング</h4>
                         <p>最初に最適なパートナーを見つけるチャンス</p>
                     </div>
                     <div class="benefit-card">
-                        <div class="benefit-icon">💡</div>
+                        <div class="benefit-icon"><i class="fas fa-lightbulb"></i></div>
                         <h4>コミュニティの方向性</h4>
                         <p>プラットフォームの未来を一緒に決める</p>
                     </div>
