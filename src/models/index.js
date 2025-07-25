@@ -10,6 +10,8 @@ const JobSite = require('./JobSite');
 const DesignerJob = require('./DesignerJob');
 const Image = require('./Image');
 const ImageUsage = require('./ImageUsage');
+const ChatRoom = require('./ChatRoom');
+const Message = require('./Message');
 
 // Existing relationships
 User.hasMany(Post, {
@@ -85,6 +87,27 @@ ImageUsage.belongsTo(Image, {
   as: 'image'
 });
 
+// Chat and messaging relationships
+ChatRoom.hasMany(Message, {
+  foreignKey: 'roomId',
+  as: 'messages'
+});
+
+Message.belongsTo(ChatRoom, {
+  foreignKey: 'roomId',
+  as: 'room'
+});
+
+User.hasMany(Message, {
+  foreignKey: 'senderId',
+  as: 'sentMessages'
+});
+
+Message.belongsTo(User, {
+  foreignKey: 'senderId',
+  as: 'sender'
+});
+
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -113,5 +136,7 @@ module.exports = {
   DesignerJob,
   Image,
   ImageUsage,
+  ChatRoom,
+  Message,
   syncDatabase
 };
