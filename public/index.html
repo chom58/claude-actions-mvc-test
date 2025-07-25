@@ -323,7 +323,7 @@
 
         @keyframes rotate {
             100% {
-                transform: rotate(360deg);
+                transform: rotate3d(0, 0, 1, 360deg);
             }
         }
 
@@ -592,13 +592,13 @@
 
         @keyframes float {
             0%, 100% {
-                transform: translate(0, 0) scale(1);
+                transform: translate3d(0, 0, 0) scale(1);
             }
             33% {
-                transform: translate(30px, -30px) scale(1.1);
+                transform: translate3d(30px, -30px, 0) scale(1.1);
             }
             66% {
-                transform: translate(-20px, 20px) scale(0.9);
+                transform: translate3d(-20px, 20px, 0) scale(0.9);
             }
         }
 
@@ -736,10 +736,10 @@
 
         @keyframes icon-float {
             0%, 100% {
-                transform: translateY(0) skewY(2deg);
+                transform: translate3d(0, 0, 0) skewY(2deg);
             }
             50% {
-                transform: translateY(-10px) skewY(2deg);
+                transform: translate3d(0, -10px, 0) skewY(2deg);
             }
         }
 
@@ -1215,6 +1215,50 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* パフォーマンス最適化用CSS */
+        .reduce-motion * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+
+        .reduce-motion .hero::before,
+        .reduce-motion .parallax-bg::before {
+            animation: none !important;
+        }
+
+        /* GPU最適化 */
+        .category-card,
+        .stat-card,
+        .vision-card,
+        .benefit-card,
+        .api-card {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        /* ビューポート外のアニメーションを停止 */
+        .category-icon:not(.in-view) i,
+        .stat-icon:not(.in-view) i,
+        .benefit-icon:not(.in-view) i {
+            animation-play-state: paused;
+        }
+
+        /* スクロール中のアニメーション調整 */
+        .is-scrolling .hero::before,
+        .is-scrolling .parallax-bg::before {
+            animation-play-state: paused;
+        }
+
+        /* トランジションのGPU最適化 */
+        .category-card:hover,
+        .stat-card:hover,
+        .vision-card:hover,
+        .benefit-card:hover,
+        .api-card:hover {
+            transform: translate3d(0, -5px, 0);
         }
     </style>
 </head>
@@ -1887,6 +1931,92 @@
                     loadDesignerJobs();
                 }
             });
+        });
+
+        // アニメーションパフォーマンス最適化
+        function initPerformanceOptimizations() {
+            // prefers-reduced-motionの検出
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            
+            function handleReducedMotionChange() {
+                if (prefersReducedMotion.matches) {
+                    document.documentElement.classList.add('reduce-motion');
+                } else {
+                    document.documentElement.classList.remove('reduce-motion');
+                }
+            }
+            
+            handleReducedMotionChange();
+            prefersReducedMotion.addEventListener('change', handleReducedMotionChange);
+            
+            // Intersection Observerを使用したアニメーション制御
+            const animatedElements = document.querySelectorAll('.category-card, .stat-card, .vision-card, .benefit-card, .api-card');
+            
+            const animationObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            // GPU最適化のためのwill-changeを追加
+                            entry.target.style.willChange = 'transform, opacity';
+                        } else {
+                            entry.target.classList.remove('in-view');
+                            // ビューポート外ではwill-changeを削除
+                            entry.target.style.willChange = 'auto';
+                        }
+                    });
+                },
+                {
+                    threshold: 0.1,
+                    rootMargin: '50px'
+                }
+            );
+            
+            animatedElements.forEach(el => {
+                animationObserver.observe(el);
+            });
+            
+            // パララックス背景の最適化
+            const parallaxElements = document.querySelectorAll('.parallax-bg');
+            let ticking = false;
+            
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                
+                parallaxElements.forEach(el => {
+                    const speed = el.dataset.speed || 0.5;
+                    const yPos = -(scrolled * speed);
+                    el.style.transform = `translate3d(0, ${yPos}px, 0)`;
+                });
+                
+                ticking = false;
+            }
+            
+            function requestTick() {
+                if (!ticking && !prefersReducedMotion.matches) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }
+            
+            // パフォーマンスを考慮したスクロールイベント
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                requestTick();
+                
+                // スクロール中はアニメーションを一時停止
+                document.body.classList.add('is-scrolling');
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    document.body.classList.remove('is-scrolling');
+                }, 150);
+            }, { passive: true });
+        }
+
+        // DOM読み込み時の初期化に追加
+        document.addEventListener('DOMContentLoaded', () => {
+            // 既存の初期化コードの後に追加
+            initPerformanceOptimizations();
         });
 
     </script>
