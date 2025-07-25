@@ -1,0 +1,149 @@
+{
+  "name": "原宿クリエイティブコミュニティ",
+  "short_name": "HCC",
+  "description": "デザインとファッションが融合するクリエイティブハブ - 原宿から発信する最前線のクリエイティブコミュニティ",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#FF1493",
+  "background_color": "#0a0a0a",
+  "lang": "ja",
+  "dir": "ltr",
+  "categories": ["creativity", "design", "fashion", "community", "social"],
+  "screenshots": [
+    {
+      "src": "/icons/screenshot-desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "デスクトップビューのスクリーンショット"
+    },
+    {
+      "src": "/icons/screenshot-mobile.png", 
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "モバイルビューのスクリーンショット"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-96.png",
+      "sizes": "96x96", 
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/badge-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "badge"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "新着求人",
+      "short_name": "求人",
+      "description": "最新のデザイナー求人をチェック",
+      "url": "/jobs?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/shortcut-jobs.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "イベント",
+      "short_name": "イベント", 
+      "description": "クリエイティブイベント情報",
+      "url": "/events?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/shortcut-events.png",
+          "sizes": "96x96", 
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "コラボレーション",
+      "short_name": "コラボ",
+      "description": "新しいコラボレーション機会",
+      "url": "/collaborations?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/shortcut-collab.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "マッチング",
+      "short_name": "マッチング",
+      "description": "クリエイター同士のマッチング",
+      "url": "/matching?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/shortcut-matching.png", 
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
+  "capture_links": "existing-client-navigate"
+}

@@ -14,6 +14,7 @@ const jobSiteRoutes = require('./jobSiteRoutes');
 const uploadRoutes = require('./uploadRoutes');
 const imageRoutes = require('./imageRoutes');
 const csrfRoutes = require('./csrf');
+const pushNotificationRoutes = require('./pushNotificationRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -37,7 +38,9 @@ router.get('/', (req, res) => {
       jobSites: '/api/job-sites',
       // 画像アップロード
       upload: '/api/upload',
-      images: '/api/images'
+      images: '/api/images',
+      // プッシュ通知
+      push: '/api/push'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
@@ -78,5 +81,8 @@ router.use('/job-sites', jobSiteRoutes);
 // 画像アップロードルート
 router.use('/upload', uploadRoutes);
 router.use('/images', imageRoutes);
+
+// プッシュ通知ルート
+router.use('/push', pushNotificationRoutes);
 
 module.exports = router;
