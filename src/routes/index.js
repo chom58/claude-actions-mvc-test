@@ -11,6 +11,7 @@ const collaborationRoutes = require('./collaborationRoutes');
 const matchingRoutes = require('./matchingRoutes');
 const designerJobRoutes = require('./designerJobRoutes');
 const jobSiteRoutes = require('./jobSiteRoutes');
+const csrfRoutes = require('./csrf');
 
 router.get('/', (req, res) => {
   res.json({
@@ -54,6 +55,9 @@ router.use('/users', userRoutes);
 router.use('/social-auth', socialAuthRoutes);
 router.use('/auth', authRoutes);
 router.use('/posts', postRoutes);
+
+// CSRF トークンルート
+router.use('/csrf', csrfRoutes);
 
 // 新しいクリエイティブコミュニティルート
 router.use('/design-companies', designCompanyRoutes);
