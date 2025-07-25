@@ -39,7 +39,11 @@
     "sequelize": "^6.35.0",
     "sqlite3": "^5.1.6",
     "validator": "^13.11.0",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "sharp": "^0.32.6",
+    "multer": "^1.4.5-lts.1",
+    "mime-types": "^2.1.35",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "jest": "^29.7.0",

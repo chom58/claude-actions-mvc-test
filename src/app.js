@@ -10,6 +10,8 @@ const { securityHeaders, sanitizeInput } = require('./middleware/security');
 const { generalRateLimit } = require('./middleware/rateLimit');
 const { csrfToken, webCsrfProtection } = require('./middleware/csrf');
 const { initializeSession } = require('./config/session');
+const storageService = require('./services/storageService');
+const fs = require('fs').promises;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -68,6 +70,16 @@ app.use(errorHandler);
 
 const startServer = async () => {
   try {
+    // 必要なディレクトリを作成
+    await fs.mkdir('temp', { recursive: true });
+    await fs.mkdir('public/uploads', { recursive: true });
+    await fs.mkdir('public/uploads/thumbnails', { recursive: true });
+    console.log('アップロードディレクトリが作成されました');
+    
+    // ストレージサービスの初期化
+    await storageService.initialize();
+    console.log('ストレージサービスが初期化されました');
+    
     await syncDatabase();
     
     // セッション初期化
