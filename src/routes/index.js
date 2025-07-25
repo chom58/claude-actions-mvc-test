@@ -11,6 +11,8 @@ const collaborationRoutes = require('./collaborationRoutes');
 const matchingRoutes = require('./matchingRoutes');
 const designerJobRoutes = require('./designerJobRoutes');
 const jobSiteRoutes = require('./jobSiteRoutes');
+const uploadRoutes = require('./uploadRoutes');
+const imageRoutes = require('./imageRoutes');
 const csrfRoutes = require('./csrf');
 
 router.get('/', (req, res) => {
@@ -32,7 +34,10 @@ router.get('/', (req, res) => {
       matching: '/api/matching',
       // デザイナー採用メディア
       designerJobs: '/api/designer-jobs',
-      jobSites: '/api/job-sites'
+      jobSites: '/api/job-sites',
+      // 画像アップロード
+      upload: '/api/upload',
+      images: '/api/images'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
@@ -69,5 +74,9 @@ router.use('/matching', matchingRoutes);
 // デザイナー採用メディアルート
 router.use('/designer-jobs', designerJobRoutes);
 router.use('/job-sites', jobSiteRoutes);
+
+// 画像アップロードルート
+router.use('/upload', uploadRoutes);
+router.use('/images', imageRoutes);
 
 module.exports = router;

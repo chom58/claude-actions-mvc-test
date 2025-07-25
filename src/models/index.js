@@ -8,6 +8,8 @@ const Collaboration = require('./Collaboration');
 const MatchingRequest = require('./MatchingRequest');
 const JobSite = require('./JobSite');
 const DesignerJob = require('./DesignerJob');
+const Image = require('./Image');
+const ImageUsage = require('./ImageUsage');
 
 // Existing relationships
 User.hasMany(Post, {
@@ -62,6 +64,27 @@ DesignerJob.belongsTo(User, {
   as: 'approver'
 });
 
+// Image relationships
+User.hasMany(Image, {
+  foreignKey: 'userId',
+  as: 'images'
+});
+
+Image.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+Image.hasMany(ImageUsage, {
+  foreignKey: 'imageId',
+  as: 'usages'
+});
+
+ImageUsage.belongsTo(Image, {
+  foreignKey: 'imageId',
+  as: 'image'
+});
+
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -88,5 +111,7 @@ module.exports = {
   MatchingRequest,
   JobSite,
   DesignerJob,
+  Image,
+  ImageUsage,
   syncDatabase
 };
