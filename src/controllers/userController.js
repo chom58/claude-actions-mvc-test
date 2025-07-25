@@ -1,15 +1,28 @@
 const { User } = require('../models');
 const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
 const crypto = require('crypto');
+const asyncHandler = require('../utils/asyncHandler');
+const { 
+  checkValidationErrors,
+  checkResourceExists,
+  checkAuthentication,
+  sendSuccessResponse,
+  dbHelpers
+} = require('../utils/controllerHelpers');
+const { 
+  AuthenticationError,
+  ValidationError,
+  UniqueConstraintError,
+  createError 
+} = require('../utils/errorTypes');
 
 // JWT秘密鍵の検証
 const validateJWTSecrets = () => {
   if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-secret-key') {
-    throw new Error('JWT_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
+    throw createError.auth('JWT_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
   }
   if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET === 'your-refresh-secret-key') {
-    throw new Error('JWT_REFRESH_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
+    throw createError.auth('JWT_REFRESH_SECRET環境変数が設定されていないか、デフォルト値が使用されています');
   }
 };
 
@@ -34,7 +47,7 @@ const generateRefreshToken = (userId) => {
 // リフレッシュトークンの暗号化
 const encryptRefreshToken = (token) => {
   if (!process.env.REFRESH_TOKEN_ENCRYPTION_KEY) {
-    throw new Error('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
+    throw createError.auth('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
   }
   const cipher = crypto.createCipher('aes-256-cbc', process.env.REFRESH_TOKEN_ENCRYPTION_KEY);
   let encrypted = cipher.update(token, 'utf8', 'hex');
@@ -45,440 +58,297 @@ const encryptRefreshToken = (token) => {
 // リフレッシュトークンの復号化
 const decryptRefreshToken = (encryptedToken) => {
   if (!process.env.REFRESH_TOKEN_ENCRYPTION_KEY) {
-    throw new Error('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
+    throw createError.auth('REFRESH_TOKEN_ENCRYPTION_KEY環境変数が設定されていません');
   }
-  const decipher = crypto.createDecipher('aes-256-cbc', process.env.REFRESH_TOKEN_ENCRYPTION_KEY);
-  let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  return decrypted;
+  
+  try {
+    const decipher = crypto.createDecipher('aes-256-cbc', process.env.REFRESH_TOKEN_ENCRYPTION_KEY);
+    let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  } catch (error) {
+    throw createError.invalidToken('リフレッシュトークンの復号化に失敗しました');
+  }
 };
 
-exports.register = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+// セキュアなクッキー設定のヘルパー
+const setSecureCookie = (res, name, value, maxAge) => {
+  res.cookie(name, value, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge
+  });
+};
 
-    const { username, email, password } = req.body;
+/**
+ * ユーザー登録
+ */
+exports.register = asyncHandler(async (req, res) => {
+  checkValidationErrors(req);
 
-    const existingUser = await User.findOne({
-      where: { email }
-    });
+  const { username, email, password } = req.body;
 
+  // 既存ユーザーチェック
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) {
+    throw new UniqueConstraintError('email', 'このメールアドレスは既に登録されています');
+  }
+
+  // ユーザー作成
+  const user = await dbHelpers.create(User, {
+    username,
+    email,
+    password
+  });
+
+  // トークン生成
+  const token = generateToken(user.id);
+  const refreshToken = generateRefreshToken(user.id);
+  
+  // リフレッシュトークンを暗号化してデータベースに保存
+  const encryptedRefreshToken = encryptRefreshToken(refreshToken);
+  user.refreshToken = encryptedRefreshToken;
+  await user.save();
+
+  // セキュアなクッキー設定
+  setSecureCookie(res, 'accessToken', token, 15 * 60 * 1000); // 15分
+  setSecureCookie(res, 'refreshToken', encryptedRefreshToken, 7 * 24 * 60 * 60 * 1000); // 7日
+
+  sendSuccessResponse(res, {
+    user: user.toJSON()
+  }, 'ユーザー登録が完了しました', 201);
+});
+
+/**
+ * ユーザーログイン
+ */
+exports.login = asyncHandler(async (req, res) => {
+  checkValidationErrors(req);
+
+  const { email, password } = req.body;
+
+  // ユーザー検索とパスワード確認
+  const user = await User.findOne({ where: { email } });
+  if (!user || !(await user.comparePassword(password))) {
+    throw new AuthenticationError('メールアドレスまたはパスワードが正しくありません');
+  }
+
+  // トークン生成
+  const token = generateToken(user.id);
+  const refreshToken = generateRefreshToken(user.id);
+  
+  // リフレッシュトークンを暗号化してデータベースに保存
+  const encryptedRefreshToken = encryptRefreshToken(refreshToken);
+  user.refreshToken = encryptedRefreshToken;
+  user.lastLoginAt = new Date();
+  await user.save();
+
+  // セキュアなクッキー設定
+  setSecureCookie(res, 'accessToken', token, 15 * 60 * 1000); // 15分
+  setSecureCookie(res, 'refreshToken', encryptedRefreshToken, 7 * 24 * 60 * 60 * 1000); // 7日
+
+  sendSuccessResponse(res, {
+    user: user.toJSON()
+  }, 'ログインに成功しました');
+});
+
+/**
+ * プロフィール取得
+ */
+exports.getProfile = asyncHandler(async (req, res) => {
+  const user = await User.findByPk(req.userId, {
+    include: [{
+      association: 'posts',
+      attributes: ['id', 'title', 'published', 'createdAt']
+    }]
+  });
+
+  checkResourceExists(user, 'ユーザー');
+
+  sendSuccessResponse(res, {
+    user: user.toJSON()
+  }, 'プロフィールを取得しました');
+});
+
+/**
+ * プロフィール更新
+ */
+exports.updateProfile = asyncHandler(async (req, res) => {
+  checkValidationErrors(req);
+
+  const { username, email } = req.body;
+  const user = await dbHelpers.findById(User, req.userId, {}, 'ユーザー');
+
+  // メールアドレス変更時の重複チェック
+  if (email && email !== user.email) {
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({
-        error: 'このメールアドレスは既に登録されています'
-      });
+      throw new UniqueConstraintError('email', 'このメールアドレスは既に使用されています');
     }
-
-    const user = await User.create({
-      username,
-      email,
-      password
-    });
-
-    const token = generateToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
-    
-    // リフレッシュトークンを暗号化してデータベースに保存
-    const encryptedRefreshToken = encryptRefreshToken(refreshToken);
-    user.refreshToken = encryptedRefreshToken;
-    await user.save();
-
-    // トークンをHTTP-onlyクッキーとして設定
-    res.cookie('accessToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60 * 1000 // 15分
-    });
-    
-    res.cookie('refreshToken', encryptedRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
-    });
-
-    res.status(201).json({
-      message: 'ユーザー登録が完了しました',
-      user: user.toJSON()
-      // トークンは安全なHTTP-onlyクッキーとして送信
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({
-      error: 'ユーザー登録中にエラーが発生しました'
-    });
   }
-};
 
-exports.login = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  // プロフィール更新
+  await user.update({
+    username: username || user.username,
+    email: email || user.email
+  });
 
-    const { email, password } = req.body;
+  sendSuccessResponse(res, {
+    user: user.toJSON()
+  }, 'プロフィールが更新されました');
+});
 
-    const user = await User.findOne({
-      where: { email }
-    });
+/**
+ * アカウント削除
+ */
+exports.deleteAccount = asyncHandler(async (req, res) => {
+  const user = await dbHelpers.findById(User, req.userId, {}, 'ユーザー');
+  await user.destroy();
 
-    if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({
-        error: 'メールアドレスまたはパスワードが正しくありません'
-      });
-    }
+  // クッキークリア
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
 
-    const token = generateToken(user.id);
-    const refreshToken = generateRefreshToken(user.id);
-    
-    // リフレッシュトークンを暗号化してデータベースに保存
-    const encryptedRefreshToken = encryptRefreshToken(refreshToken);
-    user.refreshToken = encryptedRefreshToken;
-    user.lastLoginAt = new Date();
-    await user.save();
+  sendSuccessResponse(res, null, 'アカウントが削除されました');
+});
 
-    // トークンをHTTP-onlyクッキーとして設定
-    res.cookie('accessToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60 * 1000 // 15分
-    });
-    
-    res.cookie('refreshToken', encryptedRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
-    });
+/**
+ * ログアウト
+ */
+exports.logout = asyncHandler(async (req, res) => {
+  const user = await dbHelpers.findById(User, req.userId, {}, 'ユーザー');
 
-    res.json({
-      message: 'ログインに成功しました',
-      user: user.toJSON()
-      // トークンは安全なHTTP-onlyクッキーとして送信
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({
-      error: 'ログイン中にエラーが発生しました'
-    });
+  // リフレッシュトークンを無効化
+  user.refreshToken = null;
+  await user.save();
+
+  // HTTP-onlyクッキーをクリア
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+
+  sendSuccessResponse(res, null, 'ログアウトが完了しました');
+});
+
+/**
+ * トークンリフレッシュ
+ */
+exports.refreshToken = asyncHandler(async (req, res) => {
+  validateJWTSecrets();
+
+  // リフレッシュトークンをクッキーまたはボディから取得
+  const encryptedRefreshToken = req.cookies?.refreshToken || req.body.refreshToken;
+  if (!encryptedRefreshToken) {
+    throw createError.auth('リフレッシュトークンが提供されていません');
   }
-};
 
-exports.getProfile = async (req, res) => {
+  // 暗号化されたリフレッシュトークンを復号化
+  const refreshToken = decryptRefreshToken(encryptedRefreshToken);
+
+  // リフレッシュトークンを検証
+  let decoded;
   try {
-    const user = await User.findByPk(req.userId, {
-      include: [{
-        association: 'posts',
-        attributes: ['id', 'title', 'published', 'createdAt']
-      }]
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        error: 'ユーザーが見つかりません'
-      });
-    }
-
-    res.json({
-      user: user.toJSON()
-    });
-  } catch (error) {
-    console.error('Get profile error:', error);
-    res.status(500).json({
-      error: 'プロフィール取得中にエラーが発生しました'
-    });
-  }
-};
-
-exports.updateProfile = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { username, email } = req.body;
-    const user = await User.findByPk(req.userId);
-
-    if (!user) {
-      return res.status(404).json({
-        error: 'ユーザーが見つかりません'
-      });
-    }
-
-    if (email && email !== user.email) {
-      const existingUser = await User.findOne({
-        where: { email }
-      });
-
-      if (existingUser) {
-        return res.status(400).json({
-          error: 'このメールアドレスは既に使用されています'
-        });
-      }
-    }
-
-    await user.update({
-      username: username || user.username,
-      email: email || user.email
-    });
-
-    res.json({
-      message: 'プロフィールが更新されました',
-      user: user.toJSON()
-    });
-  } catch (error) {
-    console.error('Update profile error:', error);
-    res.status(500).json({
-      error: 'プロフィール更新中にエラーが発生しました'
-    });
-  }
-};
-
-exports.deleteAccount = async (req, res) => {
-  try {
-    const user = await User.findByPk(req.userId);
-
-    if (!user) {
-      return res.status(404).json({
-        error: 'ユーザーが見つかりません'
-      });
-    }
-
-    await user.destroy();
-
-    res.json({
-      message: 'アカウントが削除されました'
-    });
-  } catch (error) {
-    console.error('Delete account error:', error);
-    res.status(500).json({
-      error: 'アカウント削除中にエラーが発生しました'
-    });
-  }
-};
-
-// ログアウト機能
-exports.logout = async (req, res) => {
-  try {
-    const user = await User.findByPk(req.userId);
-    
-    if (!user) {
-      return res.status(404).json({
-        error: 'ユーザーが見つかりません'
-      });
-    }
-
-    // リフレッシュトークンを無効化
-    user.refreshToken = null;
-    await user.save();
-
-    // HTTP-onlyクッキーをクリア
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-
-    res.json({
-      message: 'ログアウトが完了しました'
-    });
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({
-      error: 'ログアウト中にエラーが発生しました'
-    });
-  }
-};
-
-// リフレッシュトークンを使用してアクセストークンを更新
-exports.refreshToken = async (req, res) => {
-  try {
-    // JWT秘密鍵の検証
-    validateJWTSecrets();
-
-    // リフレッシュトークンをクッキーまたはボディから取得
-    let encryptedRefreshToken = req.cookies?.refreshToken || req.body.refreshToken;
-
-    if (!encryptedRefreshToken) {
-      return res.status(401).json({
-        error: 'リフレッシュトークンが提供されていません'
-      });
-    }
-
-    // 暗号化されたリフレッシュトークンを復号化
-    let refreshToken;
-    try {
-      refreshToken = decryptRefreshToken(encryptedRefreshToken);
-    } catch (error) {
-      return res.status(401).json({
-        error: '無効なリフレッシュトークンです'
-      });
-    }
-
-    // リフレッシュトークンを検証
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET
-    );
-
-    if (decoded.type !== 'refresh') {
-      return res.status(401).json({
-        error: '無効なリフレッシュトークンです'
-      });
-    }
-
-    // ユーザーのリフレッシュトークンと照合
-    const user = await User.findByPk(decoded.userId);
-    
-    if (!user || user.refreshToken !== encryptedRefreshToken) {
-      return res.status(401).json({
-        error: '無効なリフレッシュトークンです'
-      });
-    }
-
-    // 新しいアクセストークンを生成
-    const newToken = generateToken(user.id);
-    const newRefreshToken = generateRefreshToken(user.id);
-    
-    // 新しいリフレッシュトークンを暗号化して保存
-    const newEncryptedRefreshToken = encryptRefreshToken(newRefreshToken);
-    user.refreshToken = newEncryptedRefreshToken;
-    await user.save();
-
-    // 新しいトークンをHTTP-onlyクッキーとして設定
-    res.cookie('accessToken', newToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 15 * 60 * 1000 // 15分
-    });
-    
-    res.cookie('refreshToken', newEncryptedRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
-    });
-
-    res.json({
-      message: 'トークンが更新されました'
-      // トークンは安全なHTTP-onlyクッキーとして送信
-    });
+    decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({
-        error: 'リフレッシュトークンの有効期限が切れています'
-      });
+      throw createError.tokenExpired('リフレッシュトークンの有効期限が切れています');
     }
-    
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({
-        error: '無効なリフレッシュトークンです'
-      });
-    }
-
-    console.error('Refresh token error:', error);
-    res.status(500).json({
-      error: 'トークン更新中にエラーが発生しました'
-    });
+    throw createError.invalidToken('無効なリフレッシュトークンです');
   }
-};
 
-// パスワードリセット要求
-exports.requestPasswordReset = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { email } = req.body;
-    const user = await User.findOne({ where: { email } });
-
-    if (!user) {
-      // セキュリティのため、ユーザーが存在しなくても成功レスポンスを返す
-      return res.json({
-        message: 'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）'
-      });
-    }
-
-    // パスワードリセットトークンを生成
-    const resetToken = user.generatePasswordResetToken();
-    await user.save();
-
-    // 実際のアプリケーションでは、ここでメール送信を行う
-    // 開発用にトークンをログに出力
-    console.log('Password reset token for', email, ':', resetToken);
-
-    res.json({
-      message: 'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）',
-      // 開発用にトークンを返す（本番環境では削除）
-      ...(process.env.NODE_ENV === 'development' && { resetToken })
-    });
-  } catch (error) {
-    console.error('Password reset request error:', error);
-    res.status(500).json({
-      error: 'パスワードリセット要求中にエラーが発生しました'
-    });
+  if (decoded.type !== 'refresh') {
+    throw createError.invalidToken('無効なリフレッシュトークンです');
   }
-};
 
-// パスワードリセット実行
-exports.resetPassword = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  // ユーザーのリフレッシュトークンと照合
+  const user = await dbHelpers.findById(User, decoded.userId, {}, 'ユーザー');
+  
+  if (user.refreshToken !== encryptedRefreshToken) {
+    throw createError.invalidToken('無効なリフレッシュトークンです');
+  }
 
-    const { token, newPassword } = req.body;
+  // 新しいトークンを生成
+  const newToken = generateToken(user.id);
+  const newRefreshToken = generateRefreshToken(user.id);
+  
+  // 新しいリフレッシュトークンを暗号化して保存
+  const newEncryptedRefreshToken = encryptRefreshToken(newRefreshToken);
+  user.refreshToken = newEncryptedRefreshToken;
+  await user.save();
 
-    if (!token || !newPassword) {
-      return res.status(400).json({
-        error: 'トークンと新しいパスワードが必要です'
-      });
-    }
+  // セキュアなクッキー設定
+  setSecureCookie(res, 'accessToken', newToken, 15 * 60 * 1000); // 15分
+  setSecureCookie(res, 'refreshToken', newEncryptedRefreshToken, 7 * 24 * 60 * 60 * 1000); // 7日
 
-    // トークンを持つユーザーを検索
-    const crypto = require('crypto');
-    const hashedToken = crypto
-      .createHash('sha256')
-      .update(token)
-      .digest('hex');
+  sendSuccessResponse(res, null, 'トークンが更新されました');
+});
 
-    const user = await User.findOne({
-      where: {
-        resetPasswordToken: hashedToken,
-        resetPasswordExpires: {
-          [require('sequelize').Op.gt]: new Date()
-        }
+/**
+ * パスワードリセット要求
+ */
+exports.requestPasswordReset = asyncHandler(async (req, res) => {
+  checkValidationErrors(req);
+
+  const { email } = req.body;
+  const user = await User.findOne({ where: { email } });
+
+  // セキュリティのため、ユーザーが存在しなくても同じレスポンスを返す
+  if (!user) {
+    return sendSuccessResponse(res, null, 
+      'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）');
+  }
+
+  // パスワードリセットトークンを生成
+  const resetToken = user.generatePasswordResetToken();
+  await user.save();
+
+  // 実際のアプリケーションでは、ここでメール送信を行う
+  // 開発用にトークンをログに出力
+  console.log('Password reset token for', email, ':', resetToken);
+
+  sendSuccessResponse(res, {
+    // 開発用にトークンを返す（本番環境では削除）
+    ...(process.env.NODE_ENV === 'development' && { resetToken })
+  }, 'パスワードリセットのメールを送信しました（該当するアカウントが存在する場合）');
+});
+
+/**
+ * パスワードリセット実行
+ */
+exports.resetPassword = asyncHandler(async (req, res) => {
+  checkValidationErrors(req);
+
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    throw new ValidationError('トークンと新しいパスワードが必要です');
+  }
+
+  // トークンを持つユーザーを検索
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    where: {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: {
+        [require('sequelize').Op.gt]: new Date()
       }
-    });
-
-    if (!user) {
-      return res.status(400).json({
-        error: '無効または期限切れのリセットトークンです'
-      });
     }
+  });
 
-    // パスワードを更新（beforeSaveフックでハッシュ化される）
-    user.password = newPassword;
-    user.resetPasswordToken = null;
-    user.resetPasswordExpires = null;
-    user.refreshToken = null; // 既存のリフレッシュトークンを無効化
-    await user.save();
-
-    res.json({
-      message: 'パスワードが正常にリセットされました'
-    });
-  } catch (error) {
-    console.error('Password reset error:', error);
-    res.status(500).json({
-      error: 'パスワードリセット中にエラーが発生しました'
-    });
+  if (!user) {
+    throw new ValidationError('無効または期限切れのリセットトークンです');
   }
-};
+
+  // パスワードを更新（beforeSaveフックでハッシュ化される）
+  user.password = newPassword;
+  user.resetPasswordToken = null;
+  user.resetPasswordExpires = null;
+  user.refreshToken = null; // 既存のリフレッシュトークンを無効化
+  await user.save();
+
+  sendSuccessResponse(res, null, 'パスワードが正常にリセットされました');
+});
