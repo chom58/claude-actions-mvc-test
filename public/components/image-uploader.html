@@ -1,0 +1,427 @@
+<!-- 画像アップロードコンポーネント -->
+<div class="image-uploader" data-config='{}'>
+  <!-- アップロードエリア -->
+  <div class="upload-area" id="uploadArea">
+    <div class="upload-content">
+      <i class="fas fa-cloud-upload-alt upload-icon"></i>
+      <p class="upload-text">画像をここにドロップするか、クリックして選択</p>
+      <p class="upload-hint">JPEG, PNG, GIF, WebP対応 (最大10MB)</p>
+      <input type="file" id="fileInput" class="file-input" multiple accept="image/jpeg,image/png,image/gif,image/webp">
+    </div>
+    <div class="upload-overlay">
+      <i class="fas fa-plus"></i>
+    </div>
+  </div>
+
+  <!-- プレビューエリア -->
+  <div class="preview-area" id="previewArea" style="display: none;">
+    <h4 class="preview-title">プレビュー</h4>
+    <div class="preview-grid" id="previewGrid"></div>
+  </div>
+
+  <!-- プログレスエリア -->
+  <div class="progress-area" id="progressArea" style="display: none;">
+    <h4 class="progress-title">アップロード中...</h4>
+    <div class="progress-list" id="progressList"></div>
+  </div>
+
+  <!-- エラーエリア -->
+  <div class="error-area" id="errorArea" style="display: none;">
+    <div class="error-content">
+      <i class="fas fa-exclamation-triangle error-icon"></i>
+      <p class="error-message" id="errorMessage"></p>
+      <button class="error-close" id="errorClose">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+/* 画像アップロードコンポーネントのスタイル */
+.image-uploader {
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: var(--font-main);
+}
+
+/* アップロードエリア */
+.upload-area {
+  position: relative;
+  border: 2px dashed var(--color-border);
+  border-radius: 12px;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  background: var(--card-bg);
+  transition: var(--transition);
+  cursor: pointer;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-area:hover {
+  border-color: var(--neon-blue);
+  background: rgba(0, 255, 255, 0.05);
+  box-shadow: var(--shadow-neon-blue);
+}
+
+.upload-area.drag-over {
+  border-color: var(--neon-pink);
+  background: rgba(255, 20, 147, 0.1);
+  box-shadow: var(--shadow-neon-pink);
+  transform: scale(1.02);
+}
+
+.upload-content {
+  position: relative;
+  z-index: 2;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  color: var(--neon-blue);
+  margin-bottom: var(--spacing-md);
+  display: block;
+}
+
+.upload-text {
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.upload-hint {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.file-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: var(--transition);
+  border-radius: 10px;
+}
+
+.upload-area:hover .upload-overlay {
+  opacity: 1;
+}
+
+.upload-overlay i {
+  font-size: 2rem;
+  color: var(--neon-blue);
+}
+
+/* プレビューエリア */
+.preview-area {
+  margin-top: var(--spacing-lg);
+}
+
+.preview-title {
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.preview-title::before {
+  content: '';
+  width: 3px;
+  height: 1.5rem;
+  background: var(--gradient-neon);
+  border-radius: 2px;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.preview-item {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  transition: var(--transition);
+}
+
+.preview-item:hover {
+  border-color: var(--neon-pink);
+  box-shadow: 0 4px 12px rgba(255, 20, 147, 0.2);
+}
+
+.preview-image {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.preview-info {
+  text-align: left;
+}
+
+.preview-name {
+  font-size: 0.8rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.preview-size {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.preview-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 20, 147, 0.9);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  font-size: 0.8rem;
+}
+
+.preview-remove:hover {
+  background: var(--neon-pink);
+  box-shadow: var(--shadow-neon-pink);
+  transform: scale(1.1);
+}
+
+/* プログレスエリア */
+.progress-area {
+  margin-top: var(--spacing-lg);
+}
+
+.progress-title {
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.progress-title::before {
+  content: '';
+  width: 3px;
+  height: 1.5rem;
+  background: var(--gradient-neon);
+  border-radius: 2px;
+}
+
+.progress-item {
+  background: var(--card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.progress-filename {
+  font-size: 0.9rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  flex: 1;
+  word-break: break-all;
+}
+
+.progress-percentage {
+  font-size: 0.8rem;
+  color: var(--neon-blue);
+  font-weight: var(--font-weight-semibold);
+  margin-left: var(--spacing-sm);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-neon);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-image: linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, .2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, .2) 50%,
+    rgba(255, 255, 255, .2) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 50px 50px;
+  animation: move 2s linear infinite;
+}
+
+@keyframes move {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
+/* エラーエリア */
+.error-area {
+  margin-top: var(--spacing-lg);
+}
+
+.error-content {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: relative;
+}
+
+.error-icon {
+  color: #ff4444;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.error-message {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  flex: 1;
+  margin: 0;
+}
+
+.error-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.error-close:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .upload-area {
+    padding: var(--spacing-lg);
+    min-height: 150px;
+  }
+  
+  .upload-icon {
+    font-size: 2rem;
+  }
+  
+  .upload-text {
+    font-size: 1rem;
+  }
+  
+  .preview-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--spacing-sm);
+  }
+  
+  .preview-image {
+    height: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-area {
+    padding: var(--spacing-md);
+    min-height: 120px;
+  }
+  
+  .upload-icon {
+    font-size: 1.5rem;
+  }
+  
+  .upload-text {
+    font-size: 0.9rem;
+  }
+  
+  .upload-hint {
+    font-size: 0.8rem;
+  }
+  
+  .preview-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+  
+  .preview-image {
+    height: 80px;
+  }
+}
+</style>
