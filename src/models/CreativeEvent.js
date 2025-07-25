@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const { addSearchIndexHooks } = require('./hooks/searchIndexHooks');
 
 const CreativeEvent = sequelize.define('CreativeEvent', {
   id: {
@@ -13,6 +14,16 @@ const CreativeEvent = sequelize.define('CreativeEvent', {
     validate: {
       notEmpty: true,
       len: [1, 255]
+    }
+  },
+  // nameフィールドをtitleのエイリアスとして追加
+  name: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('title');
+    },
+    set(value) {
+      this.setDataValue('title', value);
     }
   },
   description: {
@@ -177,5 +188,13 @@ const CreativeEvent = sequelize.define('CreativeEvent', {
     }
   ]
 });
+
+// 検索インデックスフックを追加
+addSearchIndexHooks(CreativeEvent, 'event');
+
+// CreativeEventではtitleをnameとしても参照できるようにする
+CreativeEvent.prototype.getName = function() {
+  return this.title;
+};
 
 module.exports = CreativeEvent;

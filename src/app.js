@@ -11,6 +11,7 @@ const { generalRateLimit } = require('./middleware/rateLimit');
 const { csrfToken, webCsrfProtection } = require('./middleware/csrf');
 const { initializeSession } = require('./config/session');
 const storageService = require('./services/storageService');
+const searchIndexService = require('./services/searchIndexService');
 const fs = require('fs').promises;
 
 const app = express();
@@ -79,6 +80,10 @@ const startServer = async () => {
     // ストレージサービスの初期化
     await storageService.initialize();
     console.log('ストレージサービスが初期化されました');
+    
+    // 検索インデックスサービスの初期化
+    await searchIndexService.initialize();
+    console.log('検索インデックスサービスが初期化されました');
     
     await syncDatabase();
     
