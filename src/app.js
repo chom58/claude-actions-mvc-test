@@ -6,8 +6,9 @@ const cookieParser = require('cookie-parser');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const { syncDatabase } = require('./models');
-const { securityHeaders, sanitizeInput, csrfProtection } = require('./middleware/security');
+const { securityHeaders, sanitizeInput } = require('./middleware/security');
 const { generalRateLimit } = require('./middleware/rateLimit');
+const { csrfToken, webCsrfProtection } = require('./middleware/csrf');
 const { initializeSession } = require('./config/session');
 
 const app = express();
@@ -28,6 +29,22 @@ app.use(cookieParser());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// セッション初期化（CSRFトークン生成の前に必要）
+const sessionMiddleware = require('express-session');
+app.use(sessionMiddleware({
+  secret: process.env.SESSION_SECRET || 'your-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24時間
+  }
+}));
+
+// CSRFトークン生成ミドルウェア
+app.use(csrfToken);
 
 // 入力サニタイゼーション（APIルートのみ）
 app.use('/api', sanitizeInput);
@@ -56,10 +73,8 @@ const startServer = async () => {
     // セッション初期化
     await initializeSession(app);
     
-    // CSRF保護ミドルウェアをAPIルートに適用
-    app.use('/api', csrfProtection({
-      skipPaths: ['/api/auth/csrf-token', '/api/auth/social']
-    }));
+    // CSRF保護をPOST/PUT/DELETE リクエストに適用
+    app.use('/api', webCsrfProtection);
     
     app.listen(PORT, () => {
       console.log(`サーバーがポート${PORT}で起動しました`);

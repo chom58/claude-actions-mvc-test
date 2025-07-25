@@ -1166,6 +1166,24 @@
             overflow: hidden;
             position: relative;
         }
+        
+        /* レスポンシブ画像のベーススタイル */
+        .responsive-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            max-width: 100%;
+        }
+        
+        /* 将来の画像最適化用 */
+        .lazy-img {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .lazy-img.loaded {
+            opacity: 1;
+        }
 
         .image-placeholder {
             width: 100%;
@@ -1418,6 +1436,14 @@
                 display: block;
             }
             
+            .auth-menu {
+                display: none;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
             .logo-svg {
                 height: 35px;
             }
@@ -1484,9 +1510,63 @@
             .btn {
                 width: 100%;
                 max-width: 280px;
-                min-height: 48px;
-                padding: var(--spacing-md) var(--spacing-lg);
-                font-size: 0.95rem;
+                min-height: 44px; /* タッチターゲット最小サイズ */
+            }
+            
+            /* タッチフレンドリーなボタン調整 */
+            .api-card button {
+                min-height: 44px;
+            }
+            
+            /* モバイルでのフォントサイズ調整 */
+            .hero-title {
+                font-size: clamp(3rem, 10vw, 6rem);
+            }
+            
+            .section-title {
+                font-size: clamp(2.5rem, 8vw, 4rem);
+            }
+            
+            .category-title {
+                font-size: 1.5rem;
+            }
+            
+            .api-card h4 {
+                font-size: 1rem;
+            }
+            
+            /* カテゴリーカードのクリップパスを簡略化 */
+            .category-card {
+                clip-path: none;
+                transform: none;
+            }
+            
+            .category-card > * {
+                transform: none;
+            }
+            
+            /* 画像の最適化 */
+            .vision-image {
+                height: 150px; /* モバイルでは高さを縮小 */
+            }
+            
+            .placeholder-icon {
+                font-size: 3rem; /* アイコンサイズを調整 */
+            }
+            
+            /* スペーシングの調整 */
+            .section {
+                padding: var(--spacing-xl) var(--spacing-md);
+            }
+            
+            /* 横スクロール防止 */
+            body {
+                overflow-x: hidden;
+            }
+            
+            .hero::before,
+            .parallax-bg::before {
+                display: none; /* パフォーマンス向上のため背景アニメーションを無効化 */
             }
 
             /* カード調整 */

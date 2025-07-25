@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新規登録 - Harajuku Creative Community</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 2em;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ff00ff;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .password-strength {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak {
+            width: 33%;
+            background: #ff6b6b;
+        }
+
+        .strength-medium {
+            width: 66%;
+            background: #ffd93d;
+        }
+
+        .strength-strong {
+            width: 100%;
+            background: #51cf66;
+        }
+
+        .password-hint {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+            display: none;
+            text-align: center;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            color: #51cf66;
+            display: none;
+            text-align: center;
+        }
+
+        .field-error {
+            color: #ff6b6b;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #ff00ff;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .divider {
+            margin: 15px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9em;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #00ffff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ff00ff;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .back-home:hover {
+            color: #00ffff;
+            transform: translateX(-5px);
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                max-width: 100%;
+                margin: 20px;
+                padding: 30px;
+            }
+            
+            .submit-btn {
+                min-height: 44px; /* タッチターゲット最小サイズ */
+            }
+            
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                min-height: 44px;
+                font-size: 16px; /* iOSのズームを防ぐ */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 30px 20px;
+            }
+
+            .logo h1 {
+                font-size: 1.5em;
+            }
+            
+            .back-home {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-home">← ホームに戻る</a>
+
+    <div class="register-container">
+        <div class="logo">
+            <h1>Harajuku Creative Community</h1>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">ユーザー名</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="クリエイター太郎" 
+                    required
+                    minlength="3"
+                    maxlength="30"
+                >
+                <div class="field-error" id="usernameError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="your@email.com" 
+                    required
+                    autocomplete="email"
+                >
+                <div class="field-error" id="emailError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="••••••••" 
+                    required
+                    minlength="8"
+                    autocomplete="new-password"
+                >
+                <div class="password-strength">
+                    <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                </div>
+                <div class="password-hint">8文字以上、英数字を含む</div>
+                <div class="field-error" id="passwordError"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">パスワード（確認）</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    placeholder="••••••••" 
+                    required
+                    autocomplete="new-password"
+                >
+                <div class="field-error" id="confirmPasswordError"></div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                アカウント作成
+            </button>
+        </form>
+
+        <div class="links">
+            <div class="divider">既にアカウントをお持ちの方</div>
+            <a href="login.html">ログインはこちら</a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        let csrfToken = null;
+        
+        // CSRFトークンを取得
+        async function fetchCsrfToken() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/csrf/token`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                csrfToken = data.csrfToken;
+            } catch (error) {
+                console.error('CSRFトークン取得エラー:', error);
+            }
+        }
+        
+        // ページ読み込み時にCSRFトークンを取得
+        fetchCsrfToken();
+        
+        const registerForm = document.getElementById('registerForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const loading = document.getElementById('loading');
+        const submitBtn = document.getElementById('submitBtn');
+        const passwordInput = document.getElementById('password');
+        const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+
+        // パスワード強度チェック
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]+/)) strength++;
+            if (password.match(/[A-Z]+/)) strength++;
+            if (password.match(/[0-9]+/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]+/)) strength++;
+
+            return strength;
+        }
+
+        // パスワード強度表示更新
+        passwordInput.addEventListener('input', (e) => {
+            const password = e.target.value;
+            const strength = checkPasswordStrength(password);
+
+            passwordStrengthBar.className = 'password-strength-bar';
+            
+            if (password.length === 0) {
+                passwordStrengthBar.style.width = '0';
+            } else if (strength <= 2) {
+                passwordStrengthBar.classList.add('strength-weak');
+            } else if (strength <= 3) {
+                passwordStrengthBar.classList.add('strength-medium');
+            } else {
+                passwordStrengthBar.classList.add('strength-strong');
+            }
+        });
+
+        // フォーム送信処理
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // バリデーション
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // エラーメッセージをリセット
+            document.querySelectorAll('.field-error').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            // パスワード確認
+            if (password !== confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'パスワードが一致しません';
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                return;
+            }
+
+            // UIを更新
+            loading.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '作成中...';
+
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: password
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 登録成功
+                    successMessage.textContent = data.message || 'アカウントの作成に成功しました！';
+                    successMessage.style.display = 'block';
+                    
+                    // JWTトークンを保存
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // フォームをリセット
+                    registerForm.reset();
+                    passwordStrengthBar.style.width = '0';
+                    
+                    // 2秒後にホームページにリダイレクト
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                } else {
+                    // バリデーションエラーの処理
+                    if (data.errors && Array.isArray(data.errors)) {
+                        data.errors.forEach(error => {
+                            if (error.path === 'username') {
+                                document.getElementById('usernameError').textContent = error.msg;
+                                document.getElementById('usernameError').style.display = 'block';
+                            } else if (error.path === 'email') {
+                                document.getElementById('emailError').textContent = error.msg;
+                                document.getElementById('emailError').style.display = 'block';
+                            } else if (error.path === 'password') {
+                                document.getElementById('passwordError').textContent = error.msg;
+                                document.getElementById('passwordError').style.display = 'block';
+                            }
+                        });
+                    } else {
+                        throw new Error(data.error || '登録に失敗しました');
+                    }
+                }
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                // UIを元に戻す
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'アカウント作成';
+            }
+        });
+
+        // 既にログインしている場合はホームにリダイレクト
+        if (localStorage.getItem('authToken')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
