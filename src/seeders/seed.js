@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { User, Post, sequelize } = require('../models');
 const { seedCreativeCommunity } = require('./creativeCommunitySeed');
+const designerJobSeed = require('./designerJobSeed');
 
 const seedData = async () => {
   try {
@@ -82,6 +83,10 @@ const seedData = async () => {
     console.log('\n🎨 原宿クリエイティブコミュニティデータを投入中...');
     const creativeData = await seedCreativeCommunity();
 
+    // デザイナー求人データの投入
+    console.log('\n💼 デザイナー求人データを投入中...');
+    await designerJobSeed();
+
     console.log('\n🎉 シードデータの投入が完了しました！');
     console.log('\n📝 作成されたユーザー:');
     users.forEach(user => {
@@ -93,6 +98,9 @@ const seedData = async () => {
     console.log(`   - イベント: ${creativeData.events.length}件`);
     console.log(`   - コラボレーション: ${creativeData.collaborations.length}件`);
     console.log(`   - マッチングリクエスト: ${creativeData.matchingRequests.length}件`);
+    console.log('\n💼 デザイナー求人データ:');
+    console.log(`   - 求人サイト: 10サイト`);
+    console.log(`   - デザイナー求人: 8件（全て未経験歓迎）`);
     console.log('\n💡 全てのユーザーのパスワードは元のパスワードを使用してください');
 
   } catch (error) {

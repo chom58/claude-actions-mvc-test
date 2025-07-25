@@ -9,6 +9,8 @@ const apparelBrandRoutes = require('./apparelBrandRoutes');
 const creativeEventRoutes = require('./creativeEventRoutes');
 const collaborationRoutes = require('./collaborationRoutes');
 const matchingRoutes = require('./matchingRoutes');
+const designerJobRoutes = require('./designerJobRoutes');
+const jobSiteRoutes = require('./jobSiteRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -26,14 +28,21 @@ router.get('/', (req, res) => {
       apparelBrands: '/api/apparel-brands',
       events: '/api/events',
       collaborations: '/api/collaborations',
-      matching: '/api/matching'
+      matching: '/api/matching',
+      // デザイナー求人
+      designerJobs: '/api/designer-jobs',
+      jobSites: '/api/job-sites'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
       harajukuApparelBrands: '/api/apparel-brands/harajuku',
       upcomingEvents: '/api/events/upcoming',
       featuredCollaborations: '/api/collaborations/featured',
-      highPriorityMatching: '/api/matching/high-priority'
+      highPriorityMatching: '/api/matching/high-priority',
+      // デザイナー求人特別エンドポイント
+      entryLevelStats: '/api/designer-jobs/stats/entry-level',
+      featuredJobs: '/api/designer-jobs/featured/list',
+      jobSiteStats: '/api/job-sites?include_stats=true'
     }
   });
 });
@@ -50,5 +59,9 @@ router.use('/apparel-brands', apparelBrandRoutes);
 router.use('/events', creativeEventRoutes);
 router.use('/collaborations', collaborationRoutes);
 router.use('/matching', matchingRoutes);
+
+// デザイナー求人ルート
+router.use('/designer-jobs', designerJobRoutes);
+router.use('/job-sites', jobSiteRoutes);
 
 module.exports = router;
