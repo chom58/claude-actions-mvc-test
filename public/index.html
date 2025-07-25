@@ -19,7 +19,7 @@
         }
 
         :root {
-            /* 原宿ネオンカラーパレット */
+            /* ダークモード（デフォルト） */
             --color-primary: #ffffff;
             --color-secondary: #f0f0f0;
             --color-background: #0a0a0a;
@@ -66,6 +66,15 @@
             
             /* トランジション */
             --transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* ライトモード */
+        [data-theme="light"] {
+            --color-primary: #1a1a1a;
+            --color-secondary: #404040;
+            --color-background: #ffffff;
+            --color-surface: #f8f9fa;
+            --color-border: #e0e0e0;
         }
 
         body {
@@ -151,6 +160,7 @@
 
         .logo-icon {
             animation: float 3s ease-in-out infinite;
+            will-change: transform; /* GPU加速 */
         }
 
         @keyframes float {
@@ -219,6 +229,61 @@
             width: 100%;
         }
 
+        /* テーマ切り替えボタン */
+        .theme-toggle {
+            background: transparent;
+            border: 2px solid var(--neon-pink);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--neon-pink);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-pink);
+            transform: scale(0);
+            transition: transform 0.3s ease;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .theme-toggle:hover {
+            box-shadow: 
+                0 0 20px var(--neon-pink),
+                inset 0 0 20px rgba(255, 20, 147, 0.1);
+            transform: scale(1.1);
+        }
+
+        .theme-toggle:hover::before {
+            transform: scale(1);
+        }
+
+        .theme-toggle:hover i {
+            color: var(--color-background);
+            z-index: 2;
+            position: relative;
+        }
+
+        .theme-toggle i {
+            font-size: 1rem;
+            transition: var(--transition);
+            z-index: 2;
+            position: relative;
+        }
+
         /* Hero Section */
         .hero {
             min-height: 100vh;
@@ -253,6 +318,7 @@
             animation: rotate 20s linear infinite;
             opacity: 0.1;
             filter: blur(100px);
+            will-change: transform; /* GPU加速 */
         }
 
         @keyframes rotate {
@@ -277,12 +343,13 @@
             letter-spacing: 0.05em;
             text-transform: uppercase;
             position: relative;
-            animation: glitch 2s infinite;
+            animation: glitch 4s infinite; /* パフォーマンス最適化：頻度を半分に */
             text-shadow: 
                 3px 3px 0 var(--neon-pink),
                 -3px -3px 0 var(--neon-blue),
                 3px -3px 0 var(--neon-green),
                 -3px 3px 0 var(--neon-purple);
+            will-change: transform, text-shadow; /* GPU加速 */
         }
 
         /* グリッチエフェクト */
@@ -521,6 +588,7 @@
                 radial-gradient(circle at 40% 20%, var(--neon-green) 0%, transparent 50%);
             opacity: 0.05;
             animation: float 20s ease-in-out infinite;
+            will-change: transform; /* GPU加速 */
         }
 
         @keyframes float {
@@ -650,6 +718,7 @@
             margin-bottom: var(--spacing-md);
             display: block;
             animation: icon-float 3s ease-in-out infinite;
+            will-change: transform; /* GPU加速 */
         }
 
         .category-icon i {
@@ -782,7 +851,8 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             filter: drop-shadow(0 0 25px var(--neon-pink));
-            animation: neon-pulse 2s ease-in-out infinite;
+            animation: neon-pulse 3s ease-in-out infinite; /* パフォーマンス最適化：頻度を減らす */
+            will-change: filter; /* GPU加速 */
         }
 
         @keyframes neon-pulse {
@@ -967,6 +1037,7 @@
             background-clip: text;
             filter: drop-shadow(0 0 20px var(--neon-blue));
             transition: var(--transition);
+            will-change: transform, filter; /* GPU加速 */
         }
 
         .benefit-card:hover .benefit-icon i {
@@ -1107,6 +1178,23 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* アクセシビリティ：アニメーション削減設定 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            
+            .hero::before,
+            .parallax-bg::before {
+                animation: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1162,6 +1250,11 @@
                 <li><a href="#categories">カテゴリ</a></li>
                 <li><a href="#features">機能</a></li>
                 <li><a href="#designer-jobs">求人</a></li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle" aria-label="テーマ切り替え">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                </li>
             </ul>
         </nav>
     </header>
@@ -1417,15 +1510,21 @@
 
     <!-- JavaScript -->
     <script>
-        // Header scroll effect
+        // Header scroll effect with throttling for performance
+        let scrollTimeout;
         window.addEventListener('scroll', () => {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+            if (!scrollTimeout) {
+                scrollTimeout = setTimeout(() => {
+                    const header = document.querySelector('.header');
+                    if (window.scrollY > 100) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                    scrollTimeout = null;
+                }, 16); // ~60fps
             }
-        });
+        }, { passive: true }); // passive listening for better performance
 
         // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1441,25 +1540,31 @@
             });
         });
 
-        // Intersection Observer for animations
+        // Intersection Observer for animations with performance optimization
         const observerOptions = {
-            threshold: 0.3,
-            rootMargin: '0px'
+            threshold: 0.2, // 少し早めにトリガー
+            rootMargin: '50px 0px' // 50px手前で開始
         };
 
         const animationObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
                     entry.target.classList.add('animated');
-                    // アイコンのアニメーション
+                    // アイコンのアニメーション（パフォーマンス最適化）
                     const icons = entry.target.querySelectorAll('.stat-icon, .benefit-icon');
                     icons.forEach((icon, index) => {
+                        // requestAnimationFrame を使用してスムーズなアニメーション
                         setTimeout(() => {
-                            icon.style.transform = 'scale(1.2)';
-                            setTimeout(() => {
-                                icon.style.transform = 'scale(1)';
-                            }, 300);
-                        }, index * 200);
+                            requestAnimationFrame(() => {
+                                icon.style.transform = 'scale(1.2)';
+                                icon.style.transition = 'transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                                setTimeout(() => {
+                                    requestAnimationFrame(() => {
+                                        icon.style.transform = 'scale(1)';
+                                    });
+                                }, 300);
+                            });
+                        }, index * 100); // 間隔を短縮
                     });
                 }
             });
@@ -1728,8 +1833,60 @@
             }
         }
 
+        // テーマ切り替え機能
+        class ThemeManager {
+            constructor() {
+                this.currentTheme = this.getStoredTheme() || 'dark';
+                this.toggleButton = document.getElementById('theme-toggle');
+                this.themeIcon = document.getElementById('theme-icon');
+                this.init();
+            }
+
+            init() {
+                this.setTheme(this.currentTheme);
+                this.toggleButton.addEventListener('click', () => this.toggleTheme());
+            }
+
+            getStoredTheme() {
+                return localStorage.getItem('harajuku-theme');
+            }
+
+            setStoredTheme(theme) {
+                localStorage.setItem('harajuku-theme', theme);
+            }
+
+            setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                this.currentTheme = theme;
+                this.updateIcon(theme);
+                this.setStoredTheme(theme);
+            }
+
+            updateIcon(theme) {
+                if (theme === 'light') {
+                    this.themeIcon.className = 'fas fa-sun';
+                } else {
+                    this.themeIcon.className = 'fas fa-moon';
+                }
+            }
+
+            toggleTheme() {
+                const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+                this.setTheme(newTheme);
+                
+                // アニメーション効果
+                this.toggleButton.style.transform = 'scale(0.8) rotate(180deg)';
+                setTimeout(() => {
+                    this.toggleButton.style.transform = 'scale(1) rotate(0deg)';
+                }, 150);
+            }
+        }
+
         // ページ読み込み時に統計データを読み込み
         document.addEventListener('DOMContentLoaded', () => {
+            // テーママネージャーを初期化
+            new ThemeManager();
+            
             loadJobStats();
             
             // 求人読み込みボタンのイベントリスナー
