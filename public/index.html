@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="原宿から発信するデザインとファッションの最前線。多様なクリエイターが出会い、新たな価値を生み出すハブ。">
+    <meta name="theme-color" content="#FF1493">
     <title>原宿クリエイティブコミュニティ | CREATE. CONNECT. INSPIRE.</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -199,6 +201,65 @@
             height: 70px;
         }
 
+        /* ハンバーガーメニュー */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1002;
+            position: relative;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 3px;
+            background: var(--neon-pink);
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .hamburger.active span:first-child {
+            transform: rotate(45deg);
+            background: var(--neon-blue);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .hamburger.active span:last-child {
+            transform: rotate(-45deg);
+            background: var(--neon-green);
+        }
+
+        /* モバイルナビゲーションオーバーレイ */
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-nav-overlay.active {
+            opacity: 1;
+        }
+
         .logo {
             text-decoration: none;
             display: inline-block;
@@ -283,6 +344,186 @@
 
         .nav-links a:hover::after {
             width: 100%;
+        }
+
+        /* Auth Menu */
+        .auth-menu {
+            margin-left: auto;
+        }
+
+        .auth-menu a {
+            background: transparent;
+            border: 1px solid var(--neon-pink);
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-menu a:hover {
+            background: var(--neon-pink);
+            color: var(--color-background);
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            color: var(--neon-blue);
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        #logoutBtn {
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        #logoutBtn:hover {
+            background: var(--neon-blue);
+            color: var(--color-background);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Mobile Navigation Drawer */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 350px;
+            height: 100vh;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--neon-pink);
+            transition: right 0.3s ease;
+            z-index: 1001;
+            padding: 80px 30px 30px;
+            overflow-y: auto;
+            box-shadow: -5px 0 30px rgba(255, 20, 147, 0.3);
+        }
+
+        .mobile-nav.active {
+            right: 0;
+        }
+
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+        }
+
+        .mobile-nav-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mobile-nav-links li {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateX(50px);
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .mobile-nav-links li:nth-child(1) { animation-delay: 0.1s; }
+        .mobile-nav-links li:nth-child(2) { animation-delay: 0.2s; }
+        .mobile-nav-links li:nth-child(3) { animation-delay: 0.3s; }
+        .mobile-nav-links li:nth-child(4) { animation-delay: 0.4s; }
+        .mobile-nav-links li:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .mobile-nav-links a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-bold);
+            font-family: var(--font-accent);
+            display: block;
+            padding: 10px 0;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav-links a::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--gradient-neon);
+            transition: width 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a:active {
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px var(--neon-pink);
+            transform: translateX(10px);
+        }
+
+        .mobile-nav-links a:hover::before,
+        .mobile-nav-links a:active::before {
+            width: 20px;
+        }
+
+        .mobile-auth-menu {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-auth-menu .user-info {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .mobile-auth-menu .user-name {
+            font-size: 1.2rem;
+        }
+
+        .mobile-auth-menu #logoutBtn,
+        .mobile-auth-menu a {
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            font-size: 1rem;
         }
 
         /* Hero Section */
@@ -718,6 +959,7 @@
             margin-bottom: var(--spacing-md);
             display: block;
             animation: icon-float 3s ease-in-out infinite;
+            will-change: transform;
         }
 
         .category-icon i {
@@ -740,6 +982,18 @@
             }
             50% {
                 transform: translate3d(0, -10px, 0) skewY(2deg);
+            }
+        }
+
+        /* アニメーションのパフォーマンス最適化 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
 
@@ -1124,8 +1378,44 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            /* ハンバーガーメニュー表示 */
+            .hamburger {
+                display: flex;
+            }
+
+            /* ナビゲーションリンクのモバイル対応 */
             .nav-links {
-                display: none;
+                position: fixed;
+                right: -300px;
+                top: 0;
+                height: 100vh;
+                width: 280px;
+                flex-direction: column;
+                background: linear-gradient(135deg, rgba(26, 26, 26, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%);
+                backdrop-filter: blur(20px);
+                justify-content: flex-start;
+                align-items: flex-start;
+                padding: 100px 40px 40px;
+                transition: right 0.3s ease-in-out;
+                gap: var(--spacing-lg);
+                border-left: 2px solid var(--neon-pink);
+                box-shadow: -5px 0 30px rgba(255, 20, 147, 0.5);
+                z-index: 1001;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 1.2rem;
+                width: 100%;
+                padding: var(--spacing-sm) 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .mobile-nav-overlay {
+                display: block;
             }
             
             .logo-svg {
@@ -1142,13 +1432,33 @@
                 font-size: 1rem;
             }
 
+            /* ヘッダーパディング調整 */
+            .nav-container {
+                padding: 0 var(--spacing-md);
+                height: 60px;
+            }
+
             .hero {
                 min-height: 80vh;
                 padding: var(--spacing-2xl) var(--spacing-md);
             }
+
+            .hero-title {
+                font-size: clamp(3rem, 10vw, 6rem);
+                margin-bottom: var(--spacing-md);
+            }
+
+            .hero-subtitle {
+                font-size: clamp(1rem, 2.5vw, 1.3rem);
+                padding: 0 var(--spacing-sm);
+            }
             
             .section {
                 padding: var(--spacing-2xl) var(--spacing-md);
+            }
+
+            .section-title {
+                font-size: 2rem;
             }
             
             .category-grid {
@@ -1167,11 +1477,89 @@
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+                gap: var(--spacing-sm);
             }
 
+            /* ボタンのタッチフレンドリー化 */
             .btn {
                 width: 100%;
                 max-width: 280px;
+                min-height: 48px;
+                padding: var(--spacing-md) var(--spacing-lg);
+                font-size: 0.95rem;
+            }
+
+            /* カード調整 */
+            .card {
+                margin-bottom: var(--spacing-lg);
+            }
+
+            /* フッター調整 */
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--spacing-lg);
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+        }
+
+        /* タブレット対応 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .hero-title {
+                font-size: clamp(5rem, 10vw, 7rem);
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-container {
+                padding: 0 var(--spacing-lg);
+            }
+        }
+
+        /* 小型モバイル対応 */
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: clamp(2.5rem, 12vw, 4rem);
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .card-category {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* タッチデバイス向けのホバー効果無効化 */
+        @media (hover: none) {
+            .btn:hover::before {
+                left: -100%;
+            }
+
+            .nav-links a:hover::after {
+                width: 0;
+            }
+
+            .card:hover {
+                transform: none;
+            }
+        }
+
+        /* 高解像度ディスプレイ対応 */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .hero-title {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
             }
         }
 
@@ -1267,7 +1655,7 @@
     <header class="header">
         <nav class="nav-container">
             <a href="#" class="logo">
-                <svg class="logo-svg" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+                <svg class="logo-svg" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg" aria-label="原宿クリエイティブコミュニティロゴ">
                     <defs>
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#FF1493;stop-opacity:1" />
@@ -1315,12 +1703,34 @@
                 <li><a href="#categories">カテゴリ</a></li>
                 <li><a href="#features">機能</a></li>
                 <li><a href="#designer-jobs">求人</a></li>
+                <li class="auth-menu" id="authMenu">
+                    <a href="login.html" id="loginLink">ログイン</a>
+                </li>
             </ul>
             <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
                 <i class="fas fa-moon" id="themeIcon"></i>
             </button>
+            <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </nav>
     </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <nav class="mobile-nav" id="mobileNav">
+        <ul class="mobile-nav-links">
+            <li><a href="#home" class="mobile-nav-link">ホーム</a></li>
+            <li><a href="#categories" class="mobile-nav-link">カテゴリ</a></li>
+            <li><a href="#features" class="mobile-nav-link">機能</a></li>
+            <li><a href="#designer-jobs" class="mobile-nav-link">求人</a></li>
+        </ul>
+        <div class="mobile-auth-menu" id="mobileAuthMenu">
+            <a href="login.html" id="mobileLoginLink">ログイン</a>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -1593,8 +2003,62 @@
                         behavior: 'smooth',
                         block: 'start'
                     });
+                    // モバイルメニューを閉じる
+                    if (window.innerWidth <= 768) {
+                        const hamburger = document.getElementById('hamburger');
+                        const navLinks = document.querySelector('.nav-links');
+                        const overlay = document.querySelector('.mobile-nav-overlay');
+                        if (hamburger && navLinks && overlay) {
+                            hamburger.classList.remove('active');
+                            navLinks.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }
+                    }
                 }
             });
+        });
+
+        // ハンバーガーメニューの動作
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const mobileOverlay = document.createElement('div');
+        mobileOverlay.className = 'mobile-nav-overlay';
+        document.body.appendChild(mobileOverlay);
+
+        if (hamburger && navLinks) {
+            hamburger.addEventListener('click', () => {
+                const isActive = hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                mobileOverlay.classList.toggle('active');
+                document.body.style.overflow = isActive ? 'hidden' : '';
+                hamburger.setAttribute('aria-expanded', isActive);
+                hamburger.setAttribute('aria-label', isActive ? 'メニューを閉じる' : 'メニューを開く');
+            });
+
+            // オーバーレイクリックで閉じる
+            mobileOverlay.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                hamburger.setAttribute('aria-expanded', 'false');
+                hamburger.setAttribute('aria-label', 'メニューを開く');
+            });
+        }
+
+        // ウィンドウリサイズ時の処理
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (window.innerWidth > 768 && hamburger && navLinks && mobileOverlay) {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                    mobileOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }, 250);
         });
 
         // Intersection Observer for animations
@@ -1916,10 +2380,98 @@
             }
         }
 
+        // 認証状態管理
+        function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('user');
+            const authMenu = document.getElementById('authMenu');
+            const mobileAuthMenu = document.getElementById('mobileAuthMenu');
+
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    authMenu.innerHTML = `
+                        <div class="user-info">
+                            <span class="user-name">${userData.username}</span>
+                            <button id="logoutBtn" onclick="logout()">ログアウト</button>
+                        </div>
+                    `;
+                    mobileAuthMenu.innerHTML = `
+                        <div class="user-info">
+                            <span class="user-name">${userData.username}</span>
+                            <button id="mobileLogoutBtn" onclick="logout()">ログアウト</button>
+                        </div>
+                    `;
+                } catch (error) {
+                    console.error('ユーザーデータのパースに失敗:', error);
+                    authMenu.innerHTML = '<a href="login.html" id="loginLink">ログイン</a>';
+                    mobileAuthMenu.innerHTML = '<a href="login.html" id="mobileLoginLink">ログイン</a>';
+                }
+            } else {
+                authMenu.innerHTML = '<a href="login.html" id="loginLink">ログイン</a>';
+                mobileAuthMenu.innerHTML = '<a href="login.html" id="mobileLoginLink">ログイン</a>';
+            }
+        }
+
+        // ログアウト処理
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            checkAuthStatus();
+            alert('ログアウトしました。');
+        }
+
+        // モバイルメニューの制御
+        function initMobileMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const mobileNav = document.getElementById('mobileNav');
+            const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+            function toggleMobileMenu() {
+                hamburger.classList.toggle('active');
+                mobileNav.classList.toggle('active');
+                mobileNavOverlay.classList.toggle('active');
+                document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+            }
+
+            function closeMobileMenu() {
+                hamburger.classList.remove('active');
+                mobileNav.classList.remove('active');
+                mobileNavOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            hamburger.addEventListener('click', toggleMobileMenu);
+            mobileNavOverlay.addEventListener('click', closeMobileMenu);
+
+            // ナビゲーションリンククリック時にメニューを閉じる
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+
+            // ESCキーでメニューを閉じる
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
         // ページ読み込み時に統計データを読み込み
         document.addEventListener('DOMContentLoaded', () => {
+            // 認証状態をチェック
+            checkAuthStatus();
+            
+            // モバイルメニューを初期化
+            initMobileMenu();
+            
             // テーマ切り替え初期化
             initThemeToggle();
+            
+            // パフォーマンス最適化の初期化
+            initPerformanceOptimizations();
+            
             loadJobStats();
             
             // 求人読み込みボタンのイベントリスナー
@@ -2013,11 +2565,6 @@
             }, { passive: true });
         }
 
-        // DOM読み込み時の初期化に追加
-        document.addEventListener('DOMContentLoaded', () => {
-            // 既存の初期化コードの後に追加
-            initPerformanceOptimizations();
-        });
 
     </script>
 </body>
