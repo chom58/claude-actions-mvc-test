@@ -9,6 +9,8 @@ const apparelBrandRoutes = require('./apparelBrandRoutes');
 const creativeEventRoutes = require('./creativeEventRoutes');
 const collaborationRoutes = require('./collaborationRoutes');
 const matchingRoutes = require('./matchingRoutes');
+const designerJobRoutes = require('./designerJobRoutes');
+const jobSiteRoutes = require('./jobSiteRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -26,14 +28,23 @@ router.get('/', (req, res) => {
       apparelBrands: '/api/apparel-brands',
       events: '/api/events',
       collaborations: '/api/collaborations',
-      matching: '/api/matching'
+      matching: '/api/matching',
+      // デザイナー採用メディア
+      designerJobs: '/api/designer-jobs',
+      jobSites: '/api/job-sites'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
       harajukuApparelBrands: '/api/apparel-brands/harajuku',
       upcomingEvents: '/api/events/upcoming',
       featuredCollaborations: '/api/collaborations/featured',
-      highPriorityMatching: '/api/matching/high-priority'
+      highPriorityMatching: '/api/matching/high-priority',
+      // デザイナー採用メディア特別エンドポイント
+      entryLevelJobs: '/api/designer-jobs?experience=entry_level',
+      newGraduateJobs: '/api/designer-jobs?experience=new_graduate',
+      featuredJobs: '/api/designer-jobs/featured/list',
+      jobStats: '/api/designer-jobs/stats/entry-level',
+      popularJobSites: '/api/job-sites/popular/list'
     }
   });
 });
@@ -50,5 +61,9 @@ router.use('/apparel-brands', apparelBrandRoutes);
 router.use('/events', creativeEventRoutes);
 router.use('/collaborations', collaborationRoutes);
 router.use('/matching', matchingRoutes);
+
+// デザイナー採用メディアルート
+router.use('/designer-jobs', designerJobRoutes);
+router.use('/job-sites', jobSiteRoutes);
 
 module.exports = router;
