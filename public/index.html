@@ -20,6 +20,7 @@
             box-sizing: border-box;
         }
 
+        /* ダークモード（デフォルト） */
         :root {
             /* 原宿ネオンカラーパレット */
             --color-primary: #ffffff;
@@ -27,6 +28,10 @@
             --color-background: #0a0a0a;
             --color-surface: #1a1a1a;
             --color-border: #333333;
+            --header-bg: rgba(10, 10, 10, 0.9);
+            --card-bg: var(--color-surface);
+            --text-primary: #ffffff;
+            --text-secondary: #f0f0f0;
             
             /* ネオンカラー */
             --neon-pink: #FF1493;
@@ -70,14 +75,42 @@
             --transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
+        /* ライトモード */
+        :root[data-theme="light"] {
+            /* 基本カラー */
+            --color-primary: #1a1a1a;
+            --color-secondary: #333333;
+            --color-background: #ffffff;
+            --color-surface: #f8f8f8;
+            --color-border: #e0e0e0;
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --card-bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            
+            /* ネオンカラー（ライトモード用に調整） */
+            --neon-pink: #FF1493;
+            --neon-blue: #00CED1;
+            --neon-green: #32CD32;
+            --neon-purple: #DA70D6;
+            --neon-yellow: #FFD700;
+            --neon-orange: #FF6B35;
+            
+            /* シャドウ（ライトモード用） */
+            --shadow-neon-pink: 0 0 15px rgba(255, 20, 147, 0.4);
+            --shadow-neon-blue: 0 0 15px rgba(0, 206, 209, 0.4);
+            --shadow-neon-green: 0 0 15px rgba(50, 205, 50, 0.4);
+        }
+
         body {
             font-family: var(--font-main);
             line-height: 1.6;
-            color: var(--color-primary);
+            color: var(--text-primary);
             background: var(--color-background);
             font-weight: var(--font-weight-regular);
             overflow-x: hidden;
             position: relative;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* 背景アニメーション */
@@ -107,9 +140,42 @@
             z-index: 1;
         }
 
+        /* テーマトグルボタン */
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid var(--neon-pink);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-left: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle:hover {
+            background: var(--neon-pink);
+            transform: rotate(180deg);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover i {
+            color: var(--color-background);
+        }
+
         /* Header */
         .header {
-            background: rgba(10, 10, 10, 0.9);
+            background: var(--header-bg);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--neon-pink);
             position: fixed;
@@ -331,49 +397,6 @@
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
         }
 
-        /* Hamburger Menu */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: space-around;
-            width: 30px;
-            height: 25px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            z-index: 1002;
-            position: relative;
-        }
-
-        .hamburger span {
-            width: 30px;
-            height: 3px;
-            background: var(--neon-pink);
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            position: relative;
-            transform-origin: 1px;
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(2px, 2px);
-            background: var(--neon-blue);
-            box-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: translateX(20px);
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(2px, -2px);
-            background: var(--neon-blue);
-            box-shadow: 0 0 10px var(--neon-blue);
-        }
-
         /* Mobile Navigation Drawer */
         .mobile-nav {
             position: fixed;
@@ -541,7 +564,7 @@
 
         @keyframes rotate {
             100% {
-                transform: rotate(360deg);
+                transform: rotate3d(0, 0, 1, 360deg);
             }
         }
 
@@ -779,6 +802,7 @@
 
         .section-alt {
             background: var(--color-surface);
+            transition: background 0.3s ease;
         }
 
         /* パララックス背景 */
@@ -809,13 +833,13 @@
 
         @keyframes float {
             0%, 100% {
-                transform: translate(0, 0) scale(1);
+                transform: translate3d(0, 0, 0) scale(1);
             }
             33% {
-                transform: translate(30px, -30px) scale(1.1);
+                transform: translate3d(30px, -30px, 0) scale(1.1);
             }
             66% {
-                transform: translate(-20px, 20px) scale(0.9);
+                transform: translate3d(-20px, 20px, 0) scale(0.9);
             }
         }
 
@@ -855,7 +879,7 @@
         .section-subtitle {
             text-align: center;
             font-size: 1.1rem;
-            color: var(--color-secondary);
+            color: var(--text-secondary);
             margin-bottom: var(--spacing-2xl);
             max-width: 600px;
             margin-left: auto;
@@ -873,7 +897,7 @@
         }
 
         .category-card {
-            background: var(--color-surface);
+            background: var(--card-bg);
             border-radius: 0;
             padding: var(--spacing-2xl) var(--spacing-lg);
             text-align: center;
@@ -883,6 +907,7 @@
             overflow: hidden;
             transform: skewY(-2deg);
             clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .category-card::before {
@@ -953,10 +978,10 @@
 
         @keyframes icon-float {
             0%, 100% {
-                transform: translateY(0) skewY(2deg);
+                transform: translate3d(0, 0, 0) skewY(2deg);
             }
             50% {
-                transform: translateY(-10px) skewY(2deg);
+                transform: translate3d(0, -10px, 0) skewY(2deg);
             }
         }
 
@@ -983,7 +1008,7 @@
         }
 
         .category-description {
-            color: var(--color-secondary);
+            color: var(--text-secondary);
             line-height: 1.5;
             margin-bottom: var(--spacing-lg);
             font-size: 0.95rem;
@@ -997,11 +1022,12 @@
         }
 
         .api-card {
-            background: var(--color-background);
+            background: var(--card-bg);
             border-radius: 12px;
             padding: var(--spacing-lg);
             border: 1px solid var(--color-border);
             transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .api-card:hover {
@@ -1027,7 +1053,7 @@
         }
 
         .api-card p {
-            color: var(--color-secondary);
+            color: var(--text-secondary);
             line-height: 1.5;
             margin-bottom: var(--spacing-md);
             font-size: 0.95rem;
@@ -1044,11 +1070,12 @@
         .stat-card {
             text-align: center;
             padding: var(--spacing-xl) var(--spacing-lg);
-            background: var(--color-surface);
+            background: var(--card-bg);
             border: 2px solid transparent;
             position: relative;
             overflow: hidden;
             transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card::before {
@@ -1120,11 +1147,12 @@
         }
 
         .vision-card {
-            background: var(--color-surface);
+            background: var(--card-bg);
             border: 2px solid var(--color-border);
             overflow: hidden;
             transition: var(--transition);
             position: relative;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
         }
 
         .vision-card:hover {
@@ -1237,12 +1265,13 @@
         }
 
         .benefit-card {
-            background: var(--color-surface);
+            background: var(--card-bg);
             border: 2px solid var(--color-border);
             padding: var(--spacing-xl);
             transition: var(--transition);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .benefit-card::before {
@@ -1417,6 +1446,16 @@
             
             .logo-svg {
                 height: 35px;
+            }
+            
+            .theme-toggle {
+                width: 35px;
+                height: 35px;
+                margin-left: 10px;
+            }
+            
+            .theme-toggle i {
+                font-size: 1rem;
             }
 
             /* ヘッダーパディング調整 */
@@ -1604,6 +1643,33 @@
             }
         }
 
+        /* ライトモード時の調整 */
+        :root[data-theme="light"] .header {
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        :root[data-theme="light"] .hero::before {
+            opacity: 0.05;
+        }
+
+        :root[data-theme="light"] body::before {
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 20, 147, 0.02) 2px,
+                    rgba(255, 20, 147, 0.02) 4px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 206, 209, 0.02) 2px,
+                    rgba(0, 206, 209, 0.02) 4px
+                );
+        }
+
         /* Loading Animation */
         .loading {
             display: inline-block;
@@ -1617,6 +1683,50 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* パフォーマンス最適化用CSS */
+        .reduce-motion * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+
+        .reduce-motion .hero::before,
+        .reduce-motion .parallax-bg::before {
+            animation: none !important;
+        }
+
+        /* GPU最適化 */
+        .category-card,
+        .stat-card,
+        .vision-card,
+        .benefit-card,
+        .api-card {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        /* ビューポート外のアニメーションを停止 */
+        .category-icon:not(.in-view) i,
+        .stat-icon:not(.in-view) i,
+        .benefit-icon:not(.in-view) i {
+            animation-play-state: paused;
+        }
+
+        /* スクロール中のアニメーション調整 */
+        .is-scrolling .hero::before,
+        .is-scrolling .parallax-bg::before {
+            animation-play-state: paused;
+        }
+
+        /* トランジションのGPU最適化 */
+        .category-card:hover,
+        .stat-card:hover,
+        .vision-card:hover,
+        .benefit-card:hover,
+        .api-card:hover {
+            transform: translate3d(0, -5px, 0);
         }
     </style>
 </head>
@@ -1677,6 +1787,9 @@
                     <a href="login.html" id="loginLink">ログイン</a>
                 </li>
             </ul>
+            <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
             <button class="hamburger" id="hamburger" aria-label="メニューを開く" aria-expanded="false">
                 <span></span>
                 <span></span>
@@ -2315,6 +2428,38 @@
             }
         }
 
+        // テーマ切り替え機能
+        function initThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const root = document.documentElement;
+            
+            // 保存されたテーマを読み込み
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            root.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+            
+            // テーマ切り替え
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = root.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                root.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+                
+                // アニメーション効果
+                themeToggle.style.transform = 'rotate(360deg)';
+                setTimeout(() => {
+                    themeToggle.style.transform = 'rotate(0deg)';
+                }, 300);
+            });
+            
+            function updateThemeIcon(theme) {
+                themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+        }
+
         // 認証状態管理
         function checkAuthStatus() {
             const token = localStorage.getItem('authToken');
@@ -2401,6 +2546,12 @@
             // モバイルメニューを初期化
             initMobileMenu();
             
+            // テーマ切り替え初期化
+            initThemeToggle();
+            
+            // パフォーマンス最適化の初期化
+            initPerformanceOptimizations();
+            
             loadJobStats();
             
             // 求人読み込みボタンのイベントリスナー
@@ -2413,6 +2564,87 @@
                 }
             });
         });
+
+        // アニメーションパフォーマンス最適化
+        function initPerformanceOptimizations() {
+            // prefers-reduced-motionの検出
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            
+            function handleReducedMotionChange() {
+                if (prefersReducedMotion.matches) {
+                    document.documentElement.classList.add('reduce-motion');
+                } else {
+                    document.documentElement.classList.remove('reduce-motion');
+                }
+            }
+            
+            handleReducedMotionChange();
+            prefersReducedMotion.addEventListener('change', handleReducedMotionChange);
+            
+            // Intersection Observerを使用したアニメーション制御
+            const animatedElements = document.querySelectorAll('.category-card, .stat-card, .vision-card, .benefit-card, .api-card');
+            
+            const animationObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            // GPU最適化のためのwill-changeを追加
+                            entry.target.style.willChange = 'transform, opacity';
+                        } else {
+                            entry.target.classList.remove('in-view');
+                            // ビューポート外ではwill-changeを削除
+                            entry.target.style.willChange = 'auto';
+                        }
+                    });
+                },
+                {
+                    threshold: 0.1,
+                    rootMargin: '50px'
+                }
+            );
+            
+            animatedElements.forEach(el => {
+                animationObserver.observe(el);
+            });
+            
+            // パララックス背景の最適化
+            const parallaxElements = document.querySelectorAll('.parallax-bg');
+            let ticking = false;
+            
+            function updateParallax() {
+                const scrolled = window.pageYOffset;
+                
+                parallaxElements.forEach(el => {
+                    const speed = el.dataset.speed || 0.5;
+                    const yPos = -(scrolled * speed);
+                    el.style.transform = `translate3d(0, ${yPos}px, 0)`;
+                });
+                
+                ticking = false;
+            }
+            
+            function requestTick() {
+                if (!ticking && !prefersReducedMotion.matches) {
+                    window.requestAnimationFrame(updateParallax);
+                    ticking = true;
+                }
+            }
+            
+            // パフォーマンスを考慮したスクロールイベント
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                requestTick();
+                
+                // スクロール中はアニメーションを一時停止
+                document.body.classList.add('is-scrolling');
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    document.body.classList.remove('is-scrolling');
+                }, 150);
+            }, { passive: true });
+        }
+
 
     </script>
 </body>
