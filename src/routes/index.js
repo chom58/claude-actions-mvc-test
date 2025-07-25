@@ -12,6 +12,7 @@ const matchingRoutes = require('./matchingRoutes');
 const designerJobRoutes = require('./designerJobRoutes');
 const jobSiteRoutes = require('./jobSiteRoutes');
 const csrfRoutes = require('./csrf');
+const systemRoutes = require('./systemRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -32,7 +33,12 @@ router.get('/', (req, res) => {
       matching: '/api/matching',
       // デザイナー採用メディア
       designerJobs: '/api/designer-jobs',
-      jobSites: '/api/job-sites'
+      jobSites: '/api/job-sites',
+      // システム情報
+      health: '/api/system/health',
+      info: '/api/system/info',
+      config: '/api/system/config',
+      csrf: '/api/csrf/token'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
@@ -58,6 +64,9 @@ router.use('/posts', postRoutes);
 
 // CSRF トークンルート
 router.use('/csrf', csrfRoutes);
+
+// システム情報ルート
+router.use('/system', systemRoutes);
 
 // 新しいクリエイティブコミュニティルート
 router.use('/design-companies', designCompanyRoutes);
