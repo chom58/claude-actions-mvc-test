@@ -6,6 +6,8 @@ const ApparelBrand = require('./ApparelBrand');
 const CreativeEvent = require('./CreativeEvent');
 const Collaboration = require('./Collaboration');
 const MatchingRequest = require('./MatchingRequest');
+const JobSite = require('./JobSite');
+const DesignerJob = require('./DesignerJob');
 
 // Existing relationships
 User.hasMany(Post, {
@@ -39,6 +41,27 @@ Collaboration.belongsTo(ApparelBrand, {
   as: 'apparelBrand'
 });
 
+// Designer Jobs relationships
+JobSite.hasMany(DesignerJob, {
+  foreignKey: 'jobSiteId',
+  as: 'jobs'
+});
+
+DesignerJob.belongsTo(JobSite, {
+  foreignKey: 'jobSiteId',
+  as: 'jobSite'
+});
+
+User.hasMany(DesignerJob, {
+  foreignKey: 'approvedBy',
+  as: 'approvedJobs'
+});
+
+DesignerJob.belongsTo(User, {
+  foreignKey: 'approvedBy',
+  as: 'approver'
+});
+
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -63,5 +86,7 @@ module.exports = {
   CreativeEvent,
   Collaboration,
   MatchingRequest,
+  JobSite,
+  DesignerJob,
   syncDatabase
 };
