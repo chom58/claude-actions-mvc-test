@@ -9,6 +9,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
     "seed": "node src/seeders/seed.js"
   },
   "keywords": [
@@ -48,6 +51,10 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.0.2",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "@playwright/test": "^1.40.0",
+    "playwright": "^1.40.0",
+    "@faker-js/faker": "^8.3.1",
+    "@axe-core/playwright": "^4.8.2"
   }
 }
