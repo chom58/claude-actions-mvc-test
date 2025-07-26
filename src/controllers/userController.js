@@ -2,6 +2,7 @@ const { User } = require('../models');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const crypto = require('crypto');
+const notificationService = require('../services/notificationService');
 
 // JWT秘密鍵の検証
 const validateJWTSecrets = () => {
@@ -99,6 +100,11 @@ exports.register = async (req, res) => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7日
+    });
+
+    // ウェルカム通知を送信（非同期）
+    notificationService.notifyWelcome(user.id).catch(error => {
+      console.error('Failed to send welcome notification:', error);
     });
 
     res.status(201).json({

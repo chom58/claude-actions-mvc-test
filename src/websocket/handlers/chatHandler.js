@@ -1,6 +1,7 @@
 const { ChatRoom, Message, User } = require('../../models');
 const { validateMessage, rateLimit } = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
+const notificationService = require('../../services/notificationService');
 
 const activeUsers = new Map(); // Track active users and their typing status
 const userSockets = new Map(); // Track user socket mapping
@@ -138,6 +139,9 @@ const chatHandler = (socket) => {
           userId: socket.userId,
           username: socket.user.username
         });
+
+        // オフラインユーザーにメール通知を送信
+        await notifyOfflineUsers(room, message, socket.user.username, socket.userId);
 
       } catch (error) {
         console.error('Send message error:', error);
@@ -327,6 +331,28 @@ const chatHandler = (socket) => {
       socket.emit('error', { message: 'Failed to get rooms' });
     }
   });
+
+  // オフラインユーザーへの通知メソッド
+  const notifyOfflineUsers = async (room, message, senderUsername, senderId) => {
+    try {
+      const offlineParticipants = room.participants.filter(participantId => {
+        return participantId !== senderId && !userSockets.has(participantId);
+      });
+
+      // オフラインの参加者にメール通知を送信
+      for (const participantId of offlineParticipants) {
+        await notificationService.notifyNewMessage(
+          participantId,
+          senderId,
+          senderUsername,
+          message.content
+        );
+      }
+    } catch (error) {
+      console.error('Error notifying offline users:', error);
+    }
+  };
+
 };
 
 module.exports = chatHandler;

@@ -12,6 +12,10 @@ const Image = require('./Image');
 const ImageUsage = require('./ImageUsage');
 const ChatRoom = require('./ChatRoom');
 const Message = require('./Message');
+const Notification = require('./Notification');
+const NotificationPreference = require('./NotificationPreference');
+const Review = require('./Review');
+const ReviewHelpful = require('./ReviewHelpful');
 
 // Existing relationships
 User.hasMany(Post, {
@@ -108,6 +112,59 @@ Message.belongsTo(User, {
   as: 'sender'
 });
 
+// Notification relationships
+User.hasMany(Notification, {
+  foreignKey: 'userId',
+  as: 'notifications'
+});
+
+Notification.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+User.hasOne(NotificationPreference, {
+  foreignKey: 'userId',
+  as: 'notificationPreference'
+});
+
+NotificationPreference.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+// Review relationships
+User.hasMany(Review, {
+  foreignKey: 'reviewerId',
+  as: 'reviewsWritten'
+});
+
+Review.belongsTo(User, {
+  foreignKey: 'reviewerId',
+  as: 'reviewer'
+});
+
+// ReviewHelpful relationships
+User.hasMany(ReviewHelpful, {
+  foreignKey: 'userId',
+  as: 'helpfulReviews'
+});
+
+ReviewHelpful.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+Review.hasMany(ReviewHelpful, {
+  foreignKey: 'reviewId',
+  as: 'helpfulVotes'
+});
+
+ReviewHelpful.belongsTo(Review, {
+  foreignKey: 'reviewId',
+  as: 'review'
+});
+
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -138,5 +195,9 @@ module.exports = {
   ImageUsage,
   ChatRoom,
   Message,
+  Notification,
+  NotificationPreference,
+  Review,
+  ReviewHelpful,
   syncDatabase
 };
