@@ -1,0 +1,39 @@
+FROM node:18-alpine
+
+# 作業ディレクトリの設定
+WORKDIR /app
+
+# 開発用パッケージのインストール
+RUN apk add --no-cache \
+    git \
+    bash \
+    curl
+
+# package.jsonとpackage-lock.jsonをコピー
+COPY package*.json ./
+
+# 依存関係のインストール（dev dependencies含む）
+RUN npm ci
+
+# アプリケーションのソースコードをコピー
+COPY . .
+
+# アプリケーション用ユーザーの作成
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
+# ログディレクトリの作成と権限設定
+RUN mkdir -p logs && chown -R nodejs:nodejs logs
+RUN mkdir -p uploads && chown -R nodejs:nodejs uploads
+
+# node_modulesの権限設定
+RUN chown -R nodejs:nodejs /app
+
+# ユーザーを切り替え
+USER nodejs
+
+# ポートの公開
+EXPOSE 3000 9229
+
+# nodemonでホットリロード
+CMD ["npm", "run", "dev:debug"]
