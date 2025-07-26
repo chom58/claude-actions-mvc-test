@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{resourceName}} 新規作成</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">{{resourceName}} 新規作成</h1>
+                <a href="/{{resourcePath}}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    一覧に戻る
+                </a>
+            </div>
+            
+            <form id="{{resourceName}}-form" class="space-y-6">
+{{formFields}}
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-btn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                        キャンセル
+                    </button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        作成
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // フォーム送信処理
+        async function submit{{resourceName}}Form(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch('/api/{{resourcePath}}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('作成しました');
+                    window.location.href = `/{{resourcePath}}/${result.id || result.{{resourceName}}.id}`;
+                } else {
+                    const error = await response.json();
+                    alert('作成に失敗しました: ' + (error.message || '不明なエラー'));
+                }
+            } catch (error) {
+                console.error('作成に失敗しました:', error);
+                alert('作成に失敗しました');
+            }
+        }
+        
+        // キャンセルボタン
+        document.getElementById('cancel-btn').onclick = () => {
+            window.location.href = '/{{resourcePath}}';
+        };
+        
+        // イベントリスナーを設定
+        document.getElementById('{{resourceName}}-form').addEventListener('submit', submit{{resourceName}}Form);
+    </script>
+</body>
+</html>

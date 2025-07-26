@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{resourceName}} 詳細</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">{{resourceName}} 詳細</h1>
+                <div class="space-x-2">
+                    <a href="/{{resourcePath}}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                        一覧に戻る
+                    </a>
+                    <a href="#" id="edit-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        編集
+                    </a>
+                    <button id="delete-btn" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        削除
+                    </button>
+                </div>
+            </div>
+            
+            <div id="{{resourceName}}-details" class="space-y-4">
+                <!-- データはJavaScriptで動的に読み込み -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const {{resourceName}}Id = window.location.pathname.split('/').pop();
+        
+        // {{resourceName}}詳細データを取得して表示
+        async function load{{resourceName}}Details() {
+            try {
+                const response = await fetch(\`/api/{{resourcePath}}/\${{{resourceName}}Id}\`);
+                const {{resourceName}} = await response.json();
+                
+                const detailsDiv = document.getElementById('{{resourceName}}-details');
+                detailsDiv.innerHTML = \`
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">ID</label>
+                            <p class="mt-1 text-sm text-gray-900">\${{{resourceName}}.id}</p>
+                        </div>
+{{detailFields}}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">作成日</label>
+                            <p class="mt-1 text-sm text-gray-900">\${new Date({{resourceName}}.createdAt).toLocaleDateString('ja-JP')}</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">更新日</label>
+                            <p class="mt-1 text-sm text-gray-900">\${new Date({{resourceName}}.updatedAt).toLocaleDateString('ja-JP')}</p>
+                        </div>
+                    </div>
+                \`;
+                
+                // 編集ボタンのリンクを設定
+                document.getElementById('edit-btn').href = \`/{{resourcePath}}/\${{{resourceName}}Id}/edit\`;
+            } catch (error) {
+                console.error('データの読み込みに失敗しました:', error);
+            }
+        }
+        
+        // {{resourceName}}を削除
+        async function delete{{resourceName}}() {
+            if (!confirm('本当に削除しますか？')) return;
+            
+            try {
+                const response = await fetch(\`/api/{{resourcePath}}/\${{{resourceName}}Id}\`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('削除しました');
+                    window.location.href = '/{{resourcePath}}';
+                } else {
+                    alert('削除に失敗しました');
+                }
+            } catch (error) {
+                console.error('削除に失敗しました:', error);
+                alert('削除に失敗しました');
+            }
+        }
+        
+        // イベントリスナーを設定
+        document.addEventListener('DOMContentLoaded', load{{resourceName}}Details);
+        document.getElementById('delete-btn').addEventListener('click', delete{{resourceName}});
+    </script>
+</body>
+</html>

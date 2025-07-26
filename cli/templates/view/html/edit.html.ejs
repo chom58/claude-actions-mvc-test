@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{resourceName}} 編集</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">{{resourceName}} 編集</h1>
+                <a href="#" id="back-btn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    詳細に戻る
+                </a>
+            </div>
+            
+            <form id="{{resourceName}}-form" class="space-y-6">
+{{formFields}}
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="cancel-btn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                        キャンセル
+                    </button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        更新
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const {{resourceName}}Id = window.location.pathname.split('/')[2];
+        
+        // {{resourceName}}データを取得してフォームに設定
+        async function load{{resourceName}}Data() {
+            try {
+                const response = await fetch(\`/api/{{resourcePath}}/\${{{resourceName}}Id}\`);
+                const {{resourceName}} = await response.json();
+                
+{{formDataBinding}}
+                
+                // 戻るボタンのリンクを設定
+                document.getElementById('back-btn').href = \`/{{resourcePath}}/\${{{resourceName}}Id}\`;
+                document.getElementById('cancel-btn').onclick = () => {
+                    window.location.href = \`/{{resourcePath}}/\${{{resourceName}}Id}\`;
+                };
+            } catch (error) {
+                console.error('データの読み込みに失敗しました:', error);
+            }
+        }
+        
+        // フォーム送信処理
+        async function submit{{resourceName}}Form(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                const response = await fetch(\`/api/{{resourcePath}}/\${{{resourceName}}Id}\`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    alert('更新しました');
+                    window.location.href = \`/{{resourcePath}}/\${{{resourceName}}Id}\`;
+                } else {
+                    const error = await response.json();
+                    alert('更新に失敗しました: ' + (error.message || '不明なエラー'));
+                }
+            } catch (error) {
+                console.error('更新に失敗しました:', error);
+                alert('更新に失敗しました');
+            }
+        }
+        
+        // イベントリスナーを設定
+        document.addEventListener('DOMContentLoaded', load{{resourceName}}Data);
+        document.getElementById('{{resourceName}}-form').addEventListener('submit', submit{{resourceName}}Form);
+    </script>
+</body>
+</html>
