@@ -1,0 +1,10 @@
+<div class="user-card">
+  <h4>{{name}}</h4>
+  <p>Email: {{email}}</p>
+  {{#if role}}
+    <p>Role: {{role}}</p>
+  {{/if}}
+  {{#if joinDate}}
+    <p>Joined: {{formatDate joinDate}}</p>
+  {{/if}}
+</div>

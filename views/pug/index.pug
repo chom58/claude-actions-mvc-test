@@ -1,0 +1,55 @@
+extends layout
+
+block content
+  .container
+    h1 Pugテンプレートエンジン デモページ
+    
+    .info
+      p
+        strong 現在のテンプレートエンジン: 
+        = templateEngine?.current || 'Pug'
+      p
+        strong 利用可能なエンジン: 
+        = templateEngine?.available?.join(', ') || 'EJS, Pug, Handlebars, Nunjucks'
+    
+    h2 Pugの特徴
+    ul.features
+      li
+        strong 簡潔な構文: 
+        | HTMLタグの記述が不要
+      li
+        strong インデントベース: 
+        | 階層構造が視覚的に分かりやすい
+      li
+        strong 豊富な機能: 
+        | ミックスイン、フィルター、継承
+      li
+        strong 高いパフォーマンス: 
+        | コンパイル済みテンプレート
+    
+    h2 動的コンテンツの例
+    if typeof users !== 'undefined' && users && users.length > 0
+      h3 ユーザー一覧:
+      ul
+        each user in users
+          li= `${user.name} (${user.email})`
+    else
+      p ユーザーデータがありません。
+    
+    h2 現在の日時
+    p サーバー時刻: #{new Date().toLocaleString('ja-JP')}
+    
+    h2 条件分岐とループの例
+    - var items = ['項目1', '項目2', '項目3']
+    if items && items.length > 0
+      h3 サンプル項目:
+      ol
+        each item, index in items
+          li(class=index % 2 === 0 ? 'even' : 'odd')= item
+    
+    h2 その他のテンプレートエンジンをテスト
+    p 以下のURLで他のテンプレートエンジンをテストできます（TEMPLATE_ENGINE環境変数を変更後）:
+    ul
+      li: a(href="/") EJSテンプレート
+      li: a(href="/") Handlebarsテンプレート  
+      li: a(href="/") Nunjucksテンプレート

@@ -1,0 +1,77 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="container">
+  <h1>Nunjucksテンプレートエンジン デモページ</h1>
+  
+  <div class="info">
+    <p><strong>現在のテンプレートエンジン:</strong> {{ templateEngine.current or 'Nunjucks' }}</p>
+    <p><strong>利用可能なエンジン:</strong> {{ templateEngine.available.join(', ') if templateEngine.available else 'EJS, Pug, Handlebars, Nunjucks' }}</p>
+  </div>
+  
+  <h2>Nunjucksの特徴</h2>
+  <ul class="features">
+    <li><strong>Jinja2風構文:</strong> Pythonライクな強力なテンプレート言語</li>
+    <li><strong>継承とマクロ:</strong> テンプレートの継承とマクロ機能</li>
+    <li><strong>フィルター:</strong> 豊富な組み込みフィルターとカスタムフィルター</li>
+    <li><strong>自動エスケープ:</strong> XSS攻撃からの保護</li>
+  </ul>
+  
+  <h2>動的コンテンツの例</h2>
+  {% if users and users.length > 0 %}
+    <h3>ユーザー一覧:</h3>
+    <ul>
+      {% for user in users %}
+        <li>{{ user.name }} ({{ user.email }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>ユーザーデータがありません。</p>
+  {% endif %}
+  
+  <h2>現在の日時</h2>
+  <p>サーバー時刻: {{ currentTime }}</p>
+  
+  <h2>フィルターの例</h2>
+  {% set sampleText = "nunjucksテンプレートエンジン" %}
+  <p>原文: {{ sampleText }}</p>
+  <p>大文字: {{ sampleText | upper }}</p>
+  <p>最初の文字のみ大文字: {{ sampleText | title }}</p>
+  <p>文字数: {{ sampleText | length }}</p>
+  
+  <h2>ループと条件分岐の例</h2>
+  {% set items = ['項目1', '項目2', '項目3', '項目4'] %}
+  {% if items %}
+    <h3>サンプル項目:</h3>
+    <ol>
+      {% for item in items %}
+        <li class="{% if loop.index % 2 == 0 %}even{% else %}odd{% endif %}">
+          {{ item }} ({{ loop.index }}/{{ loop.length }})
+        </li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+  
+  <h2>数値計算の例</h2>
+  {% set num1 = 15 %}
+  {% set num2 = 25 %}
+  <p>{{ num1 }} + {{ num2 }} = {{ num1 + num2 }}</p>
+  <p>{{ num1 }} × {{ num2 }} = {{ num1 * num2 }}</p>
+  
+  <h2>マクロの例</h2>
+  {% macro renderButton(text, type="button", class="btn") %}
+    <button type="{{ type }}" class="{{ class }}">{{ text }}</button>
+  {% endmacro %}
+  
+  {{ renderButton("送信", "submit", "btn btn-primary") }}
+  {{ renderButton("キャンセル", "button", "btn btn-secondary") }}
+  
+  <h2>その他のテンプレートエンジンをテスト</h2>
+  <p>以下のURLで他のテンプレートエンジンをテストできます（TEMPLATE_ENGINE環境変数を変更後）:</p>
+  <ul>
+    <li><a href="/">EJSテンプレート</a></li>
+    <li><a href="/">Pugテンプレート</a></li>
+    <li><a href="/">Handlebarsテンプレート</a></li>
+  </ul>
+</div>
+{% endblock %}

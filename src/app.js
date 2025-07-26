@@ -4,6 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const routes = require('./routes');
+const templateRoutes = require('./routes/templateRoutes');
 const errorHandler = require('./middleware/errorHandler');
 const { syncDatabase } = require('./models');
 const { securityHeaders, sanitizeInput } = require('./middleware/security');
@@ -13,6 +14,7 @@ const { initializeSession } = require('./config/session');
 const storageService = require('./services/storageService');
 const searchIndexService = require('./services/searchIndexService');
 const notificationService = require('./services/notificationService');
+const { setupTemplateEngine, templateEngineInfo } = require('./middleware/templateEngine');
 const fs = require('fs').promises;
 
 const app = express();
@@ -56,9 +58,20 @@ app.use('/api', sanitizeInput);
 // 静的ファイル配信設定
 app.use(express.static('public'));
 
+// テンプレートエンジンを設定
+setupTemplateEngine(app);
+
+// テンプレートエンジン情報をローカル変数として追加
+app.use(templateEngineInfo);
+
+// テンプレートエンジンルート（メインページ）
+app.use('/', templateRoutes);
+
+// APIルート
 app.use('/api', routes);
 
-app.get('/', (req, res) => {
+// 静的ファイル用のフォールバックルート
+app.get('/static', (req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
 
