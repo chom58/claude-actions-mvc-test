@@ -10,6 +10,7 @@ class AdvancedSearch {
       maxHistoryItems: 10,
       searchEndpoint: '/api/search',
       infiniteScroll: true,
+      resultsPerPage: 20,
       ...options
     };
 
@@ -59,8 +60,8 @@ class AdvancedSearch {
    */
   initializeDOM() {
     this.searchContainer = document.querySelector('[data-search-container]');
-    this.searchInput = document.getElementById('mainSearchInput');
-    this.searchDropdown = document.getElementById('searchDropdown');
+    this.searchInput = document.getElementById('mainSearchInput') || document.getElementById('searchInput');
+    this.searchDropdown = document.getElementById('searchDropdown') || document.getElementById('searchHistory');
     this.filterPanel = document.getElementById('filterPanel');
     this.resultsContainer = document.getElementById('searchResults');
     this.resultsCount = document.getElementById('resultsCount');
@@ -103,10 +104,16 @@ class AdvancedSearch {
         <span>検索中...</span>
       </div>
       <div class="load-more-trigger" id="loadMoreTrigger"></div>
+      <div class="no-results" id="noResults" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>検索結果がありません</h3>
+        <p>別のキーワードで検索してみてください</p>
+      </div>
     `;
 
     // 検索コンテナの後に挿入
-    this.searchContainer.parentNode.insertBefore(container, this.searchContainer.nextSibling);
+    const insertPoint = this.searchContainer || document.body;
+    insertPoint.parentNode.insertBefore(container, insertPoint.nextSibling);
     this.resultsContainer = container;
     this.resultsCount = document.getElementById('resultsCount');
     this.searchTime = document.getElementById('searchTime');
@@ -122,13 +129,13 @@ class AdvancedSearch {
     this.searchInput.addEventListener('keydown', this.handleKeyNavigation.bind(this));
 
     // クリアボタン
-    const clearBtn = document.getElementById('searchClearBtn');
+    const clearBtn = document.getElementById('searchClearBtn') || document.getElementById('clearSearch');
     if (clearBtn) {
       clearBtn.addEventListener('click', this.clearSearch.bind(this));
     }
 
     // フィルタートグル
-    const filterToggle = document.getElementById('filterToggleBtn');
+    const filterToggle = document.getElementById('filterToggleBtn') || document.getElementById('filterToggle');
     if (filterToggle) {
       filterToggle.addEventListener('click', this.toggleFilterPanel.bind(this));
     }
@@ -145,6 +152,9 @@ class AdvancedSearch {
       clearHistory.addEventListener('click', this.clearSearchHistory.bind(this));
     }
 
+    // フィルター変更
+    this.setupFilterListeners();
+
     // 外部クリックでドロップダウンを閉じる
     document.addEventListener('click', this.handleOutsideClick.bind(this));
 
@@ -157,6 +167,103 @@ class AdvancedSearch {
         this.saveCurrentSearch();
       }
     });
+  }
+
+  /**
+   * フィルターリスナーのセットアップ
+   */
+  setupFilterListeners() {
+    // 経験レベルフィルター
+    const experienceFilters = document.querySelectorAll('input[name="experience"]');
+    experienceFilters.forEach(input => {
+      input.addEventListener('change', () => this.updateFilters());
+    });
+
+    // 雇用形態フィルター
+    const employmentFilters = document.querySelectorAll('input[name="employment"]');
+    employmentFilters.forEach(input => {
+      input.addEventListener('change', () => this.updateFilters());
+    });
+
+    // 給与範囲
+    const salaryMin = document.getElementById('salaryMin');
+    const salaryMax = document.getElementById('salaryMax');
+    if (salaryMin) {
+      salaryMin.addEventListener('change', () => this.updateFilters());
+    }
+    if (salaryMax) {
+      salaryMax.addEventListener('change', () => this.updateFilters());
+    }
+
+    // 場所フィルター
+    const locationFilters = document.querySelectorAll('input[name="location"]');
+    locationFilters.forEach(input => {
+      input.addEventListener('change', () => this.updateFilters());
+    });
+
+    // リモート可
+    const remoteOk = document.getElementById('remoteOk');
+    if (remoteOk) {
+      remoteOk.addEventListener('change', () => this.updateFilters());
+    }
+
+    // ソート変更
+    const sortSelect = document.getElementById('sortBy');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => this.performSearch());
+    }
+
+    // スキルタグ
+    this.setupSkillTagsFilter();
+  }
+
+  /**
+   * スキルタグフィルターのセットアップ
+   */
+  setupSkillTagsFilter() {
+    const skillTagsInput = document.getElementById('skillTags');
+    const skillTagsContainer = document.getElementById('selectedSkills');
+    
+    if (!skillTagsInput || !skillTagsContainer) return;
+
+    const skills = [];
+    
+    skillTagsInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const skill = skillTagsInput.value.trim();
+        if (skill && !skills.includes(skill)) {
+          skills.push(skill);
+          this.renderSkillTags(skills, skillTagsContainer);
+          skillTagsInput.value = '';
+          this.updateFilters();
+        }
+      }
+    });
+
+    // スキルタグの削除
+    skillTagsContainer.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-tag')) {
+        const index = parseInt(e.target.dataset.index);
+        skills.splice(index, 1);
+        this.renderSkillTags(skills, skillTagsContainer);
+        this.updateFilters();
+      }
+    });
+
+    this.currentFilters.skills = skills;
+  }
+
+  /**
+   * スキルタグのレンダリング
+   */
+  renderSkillTags(skills, container) {
+    container.innerHTML = skills.map((skill, index) => `
+      <span class="skill-tag">
+        ${this.escapeHtml(skill)}
+        <button class="remove-tag" data-index="${index}">&times;</button>
+      </span>
+    `).join('');
   }
 
   /**
@@ -200,14 +307,83 @@ class AdvancedSearch {
         this.showSearchHistory();
       }
     }, this.options.debounceDelay);
+
+    // クリアボタンの表示/非表示
+    const clearBtn = document.getElementById('searchClearBtn') || document.getElementById('clearSearch');
+    if (clearBtn) {
+      clearBtn.style.display = query ? 'block' : 'none';
+    }
+  }
+
+  /**
+   * フィルター更新
+   */
+  updateFilters() {
+    // フィルター情報を収集
+    this.currentFilters = {
+      ...this.currentFilters,
+      experience: this.getCheckedValues('experience'),
+      employment: this.getCheckedValues('employment'),
+      location: this.getCheckedValues('location'),
+      salaryMin: document.getElementById('salaryMin')?.value || '',
+      salaryMax: document.getElementById('salaryMax')?.value || '',
+      remoteOk: document.getElementById('remoteOk')?.checked || false,
+    };
+
+    // アクティブなフィルター数を更新
+    this.updateActiveFiltersCount();
+    
+    // 検索実行
+    this.currentPage = 1;
+    this.performSearch();
+  }
+
+  /**
+   * チェックされた値を取得
+   */
+  getCheckedValues(name) {
+    const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+    return Array.from(checked).map(input => input.value);
+  }
+
+  /**
+   * アクティブなフィルター数を更新
+   */
+  updateActiveFiltersCount() {
+    const activeFiltersCount = document.getElementById('activeFiltersCount') || document.getElementById('filterCount');
+    if (!activeFiltersCount) return;
+    
+    let count = 0;
+    
+    // 各フィルターをカウント
+    if (this.currentFilters.experience?.length) count += this.currentFilters.experience.length;
+    if (this.currentFilters.employment?.length) count += this.currentFilters.employment.length;
+    if (this.currentFilters.location?.length) count += this.currentFilters.location.length;
+    if (this.currentFilters.salaryMin || this.currentFilters.salaryMax) count++;
+    if (this.currentFilters.remoteOk) count++;
+    if (this.currentFilters.skills?.length) count += this.currentFilters.skills.length;
+    
+    activeFiltersCount.textContent = count;
+    if (count > 0) {
+      activeFiltersCount.style.display = 'inline-block';
+      activeFiltersCount.classList.add('show');
+    } else {
+      activeFiltersCount.style.display = 'none';
+      activeFiltersCount.classList.remove('show');
+    }
   }
 
   /**
    * 検索実行
    */
-  async performSearch(query, page = 1) {
+  async performSearch(query = null, page = 1, append = false) {
     if (this.isSearching) {
       this.searchController?.abort();
+    }
+
+    // queryが指定されていない場合は、現在の検索クエリを使用
+    if (query === null) {
+      query = this.currentQuery || this.searchInput?.value || '';
     }
 
     this.isSearching = true;
@@ -216,13 +392,17 @@ class AdvancedSearch {
     const startTime = performance.now();
     
     try {
+      // 検索履歴に保存
+      if (query && page === 1 && !append) {
+        this.addToSearchHistory(query);
+      }
+
+      // URLを更新
+      this.updateURL(query, this.currentFilters);
+
       this.showLoadingState();
       
-      const searchParams = new URLSearchParams({
-        q: query,
-        page: page,
-        ...this.currentFilters
-      });
+      const searchParams = this.buildSearchParams(query, page);
 
       const response = await fetch(`${this.options.searchEndpoint}?${searchParams}`, {
         signal: this.searchController.signal,
@@ -240,21 +420,23 @@ class AdvancedSearch {
       const endTime = performance.now();
       const searchTime = Math.round(endTime - startTime);
 
-      if (page === 1) {
-        this.searchResults = data.results || [];
-        this.renderSearchResults(this.searchResults);
+      if (data.success) {
+        if (append) {
+          this.searchResults.push(...(data.results || []));
+          this.appendSearchResults(data.results || []);
+        } else {
+          this.searchResults = data.results || [];
+          this.renderSearchResults(this.searchResults);
+        }
+
+        this.hasMoreResults = data.hasMore || false;
+        this.currentPage = data.page || page;
+
+        this.updateResultsStats(data.total || this.searchResults.length, searchTime);
+        this.hideSearchDropdown();
       } else {
-        this.searchResults.push(...(data.results || []));
-        this.appendSearchResults(data.results || []);
+        this.showSearchError('検索中にエラーが発生しました');
       }
-
-      this.hasMoreResults = data.hasMore || false;
-      this.currentPage = page;
-
-      this.updateResultsStats(data.total || this.searchResults.length, searchTime);
-      this.addToSearchHistory(query);
-      this.updateURL(query, this.currentFilters);
-      this.hideSearchDropdown();
 
     } catch (error) {
       if (error.name !== 'AbortError') {
@@ -268,11 +450,43 @@ class AdvancedSearch {
   }
 
   /**
+   * 検索パラメータの構築
+   */
+  buildSearchParams(query, page) {
+    const params = new URLSearchParams();
+    
+    // 検索クエリ
+    if (query) params.append('q', query);
+    
+    // ページ
+    params.append('page', page);
+    params.append('limit', this.options.resultsPerPage);
+    
+    // ソート
+    const sortSelect = document.getElementById('sortBy');
+    const sort = sortSelect?.value || 'relevance';
+    params.append('sort', sort);
+    
+    // フィルター
+    Object.entries(this.currentFilters).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.length > 0) {
+        value.forEach(v => params.append(key, v));
+      } else if (value && typeof value === 'boolean') {
+        params.append(key, value);
+      } else if (value) {
+        params.append(key, value);
+      }
+    });
+    
+    return params;
+  }
+
+  /**
    * より多くの結果を読み込み
    */
   async loadMoreResults() {
     if (!this.currentQuery || !this.hasMoreResults) return;
-    await this.performSearch(this.currentQuery, this.currentPage + 1);
+    await this.performSearch(this.currentQuery, this.currentPage + 1, true);
   }
 
   /**
@@ -321,22 +535,26 @@ class AdvancedSearch {
    * 検索履歴の表示
    */
   showSearchHistory() {
-    const historyList = document.getElementById('historyList');
-    if (!historyList || !this.searchHistory.length) return;
-
-    historyList.innerHTML = this.searchHistory.map((item, index) => `
-      <div class="history-item" data-query="${item.query}" data-index="${index}">
-        <i class="fas fa-history"></i>
-        <span class="history-text">${item.query}</span>
-        <span class="history-time">${this.formatRelativeTime(item.timestamp)}</span>
-        <button class="remove-history-btn" data-remove-index="${index}">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-    `).join('');
+    if (!this.searchDropdown || this.searchHistory.length === 0) return;
+    
+    this.searchDropdown.innerHTML = this.searchHistory.map((item, index) => {
+      const query = typeof item === 'string' ? item : item.query;
+      const timestamp = typeof item === 'object' ? item.timestamp : null;
+      
+      return `
+        <div class="history-item" data-query="${this.escapeHtml(query)}" data-index="${index}">
+          <i class="fas fa-history"></i>
+          <span class="history-text">${this.escapeHtml(query)}</span>
+          ${timestamp ? `<span class="history-time">${this.formatRelativeTime(timestamp)}</span>` : ''}
+          <button class="remove-history-btn" data-remove-index="${index}">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
 
     // イベントリスナー
-    historyList.addEventListener('click', (e) => {
+    this.searchDropdown.addEventListener('click', (e) => {
       const historyItem = e.target.closest('.history-item');
       const removeBtn = e.target.closest('.remove-history-btn');
 
@@ -349,157 +567,184 @@ class AdvancedSearch {
         this.selectHistoryItem(query);
       }
     });
+
+    this.showSearchDropdown();
   }
 
   /**
    * 検索結果のレンダリング
    */
   renderSearchResults(results) {
-    const resultsGrid = document.getElementById('resultsGrid');
+    const resultsGrid = document.getElementById('resultsGrid') || this.resultsContainer;
+    const noResults = document.getElementById('noResults');
+    
     if (!resultsGrid) return;
 
     if (!results.length) {
-      resultsGrid.innerHTML = `
-        <div class="no-results">
-          <i class="fas fa-search"></i>
-          <h3>検索結果がありません</h3>
-          <p>別のキーワードで検索してみてください</p>
-        </div>
-      `;
+      resultsGrid.innerHTML = '';
+      if (noResults) {
+        noResults.style.display = 'block';
+      }
       return;
     }
 
+    if (noResults) {
+      noResults.style.display = 'none';
+    }
+
     resultsGrid.innerHTML = results.map(item => this.renderResultItem(item)).join('');
+    this.animateResults();
   }
 
   /**
    * 検索結果の追加レンダリング（無限スクロール用）
    */
   appendSearchResults(results) {
-    const resultsGrid = document.getElementById('resultsGrid');
+    const resultsGrid = document.getElementById('resultsGrid') || this.resultsContainer;
     if (!resultsGrid || !results.length) return;
 
-    const fragment = document.createDocumentFragment();
-    results.forEach(item => {
-      const div = document.createElement('div');
-      div.innerHTML = this.renderResultItem(item);
-      fragment.appendChild(div.firstChild);
-    });
-
-    resultsGrid.appendChild(fragment);
+    const newItems = results.map(item => this.renderResultItem(item)).join('');
+    resultsGrid.insertAdjacentHTML('beforeend', newItems);
+    this.animateResults(true);
   }
 
   /**
    * 個別結果アイテムのレンダリング
    */
   renderResultItem(item) {
-    const baseClass = 'result-item';
-    const typeClass = `result-${item.type}`;
-    
+    // アイテムタイプに応じてレンダリング
+    switch (item.type) {
+      case 'designer_job':
+      case 'designer-job':
+        return this.renderJobItem(item);
+      case 'event':
+      case 'creative-event':
+        return this.renderEventItem(item);
+      case 'collaboration':
+        return this.renderCollaborationItem(item);
+      default:
+        return this.renderDefaultItem(item);
+    }
+  }
+
+  /**
+   * 求人アイテムのレンダリング
+   */
+  renderJobItem(job) {
+    const experienceText = job.isExperienceWelcome && job.isNewGraduateWelcome ? 
+      '未経験・新卒歓迎' : 
+      job.isExperienceWelcome ? '未経験歓迎' : 
+      job.isNewGraduateWelcome ? '新卒歓迎' : '経験者向け';
+
+    const salaryText = job.salaryMin && job.salaryMax ? 
+      `${job.salaryMin}〜${job.salaryMax}万円` : 
+      job.salary || '給与応相談';
+
     return `
-      <div class="${baseClass} ${typeClass}" data-id="${item.id}" data-type="${item.type}">
-        <div class="result-image">
-          <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.title}" loading="lazy">
-          <div class="result-type-badge">${this.getTypeBadge(item.type)}</div>
+      <div class="search-result-item job-item" data-id="${job.id}">
+        <div class="result-header">
+          <h3>${this.escapeHtml(job.title)}</h3>
+          <span class="result-type">求人</span>
         </div>
-        <div class="result-content">
-          <h3 class="result-title">${item.title}</h3>
-          <div class="result-meta">
-            ${this.renderResultMeta(item)}
-          </div>
-          <p class="result-description">${item.description || ''}</p>
+        <div class="result-meta">
+          <span class="company">${this.escapeHtml(job.company)}</span>
+          <span class="location">${this.escapeHtml(job.location || '場所未定')}</span>
+          ${job.isRemoteOk ? '<span class="remote-ok">リモート可</span>' : ''}
+        </div>
+        <div class="result-details">
+          <span class="experience">${experienceText}</span>
+          <span class="salary">${salaryText}</span>
+        </div>
+        <p class="result-description">${this.escapeHtml(job.description || '')}</p>
+        ${job.tags ? `
           <div class="result-tags">
-            ${(item.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
+            ${job.tags.map(tag => `<span class="tag">${this.escapeHtml(tag)}</span>`).join('')}
           </div>
-          <div class="result-actions">
-            ${this.renderResultActions(item)}
-          </div>
+        ` : ''}
+        <div class="result-actions">
+          <button class="action-btn bookmark-btn" data-action="bookmark" data-id="${job.id}">
+            <i class="fas fa-bookmark"></i>
+          </button>
+          <button class="action-btn apply-btn" data-action="apply" data-id="${job.id}">
+            <i class="fas fa-paper-plane"></i>
+            <span>応募する</span>
+          </button>
         </div>
       </div>
     `;
   }
 
   /**
-   * 結果タイプバッジの取得
+   * イベントアイテムのレンダリング
    */
-  getTypeBadge(type) {
-    const badges = {
-      'designer-job': '求人',
-      'creative-event': 'イベント',
-      'collaboration': 'コラボ'
-    };
-    return badges[type] || type;
-  }
-
-  /**
-   * 結果メタ情報のレンダリング
-   */
-  renderResultMeta(item) {
-    switch (item.type) {
-      case 'designer-job':
-        return `
-          <span class="meta-item"><i class="fas fa-building"></i> ${item.company}</span>
-          <span class="meta-item"><i class="fas fa-map-marker-alt"></i> ${item.location}</span>
-          <span class="meta-item"><i class="fas fa-yen-sign"></i> ${item.salary}</span>
-        `;
-      case 'creative-event':
-        return `
-          <span class="meta-item"><i class="fas fa-calendar"></i> ${item.date}</span>
-          <span class="meta-item"><i class="fas fa-map-marker-alt"></i> ${item.location}</span>
-          <span class="meta-item"><i class="fas fa-users"></i> ${item.capacity}</span>
-        `;
-      case 'collaboration':
-        return `
-          <span class="meta-item"><i class="fas fa-clock"></i> ${item.duration}</span>
-          <span class="meta-item"><i class="fas fa-yen-sign"></i> ${item.budget}</span>
-          <span class="meta-item"><i class="fas fa-user"></i> ${item.client}</span>
-        `;
-      default:
-        return '';
-    }
-  }
-
-  /**
-   * 結果アクションボタンのレンダリング
-   */
-  renderResultActions(item) {
-    const baseActions = `
-      <button class="action-btn bookmark-btn" data-action="bookmark" data-id="${item.id}">
-        <i class="fas fa-bookmark"></i>
-      </button>
-      <button class="action-btn share-btn" data-action="share" data-id="${item.id}">
-        <i class="fas fa-share"></i>
-      </button>
-    `;
-
-    switch (item.type) {
-      case 'designer-job':
-        return `
-          ${baseActions}
-          <button class="action-btn apply-btn" data-action="apply" data-id="${item.id}">
-            <i class="fas fa-paper-plane"></i>
-            <span>応募する</span>
+  renderEventItem(event) {
+    return `
+      <div class="search-result-item event-item" data-id="${event.id}">
+        <div class="result-header">
+          <h3>${this.escapeHtml(event.name || event.title)}</h3>
+          <span class="result-type">イベント</span>
+        </div>
+        <div class="result-meta">
+          <span class="date">${this.formatDate(event.date || event.eventDate)}</span>
+          <span class="location">${this.escapeHtml(event.location)}</span>
+          ${event.capacity ? `<span class="capacity">${event.capacity}人</span>` : ''}
+        </div>
+        <p class="result-description">${this.escapeHtml(event.description || '')}</p>
+        <div class="result-actions">
+          <button class="action-btn bookmark-btn" data-action="bookmark" data-id="${event.id}">
+            <i class="fas fa-bookmark"></i>
           </button>
-        `;
-      case 'creative-event':
-        return `
-          ${baseActions}
-          <button class="action-btn register-btn" data-action="register" data-id="${item.id}">
+          <button class="action-btn register-btn" data-action="register" data-id="${event.id}">
             <i class="fas fa-calendar-plus"></i>
             <span>参加登録</span>
           </button>
-        `;
-      case 'collaboration':
-        return `
-          ${baseActions}
-          <button class="action-btn contact-btn" data-action="contact" data-id="${item.id}">
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * コラボレーションアイテムのレンダリング
+   */
+  renderCollaborationItem(collab) {
+    return `
+      <div class="search-result-item collaboration-item" data-id="${collab.id}">
+        <div class="result-header">
+          <h3>${this.escapeHtml(collab.title)}</h3>
+          <span class="result-type">コラボレーション</span>
+        </div>
+        <div class="result-meta">
+          <span class="project-type">${this.escapeHtml(collab.projectType)}</span>
+          ${collab.budget ? `<span class="budget">${this.escapeHtml(collab.budget)}</span>` : ''}
+          ${collab.duration ? `<span class="duration">${this.escapeHtml(collab.duration)}</span>` : ''}
+        </div>
+        <p class="result-description">${this.escapeHtml(collab.description || '')}</p>
+        <div class="result-actions">
+          <button class="action-btn bookmark-btn" data-action="bookmark" data-id="${collab.id}">
+            <i class="fas fa-bookmark"></i>
+          </button>
+          <button class="action-btn contact-btn" data-action="contact" data-id="${collab.id}">
             <i class="fas fa-envelope"></i>
             <span>問い合わせ</span>
           </button>
-        `;
-      default:
-        return baseActions;
-    }
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * デフォルトアイテムのレンダリング
+   */
+  renderDefaultItem(item) {
+    return `
+      <div class="search-result-item" data-id="${item.id}">
+        <div class="result-header">
+          <h3>${this.escapeHtml(item.title || item.name)}</h3>
+          <span class="result-type">${this.escapeHtml(item.type)}</span>
+        </div>
+        <p class="result-description">${this.escapeHtml(item.description || '')}</p>
+      </div>
+    `;
   }
 
   /**
@@ -535,6 +780,8 @@ class AdvancedSearch {
           if (suggestion) {
             this.selectSuggestion(suggestion);
           }
+        } else {
+          this.performSearch();
         }
         break;
       case 'Escape':
@@ -578,6 +825,7 @@ class AdvancedSearch {
     this.currentQuery = '';
     this.clearResults();
     this.hideSearchDropdown();
+    this.resetFilters();
     this.updateURL('', {});
   }
 
@@ -586,11 +834,42 @@ class AdvancedSearch {
    */
   clearResults() {
     const resultsGrid = document.getElementById('resultsGrid');
+    const resultsContainer = this.resultsContainer;
+    
     if (resultsGrid) {
       resultsGrid.innerHTML = '';
+    } else if (resultsContainer) {
+      resultsContainer.innerHTML = '';
     }
+    
     this.updateResultsStats(0, 0);
     this.searchResults = [];
+  }
+
+  /**
+   * フィルターリセット
+   */
+  resetFilters() {
+    // チェックボックスをリセット
+    document.querySelectorAll('input[type="checkbox"]').forEach(input => {
+      input.checked = false;
+    });
+    
+    // 入力フィールドをリセット
+    document.querySelectorAll('input[type="text"], input[type="number"]').forEach(input => {
+      if (input.id !== 'searchInput' && input.id !== 'mainSearchInput') {
+        input.value = '';
+      }
+    });
+    
+    // スキルタグをクリア
+    const skillTagsContainer = document.getElementById('selectedSkills');
+    if (skillTagsContainer) {
+      skillTagsContainer.innerHTML = '';
+    }
+    
+    this.currentFilters = {};
+    this.updateActiveFiltersCount();
   }
 
   /**
@@ -599,10 +878,14 @@ class AdvancedSearch {
   toggleFilterPanel() {
     if (!this.filterPanel) return;
     
-    const isVisible = this.filterPanel.classList.contains('show');
-    this.filterPanel.classList.toggle('show', !isVisible);
+    const isVisible = this.filterPanel.classList.contains('show') || 
+                     this.filterPanel.classList.contains('active');
     
-    const toggleBtn = document.getElementById('filterToggleBtn');
+    this.filterPanel.classList.toggle('show', !isVisible);
+    this.filterPanel.classList.toggle('active', !isVisible);
+    
+    const toggleBtn = document.getElementById('filterToggleBtn') || 
+                     document.getElementById('filterToggle');
     if (toggleBtn) {
       toggleBtn.classList.toggle('active', !isVisible);
     }
@@ -626,6 +909,7 @@ class AdvancedSearch {
   showSearchDropdown() {
     if (this.searchDropdown) {
       this.searchDropdown.classList.add('show');
+      this.searchDropdown.style.display = 'block';
     }
   }
 
@@ -635,6 +919,11 @@ class AdvancedSearch {
   hideSearchDropdown() {
     if (this.searchDropdown) {
       this.searchDropdown.classList.remove('show');
+      setTimeout(() => {
+        if (!this.searchDropdown.classList.contains('show')) {
+          this.searchDropdown.style.display = 'none';
+        }
+      }, 200);
     }
   }
 
@@ -642,7 +931,8 @@ class AdvancedSearch {
    * 外部クリック処理
    */
   handleOutsideClick(event) {
-    if (!this.searchContainer?.contains(event.target)) {
+    const searchContainer = this.searchContainer || this.searchInput.parentElement;
+    if (!searchContainer?.contains(event.target)) {
       this.hideSearchDropdown();
     }
   }
@@ -679,10 +969,10 @@ class AdvancedSearch {
    * 検索エラー表示
    */
   showSearchError(message) {
-    const resultsGrid = document.getElementById('resultsGrid');
+    const resultsGrid = document.getElementById('resultsGrid') || this.resultsContainer;
     if (resultsGrid) {
       resultsGrid.innerHTML = `
-        <div class="search-error">
+        <div class="search-error error-message">
           <i class="fas fa-exclamation-triangle"></i>
           <h3>検索エラーが発生しました</h3>
           <p>${message}</p>
@@ -708,13 +998,21 @@ class AdvancedSearch {
    * 検索履歴に追加
    */
   addToSearchHistory(query) {
-    if (!query || this.searchHistory.some(item => item.query === query)) return;
+    if (!query) return;
 
+    // 重複を削除
+    this.searchHistory = this.searchHistory.filter(item => {
+      const itemQuery = typeof item === 'string' ? item : item.query;
+      return itemQuery !== query;
+    });
+
+    // 先頭に追加
     this.searchHistory.unshift({
       query,
       timestamp: Date.now()
     });
 
+    // 制限を適用
     if (this.searchHistory.length > this.options.maxHistoryItems) {
       this.searchHistory = this.searchHistory.slice(0, this.options.maxHistoryItems);
     }
@@ -771,7 +1069,9 @@ class AdvancedSearch {
     }
     
     Object.entries(filters).forEach(([key, value]) => {
-      if (value && value !== 'all') {
+      if (Array.isArray(value) && value.length > 0) {
+        value.forEach(v => params.append(key, v));
+      } else if (value && value !== 'all' && value !== '') {
         params.set(key, value);
       }
     });
@@ -790,17 +1090,79 @@ class AdvancedSearch {
     if (query) {
       this.searchInput.value = query;
       this.currentQuery = query;
-      
-      // フィルターも復元
-      this.currentFilters = {};
-      params.forEach((value, key) => {
-        if (key !== 'q') {
-          this.currentFilters[key] = value;
-        }
-      });
-      
+    }
+    
+    // フィルターを復元
+    this.restoreFilters(params);
+    
+    // 初期検索を実行
+    if (query || this.hasActiveFilters()) {
       this.performSearch(query);
     }
+  }
+
+  /**
+   * フィルター復元
+   */
+  restoreFilters(params) {
+    // 経験レベル
+    params.getAll('experience').forEach(value => {
+      const input = document.querySelector(`input[name="experience"][value="${value}"]`);
+      if (input) input.checked = true;
+    });
+    
+    // 雇用形態
+    params.getAll('employment').forEach(value => {
+      const input = document.querySelector(`input[name="employment"][value="${value}"]`);
+      if (input) input.checked = true;
+    });
+    
+    // 場所
+    params.getAll('location').forEach(value => {
+      const input = document.querySelector(`input[name="location"][value="${value}"]`);
+      if (input) input.checked = true;
+    });
+    
+    // 給与範囲
+    const salaryMin = params.get('salaryMin');
+    const salaryMax = params.get('salaryMax');
+    if (salaryMin) {
+      const input = document.getElementById('salaryMin');
+      if (input) input.value = salaryMin;
+    }
+    if (salaryMax) {
+      const input = document.getElementById('salaryMax');
+      if (input) input.value = salaryMax;
+    }
+    
+    // リモート可
+    const remoteOk = params.get('remoteOk') === 'true';
+    if (remoteOk) {
+      const input = document.getElementById('remoteOk');
+      if (input) input.checked = true;
+    }
+    
+    // スキル
+    const skills = params.getAll('skills');
+    if (skills.length > 0) {
+      this.currentFilters.skills = skills;
+      const container = document.getElementById('selectedSkills');
+      if (container) {
+        this.renderSkillTags(skills, container);
+      }
+    }
+    
+    this.updateActiveFiltersCount();
+  }
+
+  /**
+   * アクティブフィルターがあるか
+   */
+  hasActiveFilters() {
+    return Object.keys(this.currentFilters).some(key => {
+      const value = this.currentFilters[key];
+      return Array.isArray(value) ? value.length > 0 : !!value;
+    });
   }
 
   /**
@@ -849,6 +1211,42 @@ class AdvancedSearch {
     } catch (error) {
       console.error('保存検索保存エラー:', error);
     }
+  }
+
+  /**
+   * 結果のアニメーション
+   */
+  animateResults(append = false) {
+    const items = append ? 
+      this.resultsContainer.querySelectorAll('.search-result-item:not(.animated)') :
+      this.resultsContainer.querySelectorAll('.search-result-item');
+    
+    items.forEach((item, index) => {
+      setTimeout(() => {
+        item.classList.add('animated');
+      }, index * 50);
+    });
+  }
+
+  /**
+   * 日付フォーマット
+   */
+  formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
+  /**
+   * HTMLエスケープ
+   */
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   /**
@@ -902,38 +1300,6 @@ class AdvancedSearch {
   }
 
   /**
-   * フィルター更新
-   */
-  updateFilters(filters) {
-    this.currentFilters = { ...this.currentFilters, ...filters };
-    
-    if (this.currentQuery) {
-      this.performSearch(this.currentQuery);
-    }
-    
-    this.updateFilterCount();
-  }
-
-  /**
-   * フィルター数更新
-   */
-  updateFilterCount() {
-    const filterCount = document.getElementById('filterCount');
-    if (!filterCount) return;
-
-    const activeFilters = Object.values(this.currentFilters).filter(
-      value => value && value !== 'all' && value !== ''
-    ).length;
-
-    if (activeFilters > 0) {
-      filterCount.textContent = activeFilters;
-      filterCount.classList.add('show');
-    } else {
-      filterCount.classList.remove('show');
-    }
-  }
-
-  /**
    * 破棄処理
    */
   destroy() {
@@ -969,7 +1335,11 @@ window.AdvancedSearch = AdvancedSearch;
 
 // DOM読み込み完了後に自動初期化
 document.addEventListener('DOMContentLoaded', () => {
-  if (document.querySelector('[data-search-container]')) {
-    window.advancedSearch = new AdvancedSearch();
+  if (document.querySelector('[data-search-container]') || document.getElementById('searchInput')) {
+    window.advancedSearch = new AdvancedSearch({
+      debounceDelay: 300,
+      maxHistoryItems: 10,
+      resultsPerPage: 20
+    });
   }
 });
