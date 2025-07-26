@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "dev:debug": "nodemon --inspect=0.0.0.0:9229 src/app.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -13,7 +14,19 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "seed": "node src/seeders/seed.js",
-    "build-index": "node src/tasks/buildSearchIndex.js"
+    "build-index": "node src/tasks/buildSearchIndex.js",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build --no-cache",
+    "docker:logs": "docker-compose logs -f",
+    "docker:logs:app": "docker-compose logs -f app",
+    "docker:db:reset": "docker-compose down -v && docker-compose up -d db && sleep 5 && npm run seed",
+    "docker:exec": "docker-compose exec app",
+    "docker:shell": "docker-compose exec app sh",
+    "docker:clean": "docker-compose down -v --remove-orphans && docker system prune -f",
+    "docker:restart": "docker-compose restart",
+    "docker:dev": "docker-compose up --build",
+    "setup": "npm install && npm run docker:up && npm run seed"
   },
   "keywords": [
     "express",

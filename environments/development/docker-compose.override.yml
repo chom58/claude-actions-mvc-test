@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    environment:
+      - LOG_LEVEL=debug
+      - DEBUG=app:*
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+      - ../../environments/development/.env:/app/.env
+    command: npm run dev:debug
+    
+  db:
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_LOG_STATEMENT=all
+      - POSTGRES_LOG_MIN_DURATION_STATEMENT=0
+    
+  redis:
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel verbose --appendonly yes
+    
+  # 開発用追加サービス
+  mailhog:
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+      
+  adminer:
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: pepa-linha
+      
+  redis-commander:
+    ports:
+      - "8081:8081"
