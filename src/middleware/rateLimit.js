@@ -193,6 +193,21 @@ const loginRateLimit = createRateLimit({
   algorithm: 'sliding_window'
 });
 
+// 画像アップロードレート制限
+const uploadImageRateLimit = createRateLimit({
+  windowMs: 10 * 60 * 1000, // 10分
+  max: 20, // 10分間に20回まで
+  message: '画像アップロード回数が制限に達しました。10分後に再試行してください。',
+  keyPrefix: 'upload_image',
+  keyGenerator: (req) => {
+    // 認証済みユーザーID + IPアドレス
+    const ip = req.ip || req.connection.remoteAddress;
+    const userId = req.user?.id || 'anonymous';
+    return `${userId}:${ip}`;
+  },
+  algorithm: 'sliding_window'
+});
+
 // 定期的なクリーンアップ（メモリリーク防止）
 // Redisを使用している場合はTTLで自動削除されるため、メモリベースのみクリーンアップ
 setInterval(() => {
@@ -228,5 +243,6 @@ module.exports = {
   generalRateLimit,
   passwordResetRateLimit,
   apiRateLimit,
-  loginRateLimit
+  loginRateLimit,
+  uploadImageRateLimit
 };

@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="原宿から発信するデザインとファッションの最前線。多様なクリエイターが出会い、新たな価値を生み出すハブ。">
     <meta name="theme-color" content="#FF1493">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HCC">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    
     <title>原宿クリエイティブコミュニティ | CREATE. CONNECT. INSPIRE.</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,6 +20,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- WebSocket Styles -->
+    <link rel="stylesheet" href="/css/websocket-styles.css">
     <style>
         /* CSS Reset & Base Styles */
         * {
@@ -792,6 +802,94 @@
                     inset 0 0 30px rgba(0, 255, 255, 0.4),
                     0 0 40px rgba(0, 255, 255, 1);
             }
+        }
+
+        /* Search Section */
+        .search-section {
+            background: var(--color-background);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--color-surface);
+            border: 2px solid var(--neon-pink);
+            border-radius: 50px;
+            padding: 15px 25px;
+            box-shadow: 0 0 20px rgba(255, 20, 147, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus-within {
+            box-shadow: 0 0 30px rgba(255, 20, 147, 0.5);
+            transform: scale(1.02);
+        }
+
+        .search-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--color-primary);
+            font-size: 1rem;
+            outline: none;
+            font-family: var(--font-main);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-button {
+            background: none;
+            border: none;
+            color: var(--neon-pink);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-chip {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            color: var(--color-secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-chip:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .filter-chip.active {
+            background: var(--neon-pink);
+            color: var(--color-background);
+            border-color: var(--neon-pink);
         }
 
         /* Main Sections */
@@ -1828,6 +1926,39 @@
         </div>
     </section>
 
+    <!-- Search Section -->
+    <section class="search-section" id="search">
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" 
+                       class="search-input" 
+                       id="searchInput" 
+                       placeholder="求人、イベント、コラボレーションを検索..."
+                       autocomplete="off">
+                <button class="search-button" id="searchButton">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="search-filters">
+                <div class="filter-chip" data-filter="designer_job">
+                    <i class="fas fa-briefcase"></i> 求人
+                </div>
+                <div class="filter-chip" data-filter="event">
+                    <i class="fas fa-calendar"></i> イベント
+                </div>
+                <div class="filter-chip" data-filter="collaboration">
+                    <i class="fas fa-handshake"></i> コラボレーション
+                </div>
+                <div class="filter-chip" data-filter="entry_level">
+                    <i class="fas fa-user-graduate"></i> 未経験歓迎
+                </div>
+                <div class="filter-chip" data-filter="remote">
+                    <i class="fas fa-home"></i> リモート可
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Categories Section -->
     <section class="section" id="categories">
         <div class="parallax-bg"></div>
@@ -2538,6 +2669,164 @@
             });
         }
 
+        // 検索機能の実装
+        let searchDebounceTimer = null;
+        let activeFilters = new Set();
+
+        function initSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            const filterChips = document.querySelectorAll('.filter-chip');
+
+            // 検索入力のデバウンス処理
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchDebounceTimer);
+                searchDebounceTimer = setTimeout(() => {
+                    performSearch();
+                }, 300);
+            });
+
+            // 検索ボタンクリック
+            searchButton.addEventListener('click', performSearch);
+
+            // Enterキーで検索
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    clearTimeout(searchDebounceTimer);
+                    performSearch();
+                }
+            });
+
+            // フィルターチップの処理
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const filter = chip.dataset.filter;
+                    if (activeFilters.has(filter)) {
+                        activeFilters.delete(filter);
+                        chip.classList.remove('active');
+                    } else {
+                        activeFilters.add(filter);
+                        chip.classList.add('active');
+                    }
+                    performSearch();
+                });
+            });
+        }
+
+        async function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value.trim();
+
+            // 検索パラメータの構築
+            const params = new URLSearchParams();
+            if (query) params.append('q', query);
+
+            // フィルターの適用
+            activeFilters.forEach(filter => {
+                switch(filter) {
+                    case 'designer_job':
+                    case 'event':
+                    case 'collaboration':
+                        params.append('type', filter);
+                        break;
+                    case 'entry_level':
+                        params.append('experience', 'entry_level');
+                        break;
+                    case 'remote':
+                        params.append('remoteOk', 'true');
+                        break;
+                }
+            });
+
+            try {
+                const response = await fetch(`/api/search?${params.toString()}`);
+                const data = await response.json();
+
+                if (data.success && data.results.length > 0) {
+                    // 検索結果をアラートで表示（本来は専用のUIで表示）
+                    const resultSummary = data.results.slice(0, 5).map(item => {
+                        switch(item.type) {
+                            case 'designer_job':
+                                return `求人: ${item.title} (${item.company})`;
+                            case 'event':
+                                return `イベント: ${item.name}`;
+                            case 'collaboration':
+                                return `コラボ: ${item.title}`;
+                            default:
+                                return item.title || item.name;
+                        }
+                    }).join('\\n');
+
+                    alert(`検索結果 (${data.total}件):\\n\\n${resultSummary}\\n\\n※ 検索結果UIは今後実装予定`);
+                } else {
+                    alert('検索結果が見つかりませんでした。');
+                }
+            } catch (error) {
+                console.error('検索エラー:', error);
+                alert('検索中にエラーが発生しました。');
+            }
+        }
+
+        // Service Worker登録
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker登録成功:', registration.scope);
+                        
+                        // 更新チェック
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // 新しいバージョンが利用可能
+                                    if (confirm('新しいバージョンが利用可能です。更新しますか？')) {
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Service Worker登録失敗:', error);
+                    });
+            });
+        }
+
+        // PWAインストールプロンプト
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // インストールボタンを表示
+            const installButton = document.createElement('button');
+            installButton.textContent = 'アプリをインストール';
+            installButton.className = 'btn btn-primary install-button';
+            installButton.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 1000;
+                display: none;
+            `;
+            
+            document.body.appendChild(installButton);
+            
+            // インストール済みでなければボタンを表示
+            if (!window.matchMedia('(display-mode: standalone)').matches) {
+                installButton.style.display = 'block';
+            }
+            
+            installButton.addEventListener('click', async () => {
+                installButton.style.display = 'none';
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`ユーザーの選択: ${outcome}`);
+                deferredPrompt = null;
+            });
+        });
+
         // ページ読み込み時に統計データを読み込み
         document.addEventListener('DOMContentLoaded', () => {
             // 認証状態をチェック
@@ -2551,6 +2840,9 @@
             
             // パフォーマンス最適化の初期化
             initPerformanceOptimizations();
+            
+            // 検索機能の初期化
+            initSearch();
             
             loadJobStats();
             
@@ -2647,5 +2939,12 @@
 
 
     </script>
+
+    <!-- Socket.IO Client -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- WebSocket Real-time Functionality -->
+    <script src="/js/realtime-manager.js"></script>
+    <script src="/js/chat-client.js"></script>
 </body>
 </html>

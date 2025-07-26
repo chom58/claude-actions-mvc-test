@@ -9,7 +9,11 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "seed": "node src/seeders/seed.js"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "seed": "node src/seeders/seed.js",
+    "build-index": "node src/tasks/buildSearchIndex.js"
   },
   "keywords": [
     "express",
@@ -41,11 +45,21 @@
     "sharp": "^0.32.6",
     "sqlite3": "^5.1.6",
     "validator": "^13.11.0",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "sharp": "^0.32.6",
+    "multer": "^1.4.5-lts.1",
+    "mime-types": "^2.1.35",
+    "uuid": "^9.0.1",
+    "socket.io": "^4.7.0",
+    "@socket.io/redis-adapter": "^8.2.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.0.2",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "@playwright/test": "^1.40.0",
+    "playwright": "^1.40.0",
+    "@faker-js/faker": "^8.3.1",
+    "@axe-core/playwright": "^4.8.2"
   }
 }

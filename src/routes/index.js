@@ -11,8 +11,11 @@ const collaborationRoutes = require('./collaborationRoutes');
 const matchingRoutes = require('./matchingRoutes');
 const designerJobRoutes = require('./designerJobRoutes');
 const jobSiteRoutes = require('./jobSiteRoutes');
+const uploadRoutes = require('./uploadRoutes');
+const imageRoutes = require('./imageRoutes');
 const csrfRoutes = require('./csrf');
 const systemRoutes = require('./systemRoutes');
+const searchRoutes = require('./searchRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -38,7 +41,12 @@ router.get('/', (req, res) => {
       health: '/api/system/health',
       info: '/api/system/info',
       config: '/api/system/config',
-      csrf: '/api/csrf/token'
+      csrf: '/api/csrf/token',
+      // 画像アップロード
+      upload: '/api/upload',
+      images: '/api/images',
+      // 検索
+      search: '/api/search'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
@@ -78,5 +86,12 @@ router.use('/matching', matchingRoutes);
 // デザイナー採用メディアルート
 router.use('/designer-jobs', designerJobRoutes);
 router.use('/job-sites', jobSiteRoutes);
+
+// 画像アップロードルート
+router.use('/upload', uploadRoutes);
+router.use('/images', imageRoutes);
+
+// 検索ルート
+router.use('/search', searchRoutes);
 
 module.exports = router;

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像アップロードデモ | 原宿クリエイティブコミュニティ</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 基本スタイル（index.htmlから必要な部分を抜粋） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* 基本カラー */
+            --color-primary: #ffffff;
+            --color-secondary: #f0f0f0;
+            --color-background: #0a0a0a;
+            --color-surface: #1a1a1a;
+            --color-border: #333333;
+            --card-bg: var(--color-surface);
+            --text-primary: #ffffff;
+            --text-secondary: #f0f0f0;
+            
+            /* ネオンカラー */
+            --neon-pink: #FF1493;
+            --neon-blue: #00FFFF;
+            --neon-green: #00FF00;
+            --neon-purple: #FF00FF;
+            --neon-yellow: #FFFF00;
+            --neon-orange: #FF6B35;
+            
+            /* グラデーション */
+            --gradient-neon: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green));
+            
+            /* フォント */
+            --font-main: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-weight-light: 300;
+            --font-weight-regular: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            
+            /* スペーシング */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-2xl: 4rem;
+            
+            /* シャドウ */
+            --shadow-neon-pink: 0 0 20px rgba(255, 20, 147, 0.8);
+            --shadow-neon-blue: 0 0 20px rgba(0, 255, 255, 0.8);
+            --shadow-neon-green: 0 0 20px rgba(0, 255, 0, 0.8);
+            
+            /* トランジション */
+            --transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--color-background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: var(--font-weight-bold);
+            background: var(--gradient-neon);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .demo-section {
+            background: var(--card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .demo-title {
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--neon-blue);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .demo-title::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: var(--gradient-neon);
+            border-radius: 2px;
+        }
+
+        .upload-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: var(--gradient-neon);
+            border: none;
+            border-radius: 8px;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            color: white;
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-neon-blue);
+        }
+
+        .btn-secondary {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--neon-pink);
+            box-shadow: var(--shadow-neon-pink);
+        }
+
+        .results {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .results h4 {
+            color: var(--neon-blue);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .results pre {
+            background: var(--color-surface);
+            padding: var(--spacing-md);
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            border: 1px solid var(--color-border);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: var(--spacing-2xl);
+        }
+
+        .back-link a {
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: var(--transition);
+        }
+
+        .back-link a:hover {
+            color: var(--neon-blue);
+            text-shadow: var(--shadow-neon-blue);
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-lg);
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .demo-section {
+                padding: var(--spacing-lg);
+            }
+            
+            .upload-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">画像アップロードデモ</h1>
+            <p class="subtitle">ドラッグ&ドロップまたはファイル選択で画像をアップロード</p>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="demo-title">
+                <i class="fas fa-cloud-upload-alt"></i>
+                画像アップローダー
+            </h2>
+            
+            <!-- 画像アップロードコンポーネントをここに挿入 -->
+            <div id="imageUploaderContainer"></div>
+
+            <div class="upload-actions">
+                <button class="btn" id="uploadBtn">
+                    <i class="fas fa-upload"></i>
+                    アップロード開始
+                </button>
+                <button class="btn btn-secondary" id="resetBtn">
+                    <i class="fas fa-redo"></i>
+                    リセット
+                </button>
+            </div>
+
+            <div class="results" id="results">
+                <h4><i class="fas fa-check-circle"></i> アップロード結果</h4>
+                <pre id="resultsData"></pre>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="index.html">
+                <i class="fas fa-arrow-left"></i>
+                トップページに戻る
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScriptファイルの読み込み -->
+    <script src="js/image-upload.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 画像アップロードコンポーネントのHTMLを動的に読み込み
+            loadImageUploaderComponent();
+        });
+
+        async function loadImageUploaderComponent() {
+            try {
+                const response = await fetch('components/image-uploader.html');
+                const html = await response.text();
+                
+                // コンテナにHTMLを挿入
+                const container = document.getElementById('imageUploaderContainer');
+                container.innerHTML = html;
+
+                // ImageUploaderを初期化
+                const uploader = new ImageUploader({
+                    maxFileSize: 10 * 1024 * 1024, // 10MB
+                    acceptedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+                    maxFiles: 10,
+                    multiple: true,
+                    compressImages: false, // デモでは圧縮無効
+                    onSuccess: function(uploadedImages) {
+                        console.log('アップロード成功:', uploadedImages);
+                        showResults(uploadedImages);
+                    },
+                    onError: function(error) {
+                        console.error('アップロードエラー:', error);
+                    },
+                    onProgress: function(progress) {
+                        console.log('アップロード進捗:', progress + '%');
+                    }
+                });
+
+                uploader.init('#imageUploaderContainer .image-uploader');
+
+                // ボタンイベントの設定
+                setupButtons(uploader);
+
+            } catch (error) {
+                console.error('コンポーネントの読み込みエラー:', error);
+                document.getElementById('imageUploaderContainer').innerHTML = 
+                    '<p style="color: #ff4444; text-align: center; padding: 2rem;">コンポーネントの読み込みに失敗しました</p>';
+            }
+        }
+
+        function setupButtons(uploader) {
+            const uploadBtn = document.getElementById('uploadBtn');
+            const resetBtn = document.getElementById('resetBtn');
+
+            uploadBtn.addEventListener('click', function() {
+                uploader.upload();
+            });
+
+            resetBtn.addEventListener('click', function() {
+                uploader.reset();
+                hideResults();
+            });
+        }
+
+        function showResults(uploadedImages) {
+            const resultsDiv = document.getElementById('results');
+            const resultsData = document.getElementById('resultsData');
+            
+            resultsData.textContent = JSON.stringify(uploadedImages, null, 2);
+            resultsDiv.style.display = 'block';
+            
+            // 結果エリアまでスクロール
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideResults() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
