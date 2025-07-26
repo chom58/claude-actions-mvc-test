@@ -12,6 +12,7 @@ const { csrfToken, webCsrfProtection } = require('./middleware/csrf');
 const { initializeSession } = require('./config/session');
 const storageService = require('./services/storageService');
 const searchIndexService = require('./services/searchIndexService');
+const notificationService = require('./services/notificationService');
 const fs = require('fs').promises;
 
 const app = express();
@@ -84,6 +85,10 @@ const startServer = async () => {
     // 検索インデックスサービスの初期化
     await searchIndexService.initialize();
     console.log('検索インデックスサービスが初期化されました');
+    
+    // 通知サービスの初期化
+    await notificationService.initialize();
+    console.log('通知サービスが初期化されました');
     
     await syncDatabase();
     

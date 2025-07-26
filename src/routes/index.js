@@ -16,6 +16,8 @@ const imageRoutes = require('./imageRoutes');
 const csrfRoutes = require('./csrf');
 const systemRoutes = require('./systemRoutes');
 const searchRoutes = require('./searchRoutes');
+const notificationRoutes = require('./notificationRoutes');
+const reviewRoutes = require('./reviewRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -46,7 +48,11 @@ router.get('/', (req, res) => {
       upload: '/api/upload',
       images: '/api/images',
       // 検索
-      search: '/api/search'
+      search: '/api/search',
+      // 通知
+      notifications: '/api/notifications',
+      // レビュー・評価
+      reviews: '/api/reviews'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
@@ -93,5 +99,11 @@ router.use('/images', imageRoutes);
 
 // 検索ルート
 router.use('/search', searchRoutes);
+
+// 通知ルート
+router.use('/notifications', notificationRoutes);
+
+// レビュー・評価ルート
+router.use('/reviews', reviewRoutes);
 
 module.exports = router;
