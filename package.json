@@ -13,7 +13,17 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "seed": "node src/seeders/seed.js",
-    "build-index": "node src/tasks/buildSearchIndex.js"
+    "build-index": "node src/tasks/buildSearchIndex.js",
+    "docs:generate": "npm run docs:api && npm run docs:code && npm run docs:diagrams && npm run docs:env && npm run docs:changelog && npm run docs:markdown",
+    "docs:markdown": "node scripts/generate-docs.js",
+    "docs:api": "node scripts/generate-swagger.js",
+    "docs:code": "jsdoc -c jsdoc.config.json",
+    "docs:diagrams": "node scripts/generate-diagrams.js",
+    "docs:env": "node scripts/document-env.js",
+    "docs:changelog": "node scripts/generate-changelog.js",
+    "docs:serve": "docusaurus start",
+    "docs:build": "docusaurus build",
+    "docs:deploy": "docusaurus deploy"
   },
   "keywords": [
     "express",
@@ -59,6 +69,16 @@
     "@playwright/test": "^1.40.0",
     "playwright": "^1.40.0",
     "@faker-js/faker": "^8.3.1",
-    "@axe-core/playwright": "^4.8.2"
+    "@axe-core/playwright": "^4.8.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
+    "jsdoc": "^4.0.2",
+    "@docusaurus/core": "^3.0.0",
+    "@docusaurus/preset-classic": "^3.0.0",
+    "ejs": "^3.1.9",
+    "simple-git": "^3.20.0",
+    "@mermaid-js/mermaid": "^10.6.1",
+    "plantuml-encoder": "^1.4.0",
+    "js-yaml": "^4.1.0"
   }
 }

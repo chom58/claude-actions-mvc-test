@@ -1,0 +1,40 @@
+{
+  "source": {
+    "include": [
+      "./src/",
+      "./README.md"
+    ],
+    "includePattern": "\\.(js|jsx)$",
+    "exclude": [
+      "./node_modules/",
+      "./tests/",
+      "./scripts/",
+      "./public/"
+    ],
+    "excludePattern": "\\.min\\.js$"
+  },
+  "opts": {
+    "destination": "./docs/jsdoc/",
+    "recurse": true,
+    "readme": "./README.md",
+    "package": "./package.json"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "markdown": {
+    "hardwrap": true
+  },
+  "metadata": {
+    "title": "MVC Template API Documentation",
+    "filename": "jsdoc"
+  },
+  "docdash": {
+    "static": true,
+    "sort": true
+  }
+}

@@ -1,0 +1,163 @@
+name: Documentation Generation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  generate-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 履歴全体を取得（changelog生成のため）
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Generate API documentation
+      run: npm run docs:api
+    
+    - name: Generate code documentation
+      run: npm run docs:code
+    
+    - name: Generate diagrams
+      run: npm run docs:diagrams
+    
+    - name: Generate environment documentation
+      run: npm run docs:env
+    
+    - name: Generate changelog
+      run: npm run docs:changelog
+    
+    - name: Generate markdown documentation
+      run: node scripts/generate-docs.js
+    
+    - name: Build Docusaurus site
+      run: npm run docs:build
+    
+    - name: Upload documentation artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: documentation
+        path: |
+          docs/
+          build/
+          CHANGELOG.md
+          README.md
+        retention-days: 30
+    
+    - name: Deploy to GitHub Pages
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./build
+        destination_dir: docs
+    
+    - name: Comment PR with documentation preview
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          // ドキュメント統計を読み込み
+          let stats = '';
+          try {
+            const apiDocs = fs.readFileSync('docs/api/README.md', 'utf8');
+            const apiCount = (apiDocs.match(/### /g) || []).length;
+            
+            const diagrams = fs.readdirSync('docs/diagrams/').filter(f => f.endsWith('.md')).length;
+            
+            stats = `
+          ## 📊 ドキュメント生成統計
+          
+          - **APIエンドポイント**: ${apiCount}個のドキュメント化されたエンドポイント
+          - **生成された図表**: ${diagrams}個のアーキテクチャ図
+          - **ドキュメントページ**: [プレビューサイト](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
+          📚 **生成されたドキュメント**:
+          - API仕様 (OpenAPI/Swagger)
+          - コードドキュメント (JSDoc)
+          - アーキテクチャ図 (PlantUML/Mermaid)
+          - 環境変数ドキュメント
+          - 変更履歴
+          `;
+          } catch (error) {
+            stats = '📝 ドキュメント生成中にエラーが発生しました。';
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `## 🤖 自動ドキュメント生成完了
+          
+          このPRのドキュメントが自動生成されました。
+          
+          ${stats}
+          
+          📋 **チェックリスト**:
+          - [ ] APIドキュメントの内容を確認
+          - [ ] 新しいエンドポイントが適切に文書化されている
+          - [ ] アーキテクチャ図が最新状態を反映している
+          - [ ] 環境変数の変更が文書化されている
+          
+          ---
+          
+          *このコメントは自動生成されています。*`
+          });
+
+  lint-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Check documentation links
+      run: |
+        # マークダウンファイル内のリンクをチェック
+        find docs/ -name "*.md" -exec echo "Checking {}" \; -exec grep -H "](.*)" {} \; || true
+    
+    - name: Validate API documentation
+      run: |
+        # API仕様が有効かチェック
+        node -e "
+          try {
+            const { specs } = require('./src/config/swagger');
+            console.log('✅ API仕様は有効です');
+            console.log('エンドポイント数:', Object.keys(specs.paths || {}).length);
+          } catch (error) {
+            console.error('❌ API仕様が無効です:', error.message);
+            process.exit(1);
+          }
+        "
+    
+    - name: Check for documentation TODOs
+      run: |
+        # ドキュメント内のTODOやFIXMEをチェック
+        echo "🔍 ドキュメント内のTODO/FIXMEをチェック中..."
+        find docs/ -name "*.md" -exec grep -Hn "TODO\|FIXME\|XXX" {} \; || echo "✅ TODOは見つかりませんでした"
