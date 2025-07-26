@@ -14,6 +14,7 @@ const jobSiteRoutes = require('./jobSiteRoutes');
 const uploadRoutes = require('./uploadRoutes');
 const imageRoutes = require('./imageRoutes');
 const csrfRoutes = require('./csrf');
+const pushNotificationRoutes = require('./pushNotificationRoutes');
 const systemRoutes = require('./systemRoutes');
 const searchRoutes = require('./searchRoutes');
 const notificationRoutes = require('./notificationRoutes');
@@ -47,6 +48,8 @@ router.get('/', (req, res) => {
       // 画像アップロード
       upload: '/api/upload',
       images: '/api/images',
+      // プッシュ通知
+      push: '/api/push',
       // 検索
       search: '/api/search',
       // 通知
@@ -96,6 +99,9 @@ router.use('/job-sites', jobSiteRoutes);
 // 画像アップロードルート
 router.use('/upload', uploadRoutes);
 router.use('/images', imageRoutes);
+
+// プッシュ通知ルート
+router.use('/push', pushNotificationRoutes);
 
 // 検索ルート
 router.use('/search', searchRoutes);

@@ -1,12 +1,44 @@
 {
   "name": "原宿クリエイティブコミュニティ",
   "short_name": "HCC",
-  "description": "原宿から発信するデザインとファッションの最前線。多様なクリエイターが出会い、新たな価値を生み出すハブ。",
+  "description": "デザインとファッションが融合するクリエイティブハブ - 原宿から発信する最前線のクリエイティブコミュニティ",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#FF1493",
   "orientation": "portrait-primary",
+  "theme_color": "#FF1493",
+  "background_color": "#0a0a0a",
+  "lang": "ja",
+  "dir": "ltr",
+  "categories": ["creativity", "design", "fashion", "community", "social", "business", "lifestyle", "productivity"],
+  "screenshots": [
+    {
+      "src": "/icons/screenshot-desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "デスクトップビューのスクリーンショット"
+    },
+    {
+      "src": "/icons/screenshot-mobile.png", 
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "モバイルビューのスクリーンショット"
+    },
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "ホーム画面"
+    },
+    {
+      "src": "/screenshots/jobs.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "求人一覧"
+    }
+  ],
   "icons": [
     {
       "src": "/icons/icon-72x72.png",
@@ -55,39 +87,76 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/badge-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "badge"
     }
   ],
   "shortcuts": [
     {
-      "name": "求人を探す",
+      "name": "新着求人",
       "short_name": "求人",
-      "description": "未経験歓迎のデザイナー求人を探す",
-      "url": "/#designer-jobs",
-      "icons": [{ "src": "/icons/job-96x96.png", "sizes": "96x96" }]
+      "description": "最新のデザイナー求人をチェック",
+      "url": "/jobs?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/job-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     },
     {
       "name": "イベント",
-      "short_name": "イベント",
-      "description": "クリエイティブイベントを探す",
-      "url": "/#features",
-      "icons": [{ "src": "/icons/event-96x96.png", "sizes": "96x96" }]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshots/home.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "label": "ホーム画面"
+      "short_name": "イベント", 
+      "description": "クリエイティブイベント情報",
+      "url": "/events?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/event-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     },
     {
-      "src": "/screenshots/jobs.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "label": "求人一覧"
+      "name": "コラボレーション",
+      "short_name": "コラボ",
+      "description": "新しいコラボレーション機会",
+      "url": "/collaborations?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/shortcut-collab.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "マッチング",
+      "short_name": "マッチング",
+      "description": "クリエイター同士のマッチング",
+      "url": "/matching?source=shortcut",
+      "icons": [
+        {
+          "src": "/icons/shortcut-matching.png", 
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     }
   ],
-  "categories": ["business", "lifestyle", "productivity"],
   "prefer_related_applications": false,
-  "related_applications": []
+  "related_applications": [],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "handle_links": "preferred",
+  "capture_links": "existing-client-navigate"
 }

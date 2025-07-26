@@ -4,81 +4,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FF1493">
-    <title>オフライン - 原宿クリエイティブコミュニティ</title>
+    <title>オフライン | 原宿クリエイティブコミュニティ</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* CSS Reset & Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* 原宿ネオンカラーパレット */
+        :root {
+            --color-primary: #ffffff;
+            --color-secondary: #f0f0f0;
+            --color-background: #0a0a0a;
+            --color-surface: #1a1a1a;
+            --color-border: #333333;
+            --text-primary: #ffffff;
+            --text-secondary: #f0f0f0;
+            
+            /* ネオンカラー */
+            --neon-pink: #FF1493;
+            --neon-blue: #00FFFF;
+            --neon-green: #00FF00;
+            --neon-purple: #FF00FF;
+            --neon-yellow: #FFFF00;
+            
+            /* フォント */
+            --font-main: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-accent: 'Montserrat', sans-serif;
+            --font-japanese: 'Noto Sans JP', sans-serif;
+            
+            /* スペーシング */
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            
+            /* ネオンシャドウ */
+            --shadow-neon-pink: 0 0 20px rgba(255, 20, 147, 0.8);
+            --shadow-neon-blue: 0 0 20px rgba(0, 255, 255, 0.8);
+            
+            /* トランジション */
+            --transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0a0a0a;
-            color: #ffffff;
+            font-family: var(--font-main);
+            background: var(--color-background);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* バックグラウンドアニメーション */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 20, 147, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(255, 0, 255, 0.05) 0%, transparent 50%);
+            animation: backgroundPulse 6s ease-in-out infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes backgroundPulse {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.7; }
         }
 
         .offline-container {
             text-align: center;
-            max-width: 500px;
+            padding: var(--spacing-xl);
+            max-width: 600px;
+            position: relative;
+            z-index: 1;
         }
 
-        .offline-icon {
-            font-size: 5rem;
-            margin-bottom: 2rem;
-            opacity: 0.5;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #FF1493, #00FFFF);
+        /* ロゴスタイル */
+        .logo {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: var(--shadow-neon-pink);
+            margin-bottom: var(--spacing-lg);
+            animation: logoGlow 2s ease-in-out infinite alternate;
         }
 
-        p {
+        @keyframes logoGlow {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.2); }
+        }
+
+        /* オフラインアイコン */
+        .offline-icon {
+            font-size: 6rem;
+            color: var(--neon-pink);
+            margin-bottom: var(--spacing-lg);
+            animation: iconFloat 3s ease-in-out infinite;
+            text-shadow: var(--shadow-neon-pink);
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* メインタイトル */
+        .offline-title {
+            font-family: var(--font-japanese);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+
+        /* サブタイトル */
+        .offline-subtitle {
+            font-family: var(--font-japanese);
             font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
             line-height: 1.6;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 2rem;
         }
 
-        .retry-button {
-            display: inline-block;
-            padding: 15px 30px;
-            background: transparent;
-            border: 2px solid #FF1493;
-            color: #FF1493;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        /* 機能リスト */
+        .offline-features {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            backdrop-filter: blur(10px);
         }
 
-        .retry-button:hover {
-            background: #FF1493;
-            color: #0a0a0a;
-            box-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+        .offline-features h3 {
+            font-family: var(--font-japanese);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--neon-blue);
+            text-shadow: var(--shadow-neon-blue);
         }
 
+        .feature-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-list li {
+            font-family: var(--font-japanese);
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* キャッシュコンテンツセクション */
         .cached-content {
-            margin-top: 3rem;
-            padding-top: 3rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--color-border);
         }
 
-        .cached-content h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #00FFFF;
+        .cached-content h3 {
+            font-family: var(--font-japanese);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--neon-green);
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
         }
 
         .cached-list {
@@ -87,35 +213,184 @@
         }
 
         .cached-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--color-border);
         }
 
         .cached-list a {
-            color: #00FFFF;
+            color: var(--neon-blue);
             text-decoration: none;
-            transition: color 0.3s ease;
+            transition: var(--transition);
+            font-family: var(--font-japanese);
         }
 
         .cached-list a:hover {
-            color: #FF1493;
+            color: var(--neon-pink);
+            text-shadow: var(--shadow-neon-pink);
+        }
+
+        /* リトライボタン */
+        .retry-button {
+            background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: var(--font-japanese);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: none;
+            box-shadow: var(--shadow-neon-pink);
+            margin-right: var(--spacing-sm);
+        }
+
+        .retry-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+        }
+
+        .retry-button:active {
+            transform: translateY(0);
+        }
+
+        /* ホームボタン */
+        .home-button {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-family: var(--font-japanese);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .home-button:hover {
+            background: var(--neon-blue);
+            color: var(--color-background);
+            box-shadow: var(--shadow-neon-blue);
+            transform: translateY(-2px);
+        }
+
+        /* コネクションインジケーター */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: var(--font-japanese);
+            background: rgba(255, 20, 147, 0.2);
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
+        }
+
+        .connection-status.online {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .offline-container {
+                padding: var(--spacing-lg);
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .offline-icon {
+                font-size: 4rem;
+            }
+            
+            .offline-title {
+                font-size: 2rem;
+            }
+            
+            .offline-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .retry-button,
+            .home-button {
+                display: block;
+                width: 100%;
+                margin-bottom: var(--spacing-sm);
+                margin-right: 0;
+            }
+        }
+
+        /* アクセシビリティ */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ダークモードの場合の追加スタイル */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-background: #0a0a0a;
+                --color-surface: #1a1a1a;
+                --text-primary: #ffffff;
+                --text-secondary: #f0f0f0;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="offline-container">
-        <div class="offline-icon">📡</div>
-        <h1>オフラインです</h1>
-        <p>
-            インターネット接続がありません。<br>
-            接続が回復したら、自動的に更新されます。
-        </p>
-        <button class="retry-button" onclick="window.location.reload()">
-            再読み込み
-        </button>
+    <div class="connection-status" id="connectionStatus">
+        <i class="fas fa-wifi-slash"></i> オフライン
+    </div>
 
-        <div class="cached-content" id="cachedContent">
-            <h2>キャッシュされたコンテンツ</h2>
+    <div class="offline-container">
+        <div class="logo">HCC</div>
+        
+        <div class="offline-icon">
+            <i class="fas fa-cloud-offline"></i>
+        </div>
+        
+        <h1 class="offline-title">オフライン中です</h1>
+        
+        <p class="offline-subtitle">
+            インターネット接続を確認してください。<br>
+            オフライン中でも一部の機能をご利用いただけます。
+        </p>
+        
+        <div class="offline-features">
+            <h3>オフラインで利用可能な機能</h3>
+            <ul class="feature-list">
+                <li>キャッシュされたページの閲覧</li>
+                <li>保存済みの画像とコンテンツの表示</li>
+                <li>下書きの編集と一時保存</li>
+                <li>オフライン時の投稿予約</li>
+                <li>お気に入りのクリエイター情報</li>
+            </ul>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="retry-button" onclick="retryConnection()">
+                <i class="fas fa-redo"></i> 再接続を試す
+            </button>
+            <a href="/" class="home-button">
+                <i class="fas fa-home"></i> ホームに戻る
+            </a>
+        </div>
+
+        <div class="cached-content" id="cachedContent" style="display: none;">
+            <h3>キャッシュされたコンテンツ</h3>
             <ul class="cached-list" id="cachedList">
                 <!-- キャッシュされたコンテンツがここに表示されます -->
             </ul>
@@ -123,9 +398,50 @@
     </div>
 
     <script>
+        // 接続状態の監視
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+            
+            if (navigator.onLine) {
+                statusElement.innerHTML = '<i class="fas fa-wifi"></i> オンライン';
+                statusElement.classList.add('online');
+                
+                // オンラインになったら自動的にリロード
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            } else {
+                statusElement.innerHTML = '<i class="fas fa-wifi-slash"></i> オフライン';
+                statusElement.classList.remove('online');
+            }
+        }
+
+        // 再接続を試す
+        function retryConnection() {
+            const button = document.querySelector('.retry-button');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 接続中...';
+            button.disabled = true;
+            
+            // 接続テスト
+            fetch('/', { method: 'HEAD', cache: 'no-cache' })
+                .then(() => {
+                    button.innerHTML = '<i class="fas fa-check"></i> 接続成功！';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                })
+                .catch(() => {
+                    button.innerHTML = '<i class="fas fa-times"></i> 接続に失敗しました';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-redo"></i> 再接続を試す';
+                        button.disabled = false;
+                    }, 2000);
+                });
+        }
+
         // キャッシュされたページを表示
         if ('caches' in window) {
-            caches.open('hcc-v1').then(cache => {
+            caches.open('harajuku-creative-v1').then(cache => {
                 cache.keys().then(keys => {
                     const list = document.getElementById('cachedList');
                     const pages = keys
@@ -140,6 +456,7 @@
                         });
 
                     if (pages.length > 0) {
+                        document.getElementById('cachedContent').style.display = 'block';
                         pages.forEach(page => {
                             const li = document.createElement('li');
                             const a = document.createElement('a');
@@ -148,17 +465,47 @@
                             li.appendChild(a);
                             list.appendChild(li);
                         });
-                    } else {
-                        document.getElementById('cachedContent').style.display = 'none';
                     }
                 });
             });
         }
 
-        // オンラインになったら自動的にリロード
-        window.addEventListener('online', () => {
-            window.location.reload();
-        });
+        // イベントリスナーの設定
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        window.addEventListener('load', updateConnectionStatus);
+
+        // Service Workerの更新通知
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                    // アップデート通知を表示
+                    const notification = document.createElement('div');
+                    notification.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        background: var(--neon-blue);
+                        color: var(--color-background);
+                        padding: 1rem 2rem;
+                        border-radius: 8px;
+                        font-family: var(--font-japanese);
+                        font-weight: 600;
+                        z-index: 1000;
+                        box-shadow: var(--shadow-neon-blue);
+                    `;
+                    notification.innerHTML = 'アプリの新しいバージョンが利用可能です';
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 5000);
+                }
+            });
+        }
+
+        console.log('🎌 原宿クリエイティブコミュニティ - オフラインページ読み込み完了');
     </script>
 </body>
 </html>
