@@ -7,11 +7,15 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "test:e2e": "playwright test",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
+    "test:performance": "artillery run tests/performance/load.yml",
+    "test:stress": "artillery run tests/performance/stress.yml",
     "seed": "node src/seeders/seed.js",
     "build-index": "node src/tasks/buildSearchIndex.js"
   },
@@ -59,6 +63,7 @@
     "@playwright/test": "^1.40.0",
     "playwright": "^1.40.0",
     "@faker-js/faker": "^8.3.1",
-    "@axe-core/playwright": "^4.8.2"
+    "@axe-core/playwright": "^4.8.2",
+    "artillery": "^2.0.3"
   }
 }

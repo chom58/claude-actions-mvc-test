@@ -1,0 +1,47 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    # 徐々に負荷を上げる
+    - duration: 120
+      arrivalRate: 1
+      rampTo: 100
+      name: "負荷上昇"
+    # 高負荷を維持
+    - duration: 300
+      arrivalRate: 100
+      name: "ストレステスト"
+    # 徐々に負荷を下げる
+    - duration: 120
+      arrivalRate: 100
+      rampTo: 1
+      name: "負荷低下"
+  processor: "./load-processor.js"
+
+scenarios:
+  - name: "高負荷API呼び出し"
+    weight: 50
+    flow:
+      - get:
+          url: "/api/posts"
+      - get:
+          url: "/api/search?q=test"
+      - think: 0.5
+
+  - name: "データベース集約処理"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/designer-jobs"
+      - get:
+          url: "/api/creative-events"
+      - think: 1
+
+  - name: "認証処理"
+    weight: 20
+    flow:
+      - post:
+          url: "/api/auth/login"
+          json:
+            email: "user@test.com"
+            password: "Test123!"
+      - think: 0.5
