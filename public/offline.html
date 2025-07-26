@@ -191,6 +191,44 @@
             top: 0;
         }
 
+        /* キャッシュコンテンツセクション */
+        .cached-content {
+            margin-top: var(--spacing-lg);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .cached-content h3 {
+            font-family: var(--font-japanese);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--neon-green);
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+        }
+
+        .cached-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .cached-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .cached-list a {
+            color: var(--neon-blue);
+            text-decoration: none;
+            transition: var(--transition);
+            font-family: var(--font-japanese);
+        }
+
+        .cached-list a:hover {
+            color: var(--neon-pink);
+            text-shadow: var(--shadow-neon-pink);
+        }
+
         /* リトライボタン */
         .retry-button {
             background: linear-gradient(45deg, var(--neon-pink), var(--neon-purple));
@@ -350,6 +388,13 @@
                 <i class="fas fa-home"></i> ホームに戻る
             </a>
         </div>
+
+        <div class="cached-content" id="cachedContent" style="display: none;">
+            <h3>キャッシュされたコンテンツ</h3>
+            <ul class="cached-list" id="cachedList">
+                <!-- キャッシュされたコンテンツがここに表示されます -->
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -392,6 +437,37 @@
                         button.disabled = false;
                     }, 2000);
                 });
+        }
+
+        // キャッシュされたページを表示
+        if ('caches' in window) {
+            caches.open('harajuku-creative-v1').then(cache => {
+                cache.keys().then(keys => {
+                    const list = document.getElementById('cachedList');
+                    const pages = keys
+                        .filter(request => request.url.includes('.html'))
+                        .map(request => {
+                            const url = new URL(request.url);
+                            return {
+                                path: url.pathname,
+                                name: url.pathname === '/' ? 'ホーム' : 
+                                      url.pathname.replace(/\//g, '').replace('.html', '')
+                            };
+                        });
+
+                    if (pages.length > 0) {
+                        document.getElementById('cachedContent').style.display = 'block';
+                        pages.forEach(page => {
+                            const li = document.createElement('li');
+                            const a = document.createElement('a');
+                            a.href = page.path;
+                            a.textContent = page.name;
+                            li.appendChild(a);
+                            list.appendChild(li);
+                        });
+                    }
+                });
+            });
         }
 
         // イベントリスナーの設定

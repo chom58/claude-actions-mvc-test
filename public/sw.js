@@ -15,6 +15,9 @@ const STATIC_ASSETS = [
   '/js/client-monitoring.js',
   '/js/image-upload.js',
   '/js/pwa-installer.js',
+  '/js/advanced-search.js',
+  '/components/search-filter-panel.html',
+  '/manifest.json',
   // External resources (CDN)
   'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
@@ -225,19 +228,25 @@ self.addEventListener('push', event => {
   let notificationData = {
     title: '原宿クリエイティブコミュニティ',
     body: '新しい通知があります',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/badge-72.png',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/badge-72x72.png',
     tag: 'general',
     requireInteraction: false,
+    vibrate: [200, 100, 200],
+    data: {
+      dateOfArrival: Date.now(),
+      primaryKey: 1
+    },
     actions: [
       {
         action: 'view',
         title: '表示',
-        icon: '/icons/view-icon.png'
+        icon: '/icons/checkmark.png'
       },
       {
         action: 'dismiss',
-        title: '閉じる'
+        title: '閉じる',
+        icon: '/icons/xmark.png'
       }
     ]
   };
@@ -295,6 +304,8 @@ self.addEventListener('sync', event => {
   
   if (event.tag === 'background-sync') {
     event.waitUntil(doBackgroundSync());
+  } else if (event.tag === 'sync-search-history') {
+    event.waitUntil(syncSearchHistory());
   }
 });
 
@@ -304,10 +315,7 @@ async function doBackgroundSync() {
     // オフライン中に蓄積されたデータを同期
     console.log('📡 Service Worker: オフラインデータを同期中...');
     
-    // IndexedDBや他のストレージからオフラインデータを取得し、
-    // サーバーに送信する処理をここに実装
-    
-    // 例: 未送信の投稿データを送信
+    // 未送信の投稿データを送信
     await syncPendingPosts();
     
     console.log('✅ Service Worker: バックグラウンド同期完了');
@@ -319,8 +327,57 @@ async function doBackgroundSync() {
 // 未送信の投稿データを同期
 async function syncPendingPosts() {
   // 実装例: IndexedDBから未送信データを取得して送信
-  // この部分は実際のアプリケーションのデータ構造に合わせて実装
   console.log('📝 Service Worker: 未送信の投稿を同期中...');
+}
+
+// 検索履歴の同期
+async function syncSearchHistory() {
+  try {
+    // IndexedDBから未同期の検索履歴を取得
+    const db = await openDB();
+    const tx = db.transaction('searchHistory', 'readonly');
+    const store = tx.objectStore('searchHistory');
+    const unsyncedSearches = await store.getAll();
+
+    // サーバーに同期
+    if (unsyncedSearches.length > 0) {
+      await fetch('/api/search/sync-history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ searches: unsyncedSearches })
+      });
+
+      // 同期済みフラグを更新
+      const writeTx = db.transaction('searchHistory', 'readwrite');
+      const writeStore = writeTx.objectStore('searchHistory');
+      for (const search of unsyncedSearches) {
+        search.synced = true;
+        await writeStore.put(search);
+      }
+    }
+  } catch (error) {
+    console.error('検索履歴の同期に失敗:', error);
+  }
+}
+
+// IndexedDBヘルパー関数
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('hcc-db', 1);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    
+    request.onupgradeneeded = event => {
+      const db = event.target.result;
+      
+      if (!db.objectStoreNames.contains('searchHistory')) {
+        db.createObjectStore('searchHistory', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+  });
 }
 
 // Service Worker更新通知

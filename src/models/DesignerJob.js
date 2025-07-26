@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const { addSearchIndexHooks } = require('./hooks/searchIndexHooks');
 
 const DesignerJob = sequelize.define('DesignerJob', {
   id: {
@@ -234,5 +235,8 @@ const DesignerJob = sequelize.define('DesignerJob', {
     }
   ]
 });
+
+// 検索インデックスフックを追加
+addSearchIndexHooks(DesignerJob, 'designer_job');
 
 module.exports = DesignerJob;

@@ -42,6 +42,7 @@ const updateValidation = [
 
 // ルート定義
 router.get('/', designCompanyController.getAllCompanies);
+router.get('/search', designCompanyController.searchCompanies);
 router.get('/harajuku', designCompanyController.getHarajukuCompanies);
 router.get('/specialty/:specialty', designCompanyController.searchBySpecialty);
 router.get('/:id', designCompanyController.getCompanyById);

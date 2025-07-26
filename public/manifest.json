@@ -10,7 +10,7 @@
   "background_color": "#0a0a0a",
   "lang": "ja",
   "dir": "ltr",
-  "categories": ["creativity", "design", "fashion", "community", "social"],
+  "categories": ["creativity", "design", "fashion", "community", "social", "business", "lifestyle", "productivity"],
   "screenshots": [
     {
       "src": "/icons/screenshot-desktop.png",
@@ -25,59 +25,71 @@
       "type": "image/png",
       "form_factor": "narrow",
       "label": "モバイルビューのスクリーンショット"
+    },
+    {
+      "src": "/screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "ホーム画面"
+    },
+    {
+      "src": "/screenshots/jobs.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "求人一覧"
     }
   ],
   "icons": [
     {
-      "src": "/icons/icon-72.png",
+      "src": "/icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-96.png",
-      "sizes": "96x96", 
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-128.png",
+      "src": "/icons/icon-128x128.png",
       "sizes": "128x128",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-144.png",
+      "src": "/icons/icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-152.png",
+      "src": "/icons/icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-384.png",
+      "src": "/icons/icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable any"
     },
     {
-      "src": "/icons/badge-72.png",
+      "src": "/icons/badge-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "badge"
@@ -91,7 +103,7 @@
       "url": "/jobs?source=shortcut",
       "icons": [
         {
-          "src": "/icons/shortcut-jobs.png",
+          "src": "/icons/job-96x96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -104,8 +116,8 @@
       "url": "/events?source=shortcut",
       "icons": [
         {
-          "src": "/icons/shortcut-events.png",
-          "sizes": "96x96", 
+          "src": "/icons/event-96x96.png",
+          "sizes": "96x96",
           "type": "image/png"
         }
       ]
@@ -138,6 +150,7 @@
     }
   ],
   "prefer_related_applications": false,
+  "related_applications": [],
   "edge_side_panel": {
     "preferred_width": 400
   },

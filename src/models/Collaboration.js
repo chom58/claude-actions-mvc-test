@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const { addSearchIndexHooks } = require('./hooks/searchIndexHooks');
 
 const Collaboration = sequelize.define('Collaboration', {
   id: {
@@ -166,5 +167,8 @@ const Collaboration = sequelize.define('Collaboration', {
     }
   ]
 });
+
+// 検索インデックスフックを追加
+addSearchIndexHooks(Collaboration, 'collaboration');
 
 module.exports = Collaboration;

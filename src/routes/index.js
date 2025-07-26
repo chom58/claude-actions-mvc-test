@@ -15,6 +15,10 @@ const uploadRoutes = require('./uploadRoutes');
 const imageRoutes = require('./imageRoutes');
 const csrfRoutes = require('./csrf');
 const pushNotificationRoutes = require('./pushNotificationRoutes');
+const systemRoutes = require('./systemRoutes');
+const searchRoutes = require('./searchRoutes');
+const notificationRoutes = require('./notificationRoutes');
+const reviewRoutes = require('./reviewRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -36,11 +40,22 @@ router.get('/', (req, res) => {
       // デザイナー採用メディア
       designerJobs: '/api/designer-jobs',
       jobSites: '/api/job-sites',
+      // システム情報
+      health: '/api/system/health',
+      info: '/api/system/info',
+      config: '/api/system/config',
+      csrf: '/api/csrf/token',
       // 画像アップロード
       upload: '/api/upload',
       images: '/api/images',
       // プッシュ通知
-      push: '/api/push'
+      push: '/api/push',
+      // 検索
+      search: '/api/search',
+      // 通知
+      notifications: '/api/notifications',
+      // レビュー・評価
+      reviews: '/api/reviews'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
@@ -67,6 +82,9 @@ router.use('/posts', postRoutes);
 // CSRF トークンルート
 router.use('/csrf', csrfRoutes);
 
+// システム情報ルート
+router.use('/system', systemRoutes);
+
 // 新しいクリエイティブコミュニティルート
 router.use('/design-companies', designCompanyRoutes);
 router.use('/apparel-brands', apparelBrandRoutes);
@@ -84,5 +102,14 @@ router.use('/images', imageRoutes);
 
 // プッシュ通知ルート
 router.use('/push', pushNotificationRoutes);
+
+// 検索ルート
+router.use('/search', searchRoutes);
+
+// 通知ルート
+router.use('/notifications', notificationRoutes);
+
+// レビュー・評価ルート
+router.use('/reviews', reviewRoutes);
 
 module.exports = router;

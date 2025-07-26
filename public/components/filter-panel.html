@@ -1,0 +1,944 @@
+<!-- 高度なフィルターパネルコンポーネント -->
+<div class="filter-panel" id="filterPanel" data-filter-panel>
+  <!-- フィルターヘッダー -->
+  <div class="filter-header">
+    <div class="filter-title">
+      <i class="fas fa-filter"></i>
+      <span>検索フィルター</span>
+    </div>
+    <div class="filter-actions">
+      <button class="save-filter-btn" id="saveFilterBtn" data-save-filter>
+        <i class="fas fa-bookmark"></i>
+        <span>保存</span>
+      </button>
+      <button class="clear-filters-btn" id="clearFiltersBtn" data-clear-filters>
+        <i class="fas fa-times"></i>
+        <span>リセット</span>
+      </button>
+      <button class="close-panel-btn" id="closePanelBtn" data-close-panel>
+        <i class="fas fa-chevron-up"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- フィルター内容 -->
+  <div class="filter-content">
+    <!-- コンテンツタイプフィルター -->
+    <div class="filter-section" data-filter-section="content-type">
+      <div class="section-header">
+        <h3>コンテンツタイプ</h3>
+        <button class="section-toggle" data-section-toggle>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="section-content">
+        <div class="filter-group">
+          <label class="filter-checkbox">
+            <input type="checkbox" name="contentType" value="designer-job" checked>
+            <span class="checkmark"></span>
+            <span class="label-text">デザイナー求人</span>
+            <span class="count" data-count="designer-job">0</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="contentType" value="creative-event" checked>
+            <span class="checkmark"></span>
+            <span class="label-text">クリエイティブイベント</span>
+            <span class="count" data-count="creative-event">0</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="contentType" value="collaboration" checked>
+            <span class="checkmark"></span>
+            <span class="label-text">コラボレーション案件</span>
+            <span class="count" data-count="collaboration">0</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- デザイナー求人フィルター -->
+    <div class="filter-section" data-filter-section="designer-job">
+      <div class="section-header">
+        <h3>デザイナー求人</h3>
+        <button class="section-toggle" data-section-toggle>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="section-content">
+        <!-- 経験レベル -->
+        <div class="filter-group">
+          <h4>経験レベル</h4>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="experienceLevel" value="entry">
+            <span class="checkmark"></span>
+            <span class="label-text">未経験歓迎</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="experienceLevel" value="new-grad">
+            <span class="checkmark"></span>
+            <span class="label-text">新卒歓迎</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="experienceLevel" value="experienced">
+            <span class="checkmark"></span>
+            <span class="label-text">経験者向け</span>
+          </label>
+        </div>
+
+        <!-- 雇用形態 -->
+        <div class="filter-group">
+          <h4>雇用形態</h4>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="employmentType" value="full-time">
+            <span class="checkmark"></span>
+            <span class="label-text">正社員</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="employmentType" value="contract">
+            <span class="checkmark"></span>
+            <span class="label-text">契約社員</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="employmentType" value="part-time">
+            <span class="checkmark"></span>
+            <span class="label-text">アルバイト</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="employmentType" value="intern">
+            <span class="checkmark"></span>
+            <span class="label-text">インターン</span>
+          </label>
+        </div>
+
+        <!-- 給与範囲 -->
+        <div class="filter-group">
+          <h4>年収範囲</h4>
+          <div class="salary-range">
+            <input type="range" id="salaryMin" min="200" max="1000" value="300" step="50" class="range-slider">
+            <input type="range" id="salaryMax" min="200" max="1000" value="600" step="50" class="range-slider">
+            <div class="range-labels">
+              <span id="salaryMinLabel">300万円</span>
+              <span>〜</span>
+              <span id="salaryMaxLabel">600万円</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 勤務地 -->
+        <div class="filter-group">
+          <h4>勤務地</h4>
+          <div class="location-search">
+            <input type="text" placeholder="エリアを検索..." class="location-input" id="locationInput">
+            <div class="location-suggestions" id="locationSuggestions"></div>
+          </div>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="workLocation" value="remote">
+            <span class="checkmark"></span>
+            <span class="label-text">リモート可</span>
+          </label>
+        </div>
+
+        <!-- スキル -->
+        <div class="filter-group">
+          <h4>必要スキル</h4>
+          <div class="skill-tags" id="skillTags">
+            <span class="skill-tag" data-skill="photoshop">Photoshop</span>
+            <span class="skill-tag" data-skill="illustrator">Illustrator</span>
+            <span class="skill-tag" data-skill="figma">Figma</span>
+            <span class="skill-tag" data-skill="sketch">Sketch</span>
+            <span class="skill-tag" data-skill="html-css">HTML/CSS</span>
+            <span class="skill-tag" data-skill="javascript">JavaScript</span>
+            <span class="skill-tag" data-skill="ui-design">UIデザイン</span>
+            <span class="skill-tag" data-skill="ux-design">UXデザイン</span>
+            <span class="skill-tag" data-skill="graphic-design">グラフィック</span>
+            <span class="skill-tag" data-skill="web-design">Webデザイン</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- イベントフィルター -->
+    <div class="filter-section" data-filter-section="creative-event">
+      <div class="section-header">
+        <h3>クリエイティブイベント</h3>
+        <button class="section-toggle" data-section-toggle>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="section-content">
+        <!-- 開催日時 -->
+        <div class="filter-group">
+          <h4>開催日時</h4>
+          <div class="date-range">
+            <input type="date" id="eventDateFrom" class="date-input">
+            <span>〜</span>
+            <input type="date" id="eventDateTo" class="date-input">
+          </div>
+        </div>
+
+        <!-- カテゴリー -->
+        <div class="filter-group">
+          <h4>カテゴリー</h4>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="eventCategory" value="exhibition">
+            <span class="checkmark"></span>
+            <span class="label-text">展示会</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="eventCategory" value="workshop">
+            <span class="checkmark"></span>
+            <span class="label-text">ワークショップ</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="eventCategory" value="networking">
+            <span class="checkmark"></span>
+            <span class="label-text">交流会</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="eventCategory" value="seminar">
+            <span class="checkmark"></span>
+            <span class="label-text">セミナー</span>
+          </label>
+        </div>
+
+        <!-- 参加費 -->
+        <div class="filter-group">
+          <h4>参加費</h4>
+          <label class="filter-radio">
+            <input type="radio" name="eventFee" value="all" checked>
+            <span class="radiomark"></span>
+            <span class="label-text">すべて</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="eventFee" value="free">
+            <span class="radiomark"></span>
+            <span class="label-text">無料</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="eventFee" value="paid">
+            <span class="radiomark"></span>
+            <span class="label-text">有料</span>
+          </label>
+        </div>
+
+        <!-- 定員状況 -->
+        <div class="filter-group">
+          <h4>定員状況</h4>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="capacityStatus" value="available">
+            <span class="checkmark"></span>
+            <span class="label-text">申込可能</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- コラボレーションフィルター -->
+    <div class="filter-section" data-filter-section="collaboration">
+      <div class="section-header">
+        <h3>コラボレーション案件</h3>
+        <button class="section-toggle" data-section-toggle>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="section-content">
+        <!-- プロジェクトタイプ -->
+        <div class="filter-group">
+          <h4>プロジェクトタイプ</h4>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="projectType" value="brand-design">
+            <span class="checkmark"></span>
+            <span class="label-text">ブランドデザイン</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="projectType" value="web-development">
+            <span class="checkmark"></span>
+            <span class="label-text">Web開発</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="projectType" value="app-design">
+            <span class="checkmark"></span>
+            <span class="label-text">アプリデザイン</span>
+          </label>
+          <label class="filter-checkbox">
+            <input type="checkbox" name="projectType" value="marketing">
+            <span class="checkmark"></span>
+            <span class="label-text">マーケティング</span>
+          </label>
+        </div>
+
+        <!-- 予算規模 -->
+        <div class="filter-group">
+          <h4>予算規模</h4>
+          <label class="filter-radio">
+            <input type="radio" name="budget" value="all" checked>
+            <span class="radiomark"></span>
+            <span class="label-text">すべて</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="budget" value="small">
+            <span class="radiomark"></span>
+            <span class="label-text">〜50万円</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="budget" value="medium">
+            <span class="radiomark"></span>
+            <span class="label-text">50〜200万円</span>
+          </label>
+          <label class="filter-radio">
+            <input type="radio" name="budget" value="large">
+            <span class="radiomark"></span>
+            <span class="label-text">200万円以上</span>
+          </label>
+        </div>
+
+        <!-- 期間 -->
+        <div class="filter-group">
+          <h4>プロジェクト期間</h4>
+          <div class="duration-range">
+            <input type="range" id="durationMin" min="1" max="12" value="3" step="1" class="range-slider">
+            <input type="range" id="durationMax" min="1" max="12" value="6" step="1" class="range-slider">
+            <div class="range-labels">
+              <span id="durationMinLabel">3ヶ月</span>
+              <span>〜</span>
+              <span id="durationMaxLabel">6ヶ月</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ソート・表示オプション -->
+    <div class="filter-section" data-filter-section="display">
+      <div class="section-header">
+        <h3>表示オプション</h3>
+        <button class="section-toggle" data-section-toggle>
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="section-content">
+        <!-- ソート -->
+        <div class="filter-group">
+          <h4>並び順</h4>
+          <select class="sort-select" id="sortSelect" name="sortBy">
+            <option value="relevance">関連度順</option>
+            <option value="date-desc">新着順</option>
+            <option value="date-asc">古い順</option>
+            <option value="popularity">人気順</option>
+            <option value="salary-desc">給与高順</option>
+            <option value="salary-asc">給与低順</option>
+          </select>
+        </div>
+
+        <!-- 表示形式 -->
+        <div class="filter-group">
+          <h4>表示形式</h4>
+          <div class="view-toggle">
+            <button class="view-btn active" data-view="grid">
+              <i class="fas fa-th"></i>
+              <span>グリッド</span>
+            </button>
+            <button class="view-btn" data-view="list">
+              <i class="fas fa-list"></i>
+              <span>リスト</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- フィルター適用ボタン -->
+  <div class="filter-footer">
+    <div class="filter-summary" id="filterSummary">
+      <span class="active-filters-count">0個のフィルターが適用中</span>
+    </div>
+    <button class="apply-filters-btn" id="applyFiltersBtn" data-apply-filters>
+      <i class="fas fa-search"></i>
+      <span>検索実行</span>
+    </button>
+  </div>
+</div>
+
+<!-- フィルターパネル用CSS -->
+<style>
+.filter-panel {
+  background: var(--card-bg, #1a1a1a);
+  border: 2px solid var(--color-border, #333);
+  border-radius: 16px;
+  margin-top: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: var(--transition, all 0.3s ease);
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-panel.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-border, #333);
+  background: var(--color-surface, #2a2a2a);
+  border-radius: 14px 14px 0 0;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary, #ffffff);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.save-filter-btn,
+.clear-filters-btn,
+.close-panel-btn {
+  background: none;
+  border: 1px solid var(--color-border, #333);
+  color: var(--text-primary, #ffffff);
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition, all 0.3s ease);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.save-filter-btn:hover {
+  background: var(--neon-green, #00FF00);
+  border-color: var(--neon-green, #00FF00);
+  color: var(--color-background, #0a0a0a);
+}
+
+.clear-filters-btn:hover {
+  background: var(--neon-pink, #FF1493);
+  border-color: var(--neon-pink, #FF1493);
+  color: var(--color-background, #0a0a0a);
+}
+
+.close-panel-btn:hover {
+  background: var(--color-border, #333);
+}
+
+.filter-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.filter-section {
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--color-border, #333);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface, #2a2a2a);
+  cursor: pointer;
+  transition: var(--transition, all 0.3s ease);
+  user-select: none;
+}
+
+.section-header:hover {
+  background: var(--color-border, #333);
+}
+
+.section-header h3 {
+  color: var(--text-primary, #ffffff);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.section-toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #f0f0f0);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: var(--transition, all 0.3s ease);
+}
+
+.section-toggle:hover {
+  color: var(--text-primary, #ffffff);
+  background: var(--color-border, #555);
+}
+
+.section-content {
+  padding: 1rem;
+  display: none;
+}
+
+.filter-section.expanded .section-content {
+  display: block;
+}
+
+.filter-section.expanded .section-toggle i {
+  transform: rotate(180deg);
+}
+
+.filter-group {
+  margin-bottom: 1.5rem;
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group h4 {
+  color: var(--text-primary, #ffffff);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.filter-checkbox,
+.filter-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  transition: var(--transition, all 0.3s ease);
+  position: relative;
+}
+
+.filter-checkbox:hover,
+.filter-radio:hover {
+  background: var(--color-surface, #2a2a2a);
+  border-radius: 6px;
+  margin: 0 -0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.filter-checkbox input,
+.filter-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkmark,
+.radiomark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border, #333);
+  border-radius: 4px;
+  position: relative;
+  transition: var(--transition, all 0.3s ease);
+  flex-shrink: 0;
+}
+
+.radiomark {
+  border-radius: 50%;
+}
+
+.filter-checkbox input:checked ~ .checkmark,
+.filter-radio input:checked ~ .radiomark {
+  background: var(--neon-blue, #00FFFF);
+  border-color: var(--neon-blue, #00FFFF);
+}
+
+.checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 1px;
+  width: 6px;
+  height: 10px;
+  border: solid var(--color-background, #0a0a0a);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.radiomark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-background, #0a0a0a);
+  transform: translate(-50%, -50%);
+}
+
+.filter-checkbox input:checked ~ .checkmark::after,
+.filter-radio input:checked ~ .radiomark::after {
+  display: block;
+}
+
+.label-text {
+  color: var(--text-primary, #ffffff);
+  font-size: 0.875rem;
+  flex: 1;
+}
+
+.count {
+  background: var(--color-border, #333);
+  color: var(--text-secondary, #f0f0f0);
+  padding: 0.125rem 0.375rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+/* レンジスライダー */
+.salary-range,
+.duration-range {
+  position: relative;
+  margin: 0.75rem 0;
+}
+
+.range-slider {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border, #333);
+  outline: none;
+  -webkit-appearance: none;
+  margin: 0.5rem 0;
+}
+
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--neon-pink, #FF1493);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+}
+
+.range-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--neon-pink, #FF1493);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+}
+
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary, #f0f0f0);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* 日付入力 */
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.date-input {
+  flex: 1;
+  background: var(--color-surface, #2a2a2a);
+  border: 1px solid var(--color-border, #333);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.875rem;
+  outline: none;
+  transition: var(--transition, all 0.3s ease);
+}
+
+.date-input:focus {
+  border-color: var(--neon-blue, #00FFFF);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* 場所検索 */
+.location-search {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.location-input {
+  width: 100%;
+  background: var(--color-surface, #2a2a2a);
+  border: 1px solid var(--color-border, #333);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.875rem;
+  outline: none;
+  transition: var(--transition, all 0.3s ease);
+}
+
+.location-input:focus {
+  border-color: var(--neon-blue, #00FFFF);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.location-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card-bg, #1a1a1a);
+  border: 1px solid var(--color-border, #333);
+  border-radius: 8px;
+  margin-top: 0.25rem;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+}
+
+/* スキルタグ */
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-tag {
+  background: var(--color-surface, #2a2a2a);
+  border: 1px solid var(--color-border, #333);
+  color: var(--text-primary, #ffffff);
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition, all 0.3s ease);
+  user-select: none;
+}
+
+.skill-tag:hover {
+  border-color: var(--neon-blue, #00FFFF);
+  color: var(--neon-blue, #00FFFF);
+}
+
+.skill-tag.selected {
+  background: var(--neon-blue, #00FFFF);
+  border-color: var(--neon-blue, #00FFFF);
+  color: var(--color-background, #0a0a0a);
+}
+
+/* セレクト */
+.sort-select {
+  width: 100%;
+  background: var(--color-surface, #2a2a2a);
+  border: 1px solid var(--color-border, #333);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-primary, #ffffff);
+  font-size: 0.875rem;
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition, all 0.3s ease);
+}
+
+.sort-select:focus {
+  border-color: var(--neon-blue, #00FFFF);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* 表示切り替え */
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.view-btn {
+  flex: 1;
+  background: var(--color-surface, #2a2a2a);
+  border: 1px solid var(--color-border, #333);
+  color: var(--text-primary, #ffffff);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition, all 0.3s ease);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.view-btn:hover {
+  border-color: var(--neon-blue, #00FFFF);
+  color: var(--neon-blue, #00FFFF);
+}
+
+.view-btn.active {
+  background: var(--neon-blue, #00FFFF);
+  border-color: var(--neon-blue, #00FFFF);
+  color: var(--color-background, #0a0a0a);
+}
+
+/* フィルターフッター */
+.filter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-border, #333);
+  background: var(--color-surface, #2a2a2a);
+  border-radius: 0 0 14px 14px;
+}
+
+.filter-summary {
+  color: var(--text-secondary, #f0f0f0);
+  font-size: 0.875rem;
+}
+
+.apply-filters-btn {
+  background: var(--neon-pink, #FF1493);
+  border: none;
+  color: var(--color-background, #0a0a0a);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition, all 0.3s ease);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-neon-pink, 0 0 15px rgba(255, 20, 147, 0.4));
+}
+
+.apply-filters-btn:hover {
+  background: var(--neon-blue, #00FFFF);
+  box-shadow: var(--shadow-neon-blue, 0 0 20px rgba(0, 255, 255, 0.5));
+  transform: translateY(-2px);
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .filter-panel {
+    margin-top: 0.75rem;
+    border-radius: 12px;
+  }
+
+  .filter-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .filter-title {
+    font-size: 1rem;
+  }
+
+  .filter-actions {
+    gap: 0.375rem;
+  }
+
+  .save-filter-btn span,
+  .clear-filters-btn span {
+    display: none;
+  }
+
+  .filter-content {
+    max-height: 60vh;
+  }
+
+  .section-content {
+    padding: 0.75rem;
+  }
+
+  .filter-footer {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .apply-filters-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .date-range {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .skill-tags {
+    gap: 0.375rem;
+  }
+
+  .skill-tag {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .view-toggle {
+    flex-direction: column;
+  }
+}
+
+/* ダークモード対応 */
+:root[data-theme="light"] .filter-panel {
+  background: var(--card-bg, #ffffff);
+  border-color: var(--color-border, #e0e0e0);
+}
+
+:root[data-theme="light"] .filter-header,
+:root[data-theme="light"] .filter-footer {
+  background: var(--color-surface, #f8f8f8);
+}
+
+:root[data-theme="light"] .date-input,
+:root[data-theme="light"] .location-input,
+:root[data-theme="light"] .sort-select,
+:root[data-theme="light"] .view-btn,
+:root[data-theme="light"] .skill-tag {
+  background: var(--color-surface, #f8f8f8);
+  border-color: var(--color-border, #e0e0e0);
+}
+
+/* アニメーション */
+@keyframes filterSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-section.expanding .section-content {
+  animation: filterSlideIn 0.3s ease-out;
+}
+</style>

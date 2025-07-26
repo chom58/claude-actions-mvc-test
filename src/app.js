@@ -11,6 +11,8 @@ const { generalRateLimit } = require('./middleware/rateLimit');
 const { csrfToken, webCsrfProtection } = require('./middleware/csrf');
 const { initializeSession } = require('./config/session');
 const storageService = require('./services/storageService');
+const searchIndexService = require('./services/searchIndexService');
+const notificationService = require('./services/notificationService');
 const fs = require('fs').promises;
 
 const app = express();
@@ -80,6 +82,14 @@ const startServer = async () => {
     await storageService.initialize();
     console.log('ストレージサービスが初期化されました');
     
+    // 検索インデックスサービスの初期化
+    await searchIndexService.initialize();
+    console.log('検索インデックスサービスが初期化されました');
+    
+    // 通知サービスの初期化
+    await notificationService.initialize();
+    console.log('通知サービスが初期化されました');
+    
     await syncDatabase();
     
     // セッション初期化
@@ -88,11 +98,21 @@ const startServer = async () => {
     // CSRF保護をPOST/PUT/DELETE リクエストに適用
     app.use('/api', webCsrfProtection);
     
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`サーバーがポート${PORT}で起動しました`);
       console.log(`環境: ${process.env.NODE_ENV || 'development'}`);
       console.log(`http://localhost:${PORT}`);
     });
+
+    // WebSocket server initialization
+    const { initializeWebSocketServer } = require('./websocket/server');
+    const { startPeriodicUpdates } = require('./websocket/handlers/liveUpdateHandler');
+    
+    await initializeWebSocketServer(server);
+    startPeriodicUpdates();
+    
+    console.log('WebSocket リアルタイム機能が初期化されました');
+    
   } catch (error) {
     console.error('サーバー起動エラー:', error);
     process.exit(1);
