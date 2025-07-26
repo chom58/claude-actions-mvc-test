@@ -14,6 +14,7 @@ const jobSiteRoutes = require('./jobSiteRoutes');
 const uploadRoutes = require('./uploadRoutes');
 const imageRoutes = require('./imageRoutes');
 const csrfRoutes = require('./csrf');
+const systemRoutes = require('./systemRoutes');
 const searchRoutes = require('./searchRoutes');
 
 router.get('/', (req, res) => {
@@ -36,6 +37,11 @@ router.get('/', (req, res) => {
       // デザイナー採用メディア
       designerJobs: '/api/designer-jobs',
       jobSites: '/api/job-sites',
+      // システム情報
+      health: '/api/system/health',
+      info: '/api/system/info',
+      config: '/api/system/config',
+      csrf: '/api/csrf/token',
       // 画像アップロード
       upload: '/api/upload',
       images: '/api/images',
@@ -66,6 +72,9 @@ router.use('/posts', postRoutes);
 
 // CSRF トークンルート
 router.use('/csrf', csrfRoutes);
+
+// システム情報ルート
+router.use('/system', systemRoutes);
 
 // 新しいクリエイティブコミュニティルート
 router.use('/design-companies', designCompanyRoutes);

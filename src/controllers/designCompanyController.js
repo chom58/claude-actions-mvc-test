@@ -260,6 +260,135 @@ const designCompanyController = {
         message: '専門分野での検索に失敗しました'
       });
     }
+  },
+
+  // 包括的検索機能
+  async searchCompanies(req, res) {
+    try {
+      const { 
+        q = '', 
+        specialty, 
+        location, 
+        employeeCount, 
+        minRating,
+        verified,
+        page = 1, 
+        limit = 12,
+        sortBy = 'rating',
+        sortOrder = 'DESC'
+      } = req.query;
+
+      const offset = (page - 1) * limit;
+      const whereClause = {};
+
+      // テキスト検索（会社名、説明、哲学で検索）
+      if (q) {
+        whereClause[Op.or] = [
+          { name: { [Op.iLike]: `%${q}%` } },
+          { description: { [Op.iLike]: `%${q}%` } },
+          { philosophy: { [Op.iLike]: `%${q}%` } }
+        ];
+      }
+
+      // フィルタリング条件
+      if (specialty) {
+        whereClause.specialties = {
+          [Op.contains]: [specialty]
+        };
+      }
+
+      if (location) {
+        whereClause.location = { [Op.iLike]: `%${location}%` };
+      }
+
+      if (employeeCount) {
+        whereClause.employeeCount = employeeCount;
+      }
+
+      if (minRating) {
+        whereClause.rating = {
+          [Op.gte]: parseFloat(minRating)
+        };
+      }
+
+      if (verified !== undefined) {
+        whereClause.isVerified = verified === 'true';
+      }
+
+      // ソート条件の設定
+      const orderOptions = {
+        rating: ['rating', sortOrder],
+        name: ['name', sortOrder],
+        projects: ['totalProjects', sortOrder],
+        established: ['establishedYear', sortOrder],
+        created: ['createdAt', sortOrder]
+      };
+
+      const orderBy = orderOptions[sortBy] || orderOptions.rating;
+
+      const { count, rows: companies } = await DesignCompany.findAndCountAll({
+        where: whereClause,
+        include: [{
+          model: Collaboration,
+          as: 'collaborations',
+          attributes: ['id', 'title', 'status', 'rating'],
+          limit: 3,
+          order: [['createdAt', 'DESC']]
+        }],
+        limit: parseInt(limit),
+        offset: offset,
+        order: [orderBy, ['isVerified', 'DESC']],
+        distinct: true
+      });
+
+      // 検索結果の統計情報
+      const stats = await DesignCompany.findAll({
+        where: whereClause,
+        attributes: [
+          [DesignCompany.sequelize.fn('AVG', DesignCompany.sequelize.col('rating')), 'avgRating'],
+          [DesignCompany.sequelize.fn('COUNT', DesignCompany.sequelize.col('id')), 'totalCount'],
+          [DesignCompany.sequelize.fn('SUM', DesignCompany.sequelize.col('totalProjects')), 'totalProjects']
+        ],
+        raw: true
+      });
+
+      res.json({
+        success: true,
+        data: companies,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total: count,
+          pages: Math.ceil(count / limit)
+        },
+        search: {
+          query: q,
+          filters: {
+            specialty,
+            location,
+            employeeCount,
+            minRating,
+            verified
+          },
+          sort: {
+            by: sortBy,
+            order: sortOrder
+          }
+        },
+        stats: stats[0] || {
+          avgRating: 0,
+          totalCount: 0,
+          totalProjects: 0
+        }
+      });
+    } catch (error) {
+      console.error('デザイン会社検索エラー:', error);
+      res.status(500).json({
+        success: false,
+        message: 'デザイン会社の検索に失敗しました',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
   }
 };
 

@@ -5,6 +5,7 @@ const { body } = require('express-validator');
 const authMiddleware = require('../middleware/auth');
 const { strictRateLimit, generalRateLimit, passwordResetRateLimit } = require('../middleware/rateLimit');
 const { sanitizeInput, preventSqlInjection } = require('../middleware/security');
+const { upload, uploadProfileImage } = require('../middleware/upload');
 
 router.post('/register', 
   strictRateLimit,
@@ -38,11 +39,16 @@ router.get('/profile',
 router.put('/profile', 
   generalRateLimit,
   authMiddleware,
+  upload.single('profileImage'),
+  uploadProfileImage,
   sanitizeInput,
   preventSqlInjection,
   [
     body('username').optional().isLength({ min: 3 }).withMessage('ユーザー名は3文字以上必要です'),
-    body('email').optional().isEmail().withMessage('有効なメールアドレスを入力してください')
+    body('email').optional().isEmail().withMessage('有効なメールアドレスを入力してください'),
+    body('bio').optional().isLength({ max: 500 }).withMessage('自己紹介は500文字以内で入力してください'),
+    body('website').optional().isURL().withMessage('有効なURLを入力してください'),
+    body('location').optional().isLength({ max: 100 }).withMessage('所在地は100文字以内で入力してください')
   ], 
   userController.updateProfile
 );

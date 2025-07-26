@@ -47,6 +47,39 @@ const User = sequelize.define('User', {
   lastLoginAt: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  profileImage: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: 'プロフィール画像のパス'
+  },
+  profileImageThumbnail: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: 'プロフィール画像サムネイルのパス'
+  },
+  bio: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+    comment: '自己紹介'
+  },
+  website: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    validate: {
+      isUrl: true
+    },
+    comment: 'ウェブサイトURL'
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    comment: '所在地'
+  },
+  skills: {
+    type: DataTypes.JSON,
+    allowNull: true,
+    comment: 'スキル一覧'
   }
 }, {
   timestamps: true,

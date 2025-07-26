@@ -203,7 +203,7 @@ exports.updateProfile = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email } = req.body;
+    const { username, email, bio, website, location, skills } = req.body;
     const user = await User.findByPk(req.userId);
 
     if (!user) {
@@ -224,10 +224,22 @@ exports.updateProfile = async (req, res) => {
       }
     }
 
-    await user.update({
+    // 画像アップロード情報があれば追加
+    const updateData = {
       username: username || user.username,
-      email: email || user.email
-    });
+      email: email || user.email,
+      bio: bio || user.bio,
+      website: website || user.website,
+      location: location || user.location,
+      skills: skills ? (typeof skills === 'string' ? JSON.parse(skills) : skills) : user.skills
+    };
+
+    if (req.uploadedImage) {
+      updateData.profileImage = req.uploadedImage.originalPath;
+      updateData.profileImageThumbnail = req.uploadedImage.thumbnailPath;
+    }
+
+    await user.update(updateData);
 
     res.json({
       message: 'プロフィールが更新されました',
