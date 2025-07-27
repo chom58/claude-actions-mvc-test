@@ -19,6 +19,7 @@ const systemRoutes = require('./systemRoutes');
 const searchRoutes = require('./searchRoutes');
 const notificationRoutes = require('./notificationRoutes');
 const reviewRoutes = require('./reviewRoutes');
+const applicationRoutes = require('./applicationRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -55,7 +56,9 @@ router.get('/', (req, res) => {
       // 通知
       notifications: '/api/notifications',
       // レビュー・評価
-      reviews: '/api/reviews'
+      reviews: '/api/reviews',
+      // 求人応募
+      applications: '/api/applications'
     },
     specialEndpoints: {
       harajukuDesignCompanies: '/api/design-companies/harajuku',
@@ -111,5 +114,8 @@ router.use('/notifications', notificationRoutes);
 
 // レビュー・評価ルート
 router.use('/reviews', reviewRoutes);
+
+// 求人応募ルート
+router.use('/applications', applicationRoutes);
 
 module.exports = router;

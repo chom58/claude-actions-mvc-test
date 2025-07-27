@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>求人応募 - デザイナー採用サイト</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .application-form {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .form-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .job-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            border-left: 4px solid #007bff;
+        }
+
+        .job-info h2 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .job-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .job-detail-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .job-detail-item strong {
+            margin-right: 10px;
+            color: #495057;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 6px;
+            background: #fafafa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-label:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+
+        .file-upload-text {
+            text-align: center;
+        }
+
+        .file-upload-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #6c757d;
+        }
+
+        .file-info {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .uploaded-file {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f5e8;
+            border: 1px solid #28a745;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .uploaded-file.show {
+            display: block;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .validation-error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-control.error {
+            border-color: #dc3545;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .application-form {
+                padding: 20px;
+            }
+            
+            .job-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="application-form">
+            <div class="form-header">
+                <h1>求人応募フォーム</h1>
+                <p>応募内容を入力してください</p>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                応募が完了しました！企業からの連絡をお待ちください。
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                エラーが発生しました。もう一度お試しください。
+            </div>
+
+            <div class="job-info" id="jobInfo">
+                <h2 id="jobTitle">求人タイトル</h2>
+                <div class="job-details">
+                    <div class="job-detail-item">
+                        <strong>会社名:</strong>
+                        <span id="jobCompany">-</span>
+                    </div>
+                    <div class="job-detail-item">
+                        <strong>勤務地:</strong>
+                        <span id="jobLocation">-</span>
+                    </div>
+                    <div class="job-detail-item">
+                        <strong>雇用形態:</strong>
+                        <span id="jobType">-</span>
+                    </div>
+                    <div class="job-detail-item">
+                        <strong>経験レベル:</strong>
+                        <span id="experienceLevel">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="applicationForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="motivation">志望動機 <span class="required">*</span></label>
+                    <textarea 
+                        id="motivation" 
+                        name="motivation" 
+                        class="form-control" 
+                        placeholder="この求人に応募する理由や意気込みを記入してください（2000文字以内）"
+                        required
+                    ></textarea>
+                    <div class="validation-error" id="motivationError"></div>
+                    <div class="file-info">
+                        <span id="motivationCharCount">0</span>/2000文字
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="resume">履歴書 <span class="required">*</span></label>
+                    <div class="file-upload">
+                        <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                        <label for="resume" class="file-upload-label">
+                            <span class="file-upload-icon">📄</span>
+                            <div class="file-upload-text">
+                                <div>履歴書をアップロード</div>
+                                <div class="file-info">PDF、Word形式 (最大10MB)</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="uploaded-file" id="resumeUploaded">
+                        <span id="resumeFileName"></span>
+                    </div>
+                    <div class="validation-error" id="resumeError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="portfolio">職務経歴書・ポートフォリオ</label>
+                    <div class="file-upload">
+                        <input type="file" id="portfolio" name="portfolio" accept=".pdf,.doc,.docx">
+                        <label for="portfolio" class="file-upload-label">
+                            <span class="file-upload-icon">📊</span>
+                            <div class="file-upload-text">
+                                <div>職務経歴書・ポートフォリオをアップロード</div>
+                                <div class="file-info">PDF、Word形式 (最大10MB)</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="uploaded-file" id="portfolioUploaded">
+                        <span id="portfolioFileName"></span>
+                    </div>
+                    <div class="validation-error" id="portfolioError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="expectedSalary">希望給与（万円）</label>
+                    <input 
+                        type="number" 
+                        id="expectedSalary" 
+                        name="expectedSalary" 
+                        class="form-control" 
+                        placeholder="例: 400"
+                        min="0"
+                    >
+                    <div class="validation-error" id="expectedSalaryError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="availableStartDate">勤務開始可能日</label>
+                    <input 
+                        type="date" 
+                        id="availableStartDate" 
+                        name="availableStartDate" 
+                        class="form-control"
+                    >
+                    <div class="validation-error" id="availableStartDateError"></div>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>応募を送信中...</p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="goBack()">戻る</button>
+                    <button type="submit" class="btn btn-primary">応募する</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ページロード時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('jobId');
+            
+            if (jobId) {
+                loadJobInfo(jobId);
+            }
+            
+            initializeFileUploads();
+            initializeFormValidation();
+        });
+
+        // 求人情報の読み込み
+        async function loadJobInfo(jobId) {
+            try {
+                const response = await fetch(`/api/designer-jobs/${jobId}`);
+                const data = await response.json();
+                
+                if (data.job) {
+                    displayJobInfo(data.job);
+                }
+            } catch (error) {
+                console.error('求人情報の取得に失敗しました:', error);
+            }
+        }
+
+        // 求人情報の表示
+        function displayJobInfo(job) {
+            document.getElementById('jobTitle').textContent = job.title;
+            document.getElementById('jobCompany').textContent = job.company;
+            document.getElementById('jobLocation').textContent = job.location || '-';
+            document.getElementById('jobType').textContent = getJobTypeLabel(job.jobType);
+            document.getElementById('experienceLevel').textContent = getExperienceLevelLabel(job.experienceLevel);
+        }
+
+        // 雇用形態のラベル変換
+        function getJobTypeLabel(jobType) {
+            const labels = {
+                'full_time': '正社員',
+                'part_time': 'パート・アルバイト', 
+                'contract': '契約社員',
+                'freelance': 'フリーランス',
+                'internship': 'インターンシップ'
+            };
+            return labels[jobType] || jobType;
+        }
+
+        // 経験レベルのラベル変換
+        function getExperienceLevelLabel(level) {
+            const labels = {
+                'entry_level': '未経験・エントリーレベル',
+                'mid_level': '中級者',
+                'senior_level': '上級者',
+                'executive': '管理職・経営幹部'
+            };
+            return labels[level] || level;
+        }
+
+        // ファイルアップロードの初期化
+        function initializeFileUploads() {
+            ['resume', 'portfolio'].forEach(fieldName => {
+                const fileInput = document.getElementById(fieldName);
+                const uploadedDiv = document.getElementById(fieldName + 'Uploaded');
+                const fileNameSpan = document.getElementById(fieldName + 'FileName');
+                
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files.length > 0) {
+                        const file = e.target.files[0];
+                        fileNameSpan.textContent = file.name;
+                        uploadedDiv.classList.add('show');
+                    } else {
+                        uploadedDiv.classList.remove('show');
+                    }
+                });
+            });
+        }
+
+        // フォームバリデーションの初期化
+        function initializeFormValidation() {
+            const motivationTextarea = document.getElementById('motivation');
+            const charCountSpan = document.getElementById('motivationCharCount');
+            
+            motivationTextarea.addEventListener('input', function() {
+                const charCount = this.value.length;
+                charCountSpan.textContent = charCount;
+                
+                if (charCount > 2000) {
+                    this.classList.add('error');
+                    document.getElementById('motivationError').textContent = '2000文字以内で入力してください';
+                    document.getElementById('motivationError').style.display = 'block';
+                } else {
+                    this.classList.remove('error');
+                    document.getElementById('motivationError').style.display = 'none';
+                }
+            });
+        }
+
+        // フォーム送信処理
+        document.getElementById('applicationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobId = urlParams.get('jobId');
+            
+            if (!jobId) {
+                showError('求人IDが見つかりません');
+                return;
+            }
+            
+            const formData = new FormData(this);
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch(`/api/applications/jobs/${jobId}/apply`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('応募が完了しました！');
+                    setTimeout(() => {
+                        window.location.href = '/my-applications.html';
+                    }, 2000);
+                } else {
+                    showError(data.error || '応募に失敗しました');
+                }
+            } catch (error) {
+                console.error('応募エラー:', error);
+                showError('ネットワークエラーが発生しました');
+            } finally {
+                showLoading(false);
+            }
+        });
+
+        // フォームバリデーション
+        function validateForm() {
+            let isValid = true;
+            
+            const motivation = document.getElementById('motivation').value.trim();
+            if (!motivation) {
+                showFieldError('motivation', '志望動機は必須です');
+                isValid = false;
+            } else if (motivation.length > 2000) {
+                showFieldError('motivation', '志望動機は2000文字以内で入力してください');
+                isValid = false;
+            }
+            
+            const resumeFile = document.getElementById('resume').files[0];
+            if (!resumeFile) {
+                showFieldError('resume', '履歴書のアップロードは必須です');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // フィールドエラーの表示
+        function showFieldError(fieldName, message) {
+            const field = document.getElementById(fieldName);
+            const errorDiv = document.getElementById(fieldName + 'Error');
+            
+            field.classList.add('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // ローディング表示の切り替え
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.querySelector('.btn-primary').disabled = show;
+        }
+
+        // 成功メッセージの表示
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            window.scrollTo(0, 0);
+        }
+
+        // エラーメッセージの表示
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+            
+            window.scrollTo(0, 0);
+        }
+
+        // 戻るボタン
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

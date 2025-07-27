@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>応募履歴 - デザイナー採用サイト</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #007bff;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .filters-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .applications-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .application-item {
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.3s ease;
+        }
+
+        .application-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .application-item:last-child {
+            border-bottom: none;
+        }
+
+        .application-header {
+            display: flex;
+            justify-content: between;
+            align-items: start;
+            margin-bottom: 15px;
+            gap: 20px;
+        }
+
+        .application-title {
+            flex: 1;
+        }
+
+        .application-title h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .application-title h3:hover {
+            color: #007bff;
+        }
+
+        .company-name {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .application-status {
+            flex-shrink: 0;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-screening {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-interview {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-accepted {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-withdrawn {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .application-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-item {
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: #6c757d;
+            margin-right: 8px;
+        }
+
+        .detail-value {
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .application-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .pagination-btn {
+            padding: 8px 12px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: #007bff;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover {
+            background: #e9ecef;
+        }
+
+        .pagination-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .filters-row {
+                flex-direction: column;
+            }
+            
+            .filter-group {
+                min-width: auto;
+            }
+            
+            .application-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .application-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>応募履歴</h1>
+            <p>これまでに応募した求人の一覧と進捗状況を確認できます</p>
+            
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">総応募数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingCount">0</div>
+                    <div class="stat-label">審査中</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="interviewCount">0</div>
+                    <div class="stat-label">面接中</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="acceptedCount">0</div>
+                    <div class="stat-label">内定</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label for="statusFilter">ステータス</label>
+                    <select id="statusFilter" class="form-control">
+                        <option value="">すべて</option>
+                        <option value="pending">審査中</option>
+                        <option value="screening">書類選考中</option>
+                        <option value="interview">面接中</option>
+                        <option value="final_review">最終確認</option>
+                        <option value="accepted">内定</option>
+                        <option value="rejected">不採用</option>
+                        <option value="withdrawn">取り下げ</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchKeyword">キーワード検索</label>
+                    <input type="text" id="searchKeyword" class="form-control" placeholder="求人タイトル、会社名で検索">
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button type="button" class="btn btn-primary" onclick="loadApplications()">検索</button>
+                </div>
+                <div class="filter-group">
+                    <label>&nbsp;</label>
+                    <button type="button" class="btn btn-outline" onclick="exportApplications()">エクスポート</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="applications-list">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>応募履歴を読み込み中...</p>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-state-icon">📋</div>
+                <h3>応募履歴がありません</h3>
+                <p>まだ求人に応募していません。興味のある求人を見つけて応募してみましょう。</p>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='/designer-jobs.html'">
+                    求人を探す
+                </button>
+            </div>
+
+            <div id="applicationsList"></div>
+        </div>
+
+        <div class="pagination" id="pagination" style="display: none;">
+            <!-- ページネーションボタンがここに挿入されます -->
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let currentFilters = {};
+
+        // ページロード時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadApplicationStats();
+            loadApplications();
+        });
+
+        // 応募統計の読み込み
+        async function loadApplicationStats() {
+            try {
+                const response = await fetch('/api/applications/my-applications/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.stats) {
+                    updateStatsDisplay(data.stats);
+                }
+            } catch (error) {
+                console.error('統計情報の取得に失敗しました:', error);
+            }
+        }
+
+        // 統計情報の表示更新
+        function updateStatsDisplay(stats) {
+            document.getElementById('totalCount').textContent = stats.total;
+            document.getElementById('pendingCount').textContent = stats.pending + stats.screening;
+            document.getElementById('interviewCount').textContent = stats.interview;
+            document.getElementById('acceptedCount').textContent = stats.accepted;
+        }
+
+        // 応募履歴の読み込み
+        async function loadApplications(page = 1) {
+            currentPage = page;
+            currentFilters = {
+                status: document.getElementById('statusFilter').value,
+                keyword: document.getElementById('searchKeyword').value
+            };
+
+            showLoading(true);
+
+            try {
+                const params = new URLSearchParams({
+                    page: page,
+                    limit: 10,
+                    ...currentFilters
+                });
+
+                const response = await fetch(`/api/applications/my-applications?${params}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.applications) {
+                    displayApplications(data.applications);
+                    updatePagination(data.pagination);
+                } else {
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('応募履歴の取得に失敗しました:', error);
+                showEmptyState();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // 応募履歴の表示
+        function displayApplications(applications) {
+            const container = document.getElementById('applicationsList');
+            
+            if (applications.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            hideEmptyState();
+
+            container.innerHTML = applications.map(app => `
+                <div class="application-item">
+                    <div class="application-header">
+                        <div class="application-title">
+                            <h3 onclick="viewApplicationDetail(${app.id})">${app.job.title}</h3>
+                            <div class="company-name">${app.job.company}</div>
+                        </div>
+                        <div class="application-status">
+                            <span class="status-badge status-${app.status}">${getStatusLabel(app.status)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="application-details">
+                        <div class="detail-item">
+                            <span class="detail-label">応募日:</span>
+                            <span class="detail-value">${formatDate(app.appliedAt)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">勤務地:</span>
+                            <span class="detail-value">${app.job.location || '-'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">雇用形態:</span>
+                            <span class="detail-value">${getJobTypeLabel(app.job.jobType)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">最終更新:</span>
+                            <span class="detail-value">${formatDate(app.updatedAt)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="application-actions">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="viewApplicationDetail(${app.id})">
+                            詳細を見る
+                        </button>
+                        ${app.status === 'pending' || app.status === 'screening' ? 
+                            `<button type="button" class="btn btn-danger btn-sm" onclick="withdrawApplication(${app.id})">
+                                応募を取り下げる
+                            </button>` : ''
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ステータスラベルの取得
+        function getStatusLabel(status) {
+            const labels = {
+                'pending': '審査中',
+                'screening': '書類選考中',
+                'interview': '面接中',
+                'final_review': '最終確認',
+                'accepted': '内定',
+                'rejected': '不採用',
+                'withdrawn': '取り下げ'
+            };
+            return labels[status] || status;
+        }
+
+        // 雇用形態ラベルの取得
+        function getJobTypeLabel(jobType) {
+            const labels = {
+                'full_time': '正社員',
+                'part_time': 'パート・アルバイト',
+                'contract': '契約社員',
+                'freelance': 'フリーランス',
+                'internship': 'インターンシップ'
+            };
+            return labels[jobType] || jobType;
+        }
+
+        // 日付フォーマット
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        // ページネーション更新
+        function updatePagination(pagination) {
+            const container = document.getElementById('pagination');
+            
+            if (pagination.totalPages <= 1) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'flex';
+            
+            let paginationHTML = '';
+            
+            // 前へボタン
+            paginationHTML += `
+                <button class="pagination-btn" ${pagination.page <= 1 ? 'disabled' : ''} 
+                        onclick="loadApplications(${pagination.page - 1})">
+                    ← 前へ
+                </button>
+            `;
+            
+            // ページ番号
+            for (let i = 1; i <= pagination.totalPages; i++) {
+                if (i === pagination.page || 
+                    i === 1 || 
+                    i === pagination.totalPages || 
+                    (i >= pagination.page - 2 && i <= pagination.page + 2)) {
+                    paginationHTML += `
+                        <button class="pagination-btn ${i === pagination.page ? 'active' : ''}" 
+                                onclick="loadApplications(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === pagination.page - 3 || i === pagination.page + 3) {
+                    paginationHTML += '<span>...</span>';
+                }
+            }
+            
+            // 次へボタン
+            paginationHTML += `
+                <button class="pagination-btn" ${pagination.page >= pagination.totalPages ? 'disabled' : ''} 
+                        onclick="loadApplications(${pagination.page + 1})">
+                    次へ →
+                </button>
+            `;
+            
+            container.innerHTML = paginationHTML;
+        }
+
+        // 応募詳細表示
+        function viewApplicationDetail(applicationId) {
+            window.location.href = `/application-detail.html?id=${applicationId}`;
+        }
+
+        // 応募取り下げ
+        async function withdrawApplication(applicationId) {
+            if (!confirm('本当に応募を取り下げますか？この操作は取り消せません。')) {
+                return;
+            }
+
+            const reason = prompt('取り下げ理由を入力してください（任意）:');
+
+            try {
+                const response = await fetch(`/api/applications/my-applications/${applicationId}/withdraw`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ reason })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('応募を取り下げました');
+                    loadApplications(currentPage);
+                    loadApplicationStats();
+                } else {
+                    alert(data.error || '取り下げに失敗しました');
+                }
+            } catch (error) {
+                console.error('応募取り下げエラー:', error);
+                alert('エラーが発生しました');
+            }
+        }
+
+        // 応募データのエクスポート
+        async function exportApplications() {
+            try {
+                const params = new URLSearchParams(currentFilters);
+                const response = await fetch(`/api/applications/my-applications/export?${params}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `applications_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    alert('エクスポートに失敗しました');
+                }
+            } catch (error) {
+                console.error('エクスポートエラー:', error);
+                alert('エラーが発生しました');
+            }
+        }
+
+        // ローディング表示の切り替え
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('applicationsList').style.display = show ? 'none' : 'block';
+        }
+
+        // 空の状態表示
+        function showEmptyState() {
+            document.getElementById('emptyState').style.display = 'block';
+            document.getElementById('applicationsList').style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+        }
+
+        // 空の状態非表示
+        function hideEmptyState() {
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('applicationsList').style.display = 'block';
+        }
+
+        // Enter キーでの検索
+        document.getElementById('searchKeyword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadApplications();
+            }
+        });
+    </script>
+</body>
+</html>

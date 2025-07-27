@@ -10,7 +10,9 @@ const createUploadDirectories = async () => {
     'public/uploads/profiles',
     'public/uploads/portfolios',
     'public/uploads/events',
-    'public/uploads/thumbnails'
+    'public/uploads/thumbnails',
+    'public/uploads/applications',
+    'public/uploads/documents'
   ];
 
   for (const dir of directories) {
@@ -203,6 +205,102 @@ const deleteImage = async (filePath) => {
   }
 };
 
+// 書類ファイルフィルター（PDF、Word、画像）
+const documentFileFilter = (req, file, cb) => {
+  const allowedTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'image/jpeg',
+    'image/jpg', 
+    'image/png',
+    'image/webp'
+  ];
+  
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('サポートされていないファイル形式です。PDF、Word、画像ファイルのみ対応しています。'), false);
+  }
+};
+
+// 応募書類アップロード用のmulter設定
+const documentUpload = multer({
+  storage: storage,
+  fileFilter: documentFileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB制限
+  }
+});
+
+// 応募書類保存
+const saveDocument = async (buffer, filename, directory = 'uploads/applications') => {
+  const filePath = path.join('public', directory, filename);
+  
+  try {
+    await fs.writeFile(filePath, buffer);
+    return `/${directory}/${filename}`;
+  } catch (error) {
+    throw new Error('ファイル保存中にエラーが発生しました: ' + error.message);
+  }
+};
+
+// 応募書類アップロード処理
+const uploadApplicationDocuments = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const timestamp = Date.now();
+    const uploadedFiles = {};
+
+    if (req.files) {
+      for (const [fieldName, files] of Object.entries(req.files)) {
+        if (Array.isArray(files)) {
+          // 複数ファイルの場合
+          uploadedFiles[fieldName] = [];
+          for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const extension = path.extname(file.originalname);
+            const filename = `${fieldName}_${userId}_${timestamp}_${i + 1}${extension}`;
+            const filePath = await saveDocument(file.buffer, filename);
+            
+            uploadedFiles[fieldName].push({
+              originalname: file.originalname,
+              filename: filename,
+              path: filePath,
+              mimetype: file.mimetype,
+              size: file.size
+            });
+          }
+        } else {
+          // 単一ファイルの場合
+          const file = files;
+          const extension = path.extname(file.originalname);
+          const filename = `${fieldName}_${userId}_${timestamp}${extension}`;
+          const filePath = await saveDocument(file.buffer, filename);
+          
+          uploadedFiles[fieldName] = {
+            originalname: file.originalname,
+            filename: filename,
+            path: filePath,
+            mimetype: file.mimetype,
+            size: file.size
+          };
+        }
+      }
+    }
+
+    req.uploadedFiles = uploadedFiles;
+    next();
+
+  } catch (error) {
+    console.error('応募書類アップロードエラー:', error);
+    res.status(400).json({
+      error: '書類のアップロードに失敗しました',
+      details: error.message
+    });
+  }
+};
+
 module.exports = {
   upload,
   processImage,
@@ -210,5 +308,8 @@ module.exports = {
   saveImage,
   uploadProfileImage,
   uploadPortfolioImage,
-  deleteImage
+  deleteImage,
+  documentUpload,
+  saveDocument,
+  uploadApplicationDocuments
 };

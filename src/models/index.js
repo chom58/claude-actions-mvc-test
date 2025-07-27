@@ -16,6 +16,7 @@ const Notification = require('./Notification');
 const NotificationPreference = require('./NotificationPreference');
 const Review = require('./Review');
 const ReviewHelpful = require('./ReviewHelpful');
+const JobApplication = require('./JobApplication');
 
 // Existing relationships
 User.hasMany(Post, {
@@ -165,6 +166,27 @@ ReviewHelpful.belongsTo(Review, {
   as: 'review'
 });
 
+// JobApplication relationships
+User.hasMany(JobApplication, {
+  foreignKey: 'userId',
+  as: 'jobApplications'
+});
+
+JobApplication.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'applicant'
+});
+
+DesignerJob.hasMany(JobApplication, {
+  foreignKey: 'jobId',
+  as: 'applications'
+});
+
+JobApplication.belongsTo(DesignerJob, {
+  foreignKey: 'jobId',
+  as: 'job'
+});
+
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -199,5 +221,6 @@ module.exports = {
   NotificationPreference,
   Review,
   ReviewHelpful,
+  JobApplication,
   syncDatabase
 };
