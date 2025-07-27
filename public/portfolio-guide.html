@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="デザイナー転職に必須のポートフォリオ作成ガイド。未経験者向けに作品選び、構成、見せ方のコツを詳しく解説します。">
+    <meta name="keywords" content="ポートフォリオ,作成方法,デザイナー,転職,未経験,作品集">
+    <title>ポートフォリオ作成ガイド | 転職成功のための作品集作り</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0f172a;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
+            --font-main: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        .header {
+            background: var(--surface-color);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb {
+            background: var(--surface-color);
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .breadcrumb-nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-xl) 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .hero-section p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .main-content {
+            background: var(--surface-color);
+            margin: var(--spacing-lg) 0;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        .content-section {
+            padding: var(--spacing-xl);
+        }
+        
+        .section {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .section h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-primary);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: var(--spacing-sm);
+        }
+        
+        .checklist {
+            background: var(--background-color);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            border-left: 4px solid var(--success-color);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .checklist h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .checklist-items {
+            list-style: none;
+        }
+        
+        .checklist-items li {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+        
+        .checklist-items .checkbox {
+            margin-top: 0.25rem;
+            color: var(--success-color);
+        }
+        
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .example-card {
+            background: var(--background-color);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        
+        .example-header {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+        
+        .example-header h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .example-content {
+            padding: var(--spacing-lg);
+        }
+        
+        .example-content p {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .warning-box {
+            background: #fef3cd;
+            border-left: 4px solid var(--warning-color);
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .warning-box h4 {
+            color: var(--warning-color);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+        
+        .tip-card {
+            background: var(--background-color);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .tip-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .cta-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-xl);
+            text-align: center;
+            margin-top: var(--spacing-xl);
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 0 var(--spacing-sm); }
+            .hero-section h1 { font-size: 2rem; }
+            .content-section { padding: var(--spacing-lg) var(--spacing-md); }
+            .example-grid, .tips-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/designer-jobs.html" class="logo">
+                    <i class="fas fa-paint-brush"></i>
+                    デザイナー求人サイト
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- パンくずリスト -->
+    <nav class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-nav">
+                <a href="/designer-jobs.html">ホーム</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>ポートフォリオ作成ガイド</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ヒーローセクション -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>ポートフォリオ作成ガイド</h1>
+            <p>転職成功の鍵となるポートフォリオの作り方を、未経験者向けに分かりやすく解説します。</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <main class="main-content">
+            <div class="content-section">
+                <!-- ポートフォリオとは -->
+                <section class="section">
+                    <h2>ポートフォリオとは？</h2>
+                    <p>ポートフォリオは、あなたのデザインスキルと実力を証明する「作品集」です。履歴書や職務経歴書だけでは伝えられない、あなたの創造性とセンスを具体的に示すことができます。</p>
+                    
+                    <div class="checklist">
+                        <h3><i class="fas fa-check-circle"></i> ポートフォリオの役割</h3>
+                        <ul class="checklist-items">
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>デザインスキルの証明</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>センスと創造性のアピール</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>問題解決能力の提示</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>学習意欲と成長性の表現</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>コミュニケーション能力の証明</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 基本構成 -->
+                <section class="section">
+                    <h2>基本構成とポイント</h2>
+                    
+                    <div class="example-grid">
+                        <div class="example-card">
+                            <div class="example-header">
+                                <h4>作品数</h4>
+                            </div>
+                            <div class="example-content">
+                                <p><strong>推奨：5-10作品</strong></p>
+                                <p>質を重視し、自信を持って見せられる作品のみを厳選しましょう。量よりも各作品の完成度が重要です。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="example-card">
+                            <div class="example-header">
+                                <h4>構成要素</h4>
+                            </div>
+                            <div class="example-content">
+                                <p><strong>必須項目：</strong></p>
+                                <ul style="margin-left: 1rem;">
+                                    <li>作品画像</li>
+                                    <li>制作背景・目的</li>
+                                    <li>コンセプト</li>
+                                    <li>使用ツール</li>
+                                    <li>制作期間</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="example-card">
+                            <div class="example-header">
+                                <h4>表示形式</h4>
+                            </div>
+                            <div class="example-content">
+                                <p><strong>おすすめ：Webサイト形式</strong></p>
+                                <p>PDFよりもWebサイトとして公開することで、より多くの人に見てもらいやすくなります。</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 作品選びのコツ -->
+                <section class="section">
+                    <h2>作品選びのコツ</h2>
+                    
+                    <div class="checklist">
+                        <h3><i class="fas fa-star"></i> 優秀な作品の条件</h3>
+                        <ul class="checklist-items">
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>多様性：</strong> 異なる種類のデザイン（Web、グラフィック、ロゴなど）</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>完成度：</strong> 細部まで丁寧に仕上げられている</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>独創性：</strong> あなたらしさが表現されている</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>課題解決：</strong> 明確な目的と解決策が提示されている</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>プロセス：</strong> 制作過程が説明できる</li>
+                        </ul>
+                    </div>
+
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-lightbulb"></i> 架空案件のススメ</h4>
+                            <p>実際の案件がない場合は、架空のプロジェクトを設定して作品を制作しましょう。リアリティのある設定で制作することが重要です。</p>
+                        </div>
+                        
+                        <div class="tip-card">
+                            <h4><i class="fas fa-copy"></i> 模写からの卒業</h4>
+                            <p>学習段階では模写も大切ですが、ポートフォリオにはオリジナル作品を載せましょう。模写は学習過程として紹介程度に留める。</p>
+                        </div>
+                        
+                        <div class="tip-card">
+                            <h4><i class="fas fa-target"></i> ターゲット企業を意識</h4>
+                            <p>応募したい企業の傾向に合わせて作品を選びましょう。Web制作会社なら Webサイト作品を多めにするなど。</p>
+                        </div>
+                        
+                        <div class="tip-card">
+                            <h4><i class="fas fa-clock"></i> 最新作品を優先</h4>
+                            <p>古い作品よりも最近制作した作品を優先的に掲載しましょう。スキルの成長を示すことができます。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 効果的な見せ方 -->
+                <section class="section">
+                    <h2>効果的な見せ方</h2>
+                    
+                    <div class="checklist">
+                        <h3><i class="fas fa-presentation"></i> 各作品の説明ポイント</h3>
+                        <ul class="checklist-items">
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>背景・課題：</strong> なぜこの作品を作ったのか</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>ターゲット：</strong> 誰に向けたデザインなのか</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>コンセプト：</strong> どのような想いを込めたか</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>デザインのポイント：</strong> 工夫した点、こだわった点</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>技術的な要素：</strong> 使用ツール、習得したスキル</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>改善点：</strong> 次回への学びや反省点</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4><i class="fas fa-exclamation-triangle"></i> よくある失敗</h4>
+                        <ul style="margin-left: 1rem; margin-top: 0.5rem;">
+                            <li>作品画像だけで説明がない</li>
+                            <li>制作過程が分からない</li>
+                            <li>すべて同じような作品</li>
+                            <li>画質が粗い・見にくい</li>
+                            <li>古い作品ばかり掲載</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 推奨ツール -->
+                <section class="section">
+                    <h2>ポートフォリオサイト作成ツール</h2>
+                    
+                    <div class="example-grid">
+                        <div class="example-card">
+                            <div class="example-header">
+                                <h4>無料で始められる</h4>
+                            </div>
+                            <div class="example-content">
+                                <p><strong>Notion：</strong> 無料で簡単にページ作成</p>
+                                <p><strong>GitHub Pages：</strong> エンジニア向けだが無料</p>
+                                <p><strong>Behance：</strong> Adobe運営のポートフォリオサービス</p>
+                            </div>
+                        </div>
+                        
+                        <div class="example-card">
+                            <div class="example-header">
+                                <h4>デザイナー専用</h4>
+                            </div>
+                            <div class="example-content">
+                                <p><strong>Portfolio Box：</strong> 月額1,000円程度</p>
+                                <p><strong>Adobe Portfolio：</strong> Creative Cloud会員は無料</p>
+                                <p><strong>Squarespace：</strong> 美しいテンプレート多数</p>
+                            </div>
+                        </div>
+                        
+                        <div class="example-card">
+                            <div class="example-header">
+                                <h4>自作サイト</h4>
+                            </div>
+                            <div class="example-content">
+                                <p><strong>WordPress：</strong> カスタマイズ性が高い</p>
+                                <p><strong>HTML/CSS：</strong> 完全オリジナル制作</p>
+                                <p><strong>Wix：</strong> ドラッグ&ドロップで簡単</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- サンプル構成 -->
+                <section class="section">
+                    <h2>ポートフォリオの構成例</h2>
+                    
+                    <div class="checklist">
+                        <h3><i class="fas fa-list"></i> 推奨ページ構成</h3>
+                        <ul class="checklist-items">
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>トップページ：</strong> 自己紹介とハイライト作品</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>About：</strong> 経歴、スキル、デザインへの想い</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>Works：</strong> 作品一覧（カテゴリ別整理）</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>各作品詳細ページ：</strong> 制作背景、プロセス、工夫点</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span><strong>Contact：</strong> 連絡先情報</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tips-grid">
+                        <div class="tip-card">
+                            <h4><i class="fas fa-user"></i> 自己紹介の書き方</h4>
+                            <p>デザインに興味を持ったきっかけ、学習してきた内容、今後の目標を簡潔に。人柄が伝わる内容を心がけましょう。</p>
+                        </div>
+                        
+                        <div class="tip-card">
+                            <h4><i class="fas fa-images"></i> 作品の見せ方</h4>
+                            <p>モックアップを使って実際の使用場面を想像しやすくしたり、制作過程を段階的に見せると印象的です。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 最終チェック -->
+                <section class="section">
+                    <h2>公開前の最終チェック</h2>
+                    
+                    <div class="checklist">
+                        <h3><i class="fas fa-clipboard-check"></i> チェックリスト</h3>
+                        <ul class="checklist-items">
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>スマートフォンでも見やすく表示される</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>画像が鮮明で読み込み速度が適切</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>誤字脱字がない</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>連絡先情報が正確</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>著作権に問題がない</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>第三者に見てもらいフィードバックを得た</li>
+                            <li><span class="checkbox"><i class="fas fa-check"></i></span>定期的に内容をアップデートしている</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- CTA -->
+            <section class="cta-section">
+                <h3>ポートフォリオを活かして転職成功へ</h3>
+                <p>素晴らしいポートフォリオができたら、さっそく求人に応募してみましょう。</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/entry-level-jobs.html" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                        未経験歓迎求人を見る
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

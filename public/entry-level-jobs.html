@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="未経験歓迎のデザイナー求人特集。研修制度充実、新卒歓迎、リモートOKの求人を厳選して掲載。">
+    <meta name="keywords" content="未経験歓迎,デザイナー求人,新卒,研修制度,リモートワーク">
+    <title>未経験歓迎求人特集 | 研修制度充実のデザイナー求人</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
+            --font-main: 'Inter', 'Noto Sans JP', sans-serif;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        .header {
+            background: var(--surface-color);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-xl) 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .stats-bar {
+            background: var(--surface-color);
+            padding: var(--spacing-lg) 0;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .stat-item .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-item .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .filters-section {
+            background: var(--surface-color);
+            padding: var(--spacing-lg) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .filters {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            padding: 0.5rem var(--spacing-md);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .filter-btn.active,
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .main-content {
+            padding: var(--spacing-xl) 0;
+        }
+        
+        .jobs-grid {
+            display: grid;
+            gap: var(--spacing-lg);
+        }
+        
+        .job-card {
+            background: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .job-header {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .job-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .job-company {
+            font-size: 1.125rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .job-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .job-tag {
+            background: var(--background-color);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .job-tag.highlight {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .job-content {
+            padding: var(--spacing-lg);
+        }
+        
+        .job-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .job-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .job-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .job-detail i {
+            color: var(--primary-color);
+            width: 16px;
+        }
+        
+        .job-benefits {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .benefits-list {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .benefit-item {
+            background: #f0f9ff;
+            color: var(--primary-color);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .job-footer {
+            padding: var(--spacing-lg);
+            background: var(--background-color);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .job-salary {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--success-color);
+        }
+        
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem var(--spacing-lg);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        
+        .loading-more {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 0 var(--spacing-sm); }
+            .hero-section h1 { font-size: 2rem; }
+            .filters { justify-content: flex-start; }
+            .job-footer { flex-direction: column; gap: var(--spacing-sm); }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/designer-jobs.html" class="logo">
+                    <i class="fas fa-paint-brush"></i>
+                    デザイナー求人サイト
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1>未経験歓迎求人特集</h1>
+            <p>研修制度が充実した企業や、未経験者の採用実績が豊富な会社の求人をピックアップしました。</p>
+        </div>
+    </section>
+
+    <section class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="totalJobs">8</span>
+                    <span class="stat-label">未経験歓迎求人</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">75%</span>
+                    <span class="stat-label">未経験歓迎率</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">新卒歓迎求人</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">リモートOK求人</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">すべて</button>
+                <button class="filter-btn" data-filter="experience-welcome">未経験歓迎</button>
+                <button class="filter-btn" data-filter="new-graduate">新卒歓迎</button>
+                <button class="filter-btn" data-filter="remote-ok">リモートOK</button>
+                <button class="filter-btn" data-filter="training">研修充実</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <main class="main-content">
+            <div class="jobs-grid" id="jobsGrid">
+                <!-- 求人カードがここに動的に挿入されます -->
+            </div>
+            
+            <div class="loading-more">
+                <button class="btn" onclick="loadMoreJobs()">
+                    <i class="fas fa-plus"></i>
+                    さらに求人を見る
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // サンプル求人データ
+        const sampleJobs = [
+            {
+                id: 1,
+                title: "【未経験歓迎】Webデザイナー募集 | 成長企業で一緒にブランドを作りませんか？",
+                company: "株式会社クリエイティブワークス",
+                description: "未経験から始められるWebデザイナーポジションです。先輩デザイナーによる丁寧な指導と、充実した研修制度でスキルアップを支援します。",
+                location: "東京都渋谷区",
+                salary: "月給 22-28万円",
+                jobType: "正社員",
+                isRemoteOk: true,
+                isExperienceWelcome: true,
+                isNewGraduateWelcome: true,
+                tags: ["未経験歓迎", "新卒歓迎", "リモートOK", "研修充実"],
+                benefits: ["社会保険完備", "交通費支給", "リモートワーク可", "研修制度充実"],
+                tools: ["Figma", "Sketch", "Adobe Creative Suite"]
+            },
+            {
+                id: 2,
+                title: "新卒歓迎！グラフィックデザイナー | 大手広告代理店でのキャリアスタート",
+                company: "株式会社アドクリエイト",
+                description: "2024年新卒採用！大手クライアントの案件に携わりながら、グラフィックデザインの基礎からしっかり学べる環境です。",
+                location: "東京都港区",
+                salary: "月給 24-30万円",
+                jobType: "正社員",
+                isRemoteOk: false,
+                isExperienceWelcome: false,
+                isNewGraduateWelcome: true,
+                tags: ["新卒歓迎", "大手企業", "研修充実", "広告業界"],
+                benefits: ["社会保険完備", "賞与年2回", "研修制度", "社員旅行"],
+                tools: ["Adobe Creative Suite", "After Effects"]
+            },
+            {
+                id: 3,
+                title: "【完全未経験OK】UI/UXデザイナー | スタートアップで一緒に成長しませんか？",
+                company: "株式会社テックイノベーション",
+                description: "プログラミング経験不要！デザインに興味があれば大歓迎。小規模チームでじっくり学びながら成長できる環境です。",
+                location: "東京都新宿区",
+                salary: "月給 25-35万円",
+                jobType: "正社員",
+                isRemoteOk: true,
+                isExperienceWelcome: true,
+                isNewGraduateWelcome: true,
+                tags: ["未経験歓迎", "スタートアップ", "フレックス", "UI/UX"],
+                benefits: ["フレックスタイム", "リモートワーク可", "書籍購入支援", "セミナー参加支援"],
+                tools: ["Figma", "Sketch", "Adobe XD", "Miro"]
+            },
+            {
+                id: 4,
+                title: "未経験からのWebデザイナー | 教育制度充実の制作会社",
+                company: "株式会社デザインファクトリー",
+                description: "未経験でも安心の3ヶ月研修プログラム付き。実案件を通じて実践的なスキルを身につけられます。",
+                location: "大阪府大阪市",
+                salary: "月給 20-26万円",
+                jobType: "正社員",
+                isRemoteOk: false,
+                isExperienceWelcome: true,
+                isNewGraduateWelcome: false,
+                tags: ["未経験歓迎", "研修制度", "制作会社", "大阪"],
+                benefits: ["社会保険完備", "交通費支給", "3ヶ月研修制度", "資格取得支援"],
+                tools: ["Adobe Creative Suite", "VS Code", "Git"]
+            },
+            {
+                id: 5,
+                title: "【新卒・第二新卒歓迎】パッケージデザイナー | 老舗メーカーで安定キャリア",
+                company: "株式会社パッケージクリエイト",
+                description: "食品・化粧品のパッケージデザインを手がける老舗企業。安定した環境で長期的なキャリアを築けます。",
+                location: "神奈川県横浜市",
+                salary: "月給 23-29万円",
+                jobType: "正社員",
+                isRemoteOk: false,
+                isExperienceWelcome: true,
+                isNewGraduateWelcome: true,
+                tags: ["新卒歓迎", "第二新卒", "安定企業", "パッケージデザイン"],
+                benefits: ["社会保険完備", "退職金制度", "社内食堂", "年間休日120日"],
+                tools: ["Adobe Creative Suite", "KeyShot", "Blender"]
+            },
+            {
+                id: 6,
+                title: "アニメーション未経験OK！モーショングラフィックデザイナー",
+                company: "株式会社モーションクリエイト",
+                description: "After Effects未経験でも大丈夫！基礎から学べる環境で、動画コンテンツのデザインに挑戦しませんか？",
+                location: "東京都中野区",
+                salary: "月給 26-32万円",
+                jobType: "正社員",
+                isRemoteOk: true,
+                isExperienceWelcome: true,
+                isNewGraduateWelcome: true,
+                tags: ["未経験歓迎", "モーション", "After Effects", "リモートOK"],
+                benefits: ["フレックスタイム", "リモートワーク可", "機材貸与", "スキルアップ支援"],
+                tools: ["Adobe After Effects", "Adobe Premiere Pro", "Cinema 4D"]
+            },
+            {
+                id: 7,
+                title: "【未経験歓迎】ECサイトデザイナー | 急成長中のD2Cブランド",
+                company: "株式会社D2Cブランド",
+                description: "ECサイトのデザイン・運営に興味がある方大歓迎！売上に直結するデザインの楽しさを体験できます。",
+                location: "東京都世田谷区",
+                salary: "月給 24-30万円",
+                jobType: "正社員",
+                isRemoteOk: true,
+                isExperienceWelcome: true,
+                isNewGraduateWelcome: false,
+                tags: ["未経験歓迎", "ECサイト", "D2C", "Shopify"],
+                benefits: ["リモートワーク可", "成果報酬制度", "社割制度", "自由な服装"],
+                tools: ["Adobe Creative Suite", "Shopify", "Canva"]
+            },
+            {
+                id: 8,
+                title: "新卒募集！ゲームUIデザイナー | 人気ゲーム開発会社",
+                company: "株式会社ゲームスタジオ",
+                description: "2024年新卒採用！人気スマホゲームのUIデザインを担当。ゲーム好きな方、大歓迎です！",
+                location: "東京都品川区",
+                salary: "月給 28-35万円",
+                jobType: "正社員",
+                isRemoteOk: false,
+                isExperienceWelcome: false,
+                isNewGraduateWelcome: true,
+                tags: ["新卒歓迎", "ゲーム業界", "UI", "Unity"],
+                benefits: ["社会保険完備", "ゲーム支給", "社内イベント", "最新機材"],
+                tools: ["Adobe Creative Suite", "Unity", "Figma"]
+            }
+        ];
+
+        // 求人カードを生成する関数
+        function createJobCard(job) {
+            const highlightTags = job.tags.filter(tag => 
+                tag.includes('未経験') || tag.includes('新卒') || tag.includes('研修') || tag.includes('リモート')
+            );
+
+            return `
+                <div class="job-card" data-job-id="${job.id}">
+                    <div class="job-header">
+                        <h3 class="job-title">${job.title}</h3>
+                        <div class="job-company">${job.company}</div>
+                        <div class="job-tags">
+                            ${job.tags.map(tag => `
+                                <span class="job-tag ${highlightTags.includes(tag) ? 'highlight' : ''}">${tag}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="job-content">
+                        <p class="job-description">${job.description}</p>
+                        <div class="job-details">
+                            <div class="job-detail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${job.location}</span>
+                            </div>
+                            <div class="job-detail">
+                                <i class="fas fa-briefcase"></i>
+                                <span>${job.jobType}</span>
+                            </div>
+                            <div class="job-detail">
+                                <i class="fas fa-${job.isRemoteOk ? 'home' : 'building'}"></i>
+                                <span>${job.isRemoteOk ? 'リモートOK' : 'オフィス勤務'}</span>
+                            </div>
+                        </div>
+                        <div class="job-benefits">
+                            <div class="benefits-list">
+                                ${job.benefits.map(benefit => `
+                                    <span class="benefit-item">${benefit}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="job-footer">
+                        <div class="job-salary">${job.salary}</div>
+                        <button class="btn" onclick="applyToJob(${job.id})">
+                            <i class="fas fa-paper-plane"></i>
+                            応募する
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 求人一覧を表示する関数
+        function displayJobs(jobs) {
+            const jobsGrid = document.getElementById('jobsGrid');
+            jobsGrid.innerHTML = jobs.map(job => createJobCard(job)).join('');
+        }
+
+        // フィルター機能
+        function setupFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // アクティブなボタンを更新
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const filter = button.dataset.filter;
+                    let filteredJobs = sampleJobs;
+                    
+                    if (filter !== 'all') {
+                        filteredJobs = sampleJobs.filter(job => {
+                            switch (filter) {
+                                case 'experience-welcome':
+                                    return job.isExperienceWelcome;
+                                case 'new-graduate':
+                                    return job.isNewGraduateWelcome;
+                                case 'remote-ok':
+                                    return job.isRemoteOk;
+                                case 'training':
+                                    return job.tags.some(tag => tag.includes('研修'));
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+                    
+                    displayJobs(filteredJobs);
+                });
+            });
+        }
+
+        // 求人応募関数
+        function applyToJob(jobId) {
+            alert(`求人ID: ${jobId} への応募機能は実装中です。実際のサイトではこちらから応募フォームに遷移します。`);
+        }
+
+        // さらに求人を読み込む関数
+        function loadMoreJobs() {
+            alert('さらに求人を読み込む機能は実装中です。実際のサイトではAPIから追加の求人データを取得します。');
+        }
+
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            displayJobs(sampleJobs);
+            setupFilters();
+            
+            // 統計データの更新
+            const experienceWelcomeCount = sampleJobs.filter(job => job.isExperienceWelcome).length;
+            document.getElementById('totalJobs').textContent = experienceWelcomeCount;
+        });
+    </script>
+</body>
+</html>

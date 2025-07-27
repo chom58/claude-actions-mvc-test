@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="デザイナーを目指す方のよくある疑問や不安にお答えします。未経験からの転職、年齢制限、必要なスキルなど、詳しく解説。">
+    <meta name="keywords" content="デザイナー,よくある質問,未経験,転職,年齢,スキル,疑問,不安">
+    <title>よくある悩みQ&A | デザイナーを目指す方の疑問を解決</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0f172a;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --danger-color: #ef4444;
+            
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, #d97706 100%);
+            
+            --font-main: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-2xl: 4rem;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        .header {
+            background: var(--surface-color);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .breadcrumb {
+            background: var(--surface-color);
+            padding: var(--spacing-sm) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .breadcrumb-nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-2xl) 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .hero-section p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-section {
+            background: var(--surface-color);
+            padding: var(--spacing-xl) 0;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            padding-left: 50px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+        
+        .category-filter {
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .category-filter.active,
+        .category-filter:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .main-content {
+            padding: var(--spacing-2xl) 0;
+        }
+        
+        .faq-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .faq-category {
+            background: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .category-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .category-header p {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+        
+        .faq-list {
+            padding: var(--spacing-lg);
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-md);
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .faq-question {
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            padding: var(--spacing-sm) 0;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color 0.2s;
+        }
+        
+        .faq-question:hover {
+            color: var(--primary-color);
+        }
+        
+        .faq-question i {
+            transition: transform 0.2s;
+            color: var(--text-secondary);
+        }
+        
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .faq-answer.active {
+            max-height: 500px;
+            padding-top: var(--spacing-sm);
+        }
+        
+        .faq-answer p {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .faq-answer ul {
+            margin-left: var(--spacing-lg);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .faq-answer li {
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .highlight-box {
+            background: var(--info-color);
+            color: white;
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            margin: var(--spacing-sm) 0;
+        }
+        
+        .highlight-box.warning {
+            background: var(--warning-color);
+        }
+        
+        .highlight-box.success {
+            background: var(--success-color);
+        }
+        
+        .contact-section {
+            background: var(--surface-color);
+            padding: var(--spacing-2xl) 0;
+            text-align: center;
+            margin-top: var(--spacing-2xl);
+        }
+        
+        .contact-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+        
+        .contact-section p {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .stats-section {
+            background: var(--background-color);
+            padding: var(--spacing-xl) 0;
+            margin: var(--spacing-xl) 0;
+            border-radius: 12px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: var(--spacing-lg);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: var(--spacing-xs);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--spacing-sm);
+            }
+            
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            
+            .faq-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-filters {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .category-filter {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/designer-jobs.html" class="logo">
+                    <i class="fas fa-paint-brush"></i>
+                    デザイナー求人サイト
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- パンくずリスト -->
+    <nav class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-nav">
+                <a href="/designer-jobs.html">ホーム</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>よくある悩みQ&A</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ヒーローセクション -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>よくある悩みQ&A</h1>
+            <p>デザイナーを目指す方の疑問や不安にお答えします。あなたの悩みも解決するかもしれません。</p>
+        </div>
+    </section>
+
+    <!-- 検索セクション -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="キーワードで質問を検索..." id="searchInput">
+            </div>
+            <div class="category-filters">
+                <button class="category-filter active" data-category="all">すべて</button>
+                <button class="category-filter" data-category="getting-started">はじめる前の悩み</button>
+                <button class="category-filter" data-category="learning">学習について</button>
+                <button class="category-filter" data-category="job-hunting">就職活動</button>
+                <button class="category-filter" data-category="career">キャリア・将来</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- メインコンテンツ -->
+    <div class="container">
+        <main class="main-content">
+            <!-- 統計セクション -->
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">の方が未経験からスタート</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">6ヶ月</span>
+                        <span class="stat-label">平均学習期間</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">78%</span>
+                        <span class="stat-label">が転職に成功</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">32歳</span>
+                        <span class="stat-label">平均転職年齢</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ カテゴリ -->
+            <div class="faq-categories">
+                <!-- はじめる前の悩み -->
+                <div class="faq-category" data-category="getting-started">
+                    <div class="category-header">
+                        <h2><i class="fas fa-question-circle"></i> はじめる前の悩み</h2>
+                        <p>デザイナーを目指すかどうか迷っている方へ</p>
+                    </div>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                完全未経験でも本当にデザイナーになれますか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>はい、十分に可能です。実際に多くのデザイナーが未経験からスタートしています。</p>
+                                <div class="highlight-box success">
+                                    <strong>実績データ：</strong> 当サイトに掲載されている求人の75%が「未経験歓迎」です。
+                                </div>
+                                <p>重要なのは以下の3つです：</p>
+                                <ul>
+                                    <li>継続的な学習意欲</li>
+                                    <li>基礎的なデザインスキルの習得</li>
+                                    <li>ポートフォリオの作成</li>
+                                </ul>
+                                <p>多くの企業では、経験よりも学習意欲とポテンシャルを重視しています。</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                年齢制限はありますか？30代からでも遅くないですか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>年齢による制限はほとんどありません。30代、40代からデザイナーに転職される方も多くいらっしゃいます。</p>
+                                <div class="highlight-box">
+                                    <strong>年代別転職成功率：</strong><br>
+                                    20代: 85% | 30代: 78% | 40代: 65%
+                                </div>
+                                <p>むしろ年齢が上がることで得られるメリットもあります：</p>
+                                <ul>
+                                    <li>これまでの業務経験を活かせる</li>
+                                    <li>コミュニケーション能力が高い</li>
+                                    <li>責任感が強く、学習に対する意識が高い</li>
+                                    <li>クライアントワークでの信頼性</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                センスがない人でもデザイナーになれますか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>「センス」は生まれ持った才能ではなく、学習と経験で身につけられるスキルです。</p>
+                                <p>デザインで重要なのは以下の要素です：</p>
+                                <ul>
+                                    <li><strong>論理的思考：</strong> なぜこの色を使うのか、なぜこのレイアウトなのか</li>
+                                    <li><strong>基本原則の理解：</strong> 色彩理論、タイポグラフィ、レイアウトの法則</li>
+                                    <li><strong>観察力：</strong> 良いデザインを見て分析する力</li>
+                                    <li><strong>継続的な学習：</strong> 常に新しいことを学ぶ姿勢</li>
+                                </ul>
+                                <div class="highlight-box success">
+                                    多くの成功しているデザイナーも、最初は「センスがない」と悩んでいました。学習を続けることで必ず上達します。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 学習について -->
+                <div class="faq-category" data-category="learning">
+                    <div class="category-header">
+                        <h2><i class="fas fa-graduation-cap"></i> 学習について</h2>
+                        <p>効率的な学習方法や必要なスキル</p>
+                    </div>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                どのくらいの期間で就職できるレベルになりますか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>個人差はありますが、平均的な学習期間は以下の通りです：</p>
+                                <ul>
+                                    <li><strong>基礎習得：</strong> 2-3ヶ月（1日2-3時間学習）</li>
+                                    <li><strong>ポートフォリオ制作：</strong> 1-2ヶ月</li>
+                                    <li><strong>就職活動：</strong> 1-3ヶ月</li>
+                                </ul>
+                                <div class="highlight-box">
+                                    <strong>合計：6-8ヶ月</strong>で就職レベルに到達する方が多いです。
+                                </div>
+                                <p>学習時間を増やせばより短期間での習得も可能です。また、働きながら学習される場合は1年程度を見込んでおくと良いでしょう。</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                独学とスクール、どちらがおすすめですか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>それぞれにメリット・デメリットがあります：</p>
+                                
+                                <p><strong>独学のメリット：</strong></p>
+                                <ul>
+                                    <li>費用を抑えられる</li>
+                                    <li>自分のペースで学習できる</li>
+                                    <li>自己解決能力が身につく</li>
+                                </ul>
+                                
+                                <p><strong>スクールのメリット：</strong></p>
+                                <ul>
+                                    <li>体系的なカリキュラム</li>
+                                    <li>講師からの直接指導</li>
+                                    <li>同期との切磋琢磨</li>
+                                    <li>就職サポート</li>
+                                </ul>
+                                
+                                <div class="highlight-box warning">
+                                    <strong>おすすめ：</strong> まずは独学で基礎を学び、必要に応じてスクールを検討するハイブリッド学習が効果的です。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                Adobe Creative Suiteは必須ですか？高額で悩んでいます。
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>業界標準ツールなので最終的には習得が望ましいですが、最初から必須ではありません。</p>
+                                
+                                <p><strong>学習初期におすすめの無料ツール：</strong></p>
+                                <ul>
+                                    <li><strong>Figma：</strong> UI/UXデザイン（無料版で十分）</li>
+                                    <li><strong>GIMP：</strong> 画像編集（Photoshopの代替）</li>
+                                    <li><strong>Inkscape：</strong> ベクター編集（Illustratorの代替）</li>
+                                    <li><strong>Canva：</strong> 初心者向けデザインツール</li>
+                                </ul>
+                                
+                                <div class="highlight-box">
+                                    Adobeには7日間の無料体験版もあります。基礎を学んでから導入を検討しましょう。
+                                </div>
+                                
+                                <p>また、学生・教職員なら大幅割引が適用されるプランもあります。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 就職活動 -->
+                <div class="faq-category" data-category="job-hunting">
+                    <div class="category-header">
+                        <h2><i class="fas fa-briefcase"></i> 就職活動</h2>
+                        <p>転職活動やポートフォリオについて</p>
+                    </div>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ポートフォリオには何作品くらい載せれば良いですか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p><strong>推奨作品数：5-10作品</strong></p>
+                                <p>量よりも質が重要です。以下のポイントを意識しましょう：</p>
+                                
+                                <ul>
+                                    <li><strong>多様性：</strong> 異なる種類のデザイン（Webサイト、ロゴ、バナーなど）</li>
+                                    <li><strong>プロセス説明：</strong> なぜこのデザインにしたかの理由</li>
+                                    <li><strong>課題解決：</strong> どんな問題を解決しようとしたか</li>
+                                    <li><strong>完成度：</strong> 細部まで丁寧に仕上げる</li>
+                                </ul>
+                                
+                                <div class="highlight-box success">
+                                    <strong>コツ：</strong> 各作品に制作背景、コンセプト、使用ツール、制作期間を記載すると評価が高くなります。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                面接ではどんなことを聞かれますか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>未経験者の面接でよく聞かれる質問：</p>
+                                
+                                <ul>
+                                    <li>なぜデザイナーになりたいと思ったのか？</li>
+                                    <li>どのような学習をしてきたか？</li>
+                                    <li>ポートフォリオの作品について詳しく説明してください</li>
+                                    <li>今後どのようなデザイナーになりたいか？</li>
+                                    <li>チームで働いた経験はありますか？</li>
+                                    <li>デザイン以外での前職の経験をどう活かしたいか？</li>
+                                </ul>
+                                
+                                <div class="highlight-box">
+                                    <strong>準備のコツ：</strong> 作品について具体的に説明できるよう、制作プロセスと意図を整理しておきましょう。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                給与はどのくらい下がりますか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>未経験からのスタート時の年収目安：</p>
+                                
+                                <ul>
+                                    <li><strong>Webデザイナー：</strong> 280-350万円</li>
+                                    <li><strong>グラフィックデザイナー：</strong> 250-320万円</li>
+                                    <li><strong>UI/UXデザイナー：</strong> 320-400万円</li>
+                                </ul>
+                                
+                                <p>前職から一時的に下がる可能性はありますが、スキルアップにより年収は着実に向上します：</p>
+                                
+                                <ul>
+                                    <li><strong>1-2年後：</strong> 350-450万円</li>
+                                    <li><strong>3-5年後：</strong> 450-600万円</li>
+                                    <li><strong>シニアレベル：</strong> 600万円以上</li>
+                                </ul>
+                                
+                                <div class="highlight-box warning">
+                                    フリーランスや副業で収入を補完している方も多くいます。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- キャリア・将来 -->
+                <div class="faq-category" data-category="career">
+                    <div class="category-header">
+                        <h2><i class="fas fa-chart-line"></i> キャリア・将来</h2>
+                        <p>長期的なキャリア形成について</p>
+                    </div>
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                AIの発達でデザイナーの仕事はなくなりませんか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>AIは確かにデザイン業界に影響を与えていますが、デザイナーの仕事がなくなることはありません。</p>
+                                
+                                <p><strong>AIが得意なこと：</strong></p>
+                                <ul>
+                                    <li>テンプレートベースのデザイン</li>
+                                    <li>画像生成・編集の補助</li>
+                                    <li>単純作業の自動化</li>
+                                </ul>
+                                
+                                <p><strong>人間のデザイナーが必要なこと：</strong></p>
+                                <ul>
+                                    <li>戦略的思考とコンセプト設計</li>
+                                    <li>クライアントとのコミュニケーション</li>
+                                    <li>ユーザー体験の設計</li>
+                                    <li>文化的・社会的な配慮</li>
+                                    <li>創造性と独創性</li>
+                                </ul>
+                                
+                                <div class="highlight-box success">
+                                    <strong>未来のデザイナー：</strong> AIを道具として活用しながら、より高次元の価値創造に集中できるようになります。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                フリーランスと会社員、どちらが良いですか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>それぞれにメリット・デメリットがあります：</p>
+                                
+                                <p><strong>会社員のメリット：</strong></p>
+                                <ul>
+                                    <li>安定した収入</li>
+                                    <li>チームでの学習機会</li>
+                                    <li>福利厚生</li>
+                                    <li>大きなプロジェクトへの参加</li>
+                                </ul>
+                                
+                                <p><strong>フリーランスのメリット：</strong></p>
+                                <ul>
+                                    <li>自由な働き方</li>
+                                    <li>収入の上限がない</li>
+                                    <li>多様なクライアント・業界経験</li>
+                                    <li>自分のペースで成長</li>
+                                </ul>
+                                
+                                <div class="highlight-box">
+                                    <strong>おすすめ：</strong> まずは会社員でスキルと経験を積み、その後フリーランスを検討する方が多いです。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                将来のキャリアパスはどのようになりますか？
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>デザイナーのキャリアパスは多様です：</p>
+                                
+                                <p><strong>スペシャリスト路線：</strong></p>
+                                <ul>
+                                    <li>ジュニアデザイナー → シニアデザイナー → アートディレクター</li>
+                                    <li>専門分野のエキスパートを目指す</li>
+                                </ul>
+                                
+                                <p><strong>マネジメント路線：</strong></p>
+                                <ul>
+                                    <li>チームリーダー → デザインマネージャー → CDO（最高デザイン責任者）</li>
+                                    <li>チーム管理と戦略立案が中心</li>
+                                </ul>
+                                
+                                <p><strong>独立・起業路線：</strong></p>
+                                <ul>
+                                    <li>フリーランスデザイナー</li>
+                                    <li>デザイン事務所の設立</li>
+                                    <li>デザインコンサルタント</li>
+                                </ul>
+                                
+                                <div class="highlight-box success">
+                                    どの道を選んでも、継続的な学習と経験の蓄積が成功の鍵となります。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- お問い合わせセクション -->
+            <section class="contact-section">
+                <h3>他にご質問がありますか？</h3>
+                <p>ここで解決しなかった疑問がございましたら、お気軽にお問い合わせください。専門スタッフがお答えします。</p>
+                <a href="#contact" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i>
+                    お問い合わせ
+                </a>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // FAQ アコーディオン機能
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const isActive = question.classList.contains('active');
+                
+                // 全てのアコーディオンを閉じる
+                document.querySelectorAll('.faq-question').forEach(q => {
+                    q.classList.remove('active');
+                    q.nextElementSibling.classList.remove('active');
+                });
+                
+                // クリックされたアコーディオンを開く（既に開いていた場合は閉じる）
+                if (!isActive) {
+                    question.classList.add('active');
+                    answer.classList.add('active');
+                }
+            });
+        });
+
+        // カテゴリフィルター機能
+        document.querySelectorAll('.category-filter').forEach(filter => {
+            filter.addEventListener('click', () => {
+                const category = filter.dataset.category;
+                
+                // アクティブなフィルターを更新
+                document.querySelectorAll('.category-filter').forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+                
+                // カテゴリごとの表示/非表示
+                document.querySelectorAll('.faq-category').forEach(categoryElement => {
+                    if (category === 'all' || categoryElement.dataset.category === category) {
+                        categoryElement.style.display = 'block';
+                    } else {
+                        categoryElement.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 検索機能
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const question = item.querySelector('.faq-question').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

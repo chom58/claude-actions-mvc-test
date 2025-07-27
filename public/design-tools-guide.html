@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="デザインツールの選び方ガイド。Photoshop、Illustrator、Figmaなど主要ツールの特徴と初心者におすすめのツールを詳しく解説。">
+    <meta name="keywords" content="デザインツール,Photoshop,Illustrator,Figma,初心者,おすすめ,比較">
+    <title>デザインツール比較・選び方ガイド | 初心者向け完全版</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
+            --font-main: 'Inter', 'Noto Sans JP', sans-serif;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        .header {
+            background: var(--surface-color);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-xl) 0;
+            text-align: center;
+        }
+        
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .main-content {
+            padding: var(--spacing-xl) 0;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .tool-card {
+            background: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .tool-header {
+            padding: var(--spacing-lg);
+            background: var(--gradient-primary);
+            color: white;
+            text-align: center;
+        }
+        
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .tool-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tool-type {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+        
+        .tool-content {
+            padding: var(--spacing-lg);
+        }
+        
+        .tool-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .tool-features {
+            list-style: none;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .tool-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .tool-features .check {
+            color: var(--success-color);
+        }
+        
+        .tool-pricing {
+            background: var(--background-color);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .pricing-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .pricing-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .difficulty-easy {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .difficulty-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .difficulty-hard {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .comparison-table {
+            background: var(--surface-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .comparison-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md);
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comparison-table tr:hover {
+            background: var(--background-color);
+        }
+        
+        .recommendation-section {
+            background: var(--surface-color);
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            margin: var(--spacing-xl) 0;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .recommendation-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+            color: var(--text-primary);
+        }
+        
+        .recommendation-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .recommendation-card {
+            background: var(--background-color);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .recommendation-card h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 0 var(--spacing-sm); }
+            .hero-section h1 { font-size: 2rem; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .comparison-table { overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/designer-jobs.html" class="logo">
+                    <i class="fas fa-paint-brush"></i>
+                    デザイナー求人サイト
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1>デザインツール比較・選び方ガイド</h1>
+            <p>初心者におすすめのデザインツールから業界標準まで、特徴と使い分けを詳しく解説します。</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <main class="main-content">
+            <section class="tools-grid">
+                <!-- Figma -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🎨</div>
+                        <div class="tool-name">Figma</div>
+                        <div class="tool-type">UI/UXデザイン・プロトタイピング</div>
+                    </div>
+                    <div class="tool-content">
+                        <p class="tool-description">
+                            ブラウザで動作するUI/UXデザインツール。チーム協働機能が優秀で、初心者にも使いやすい設計になっています。
+                        </p>
+                        <ul class="tool-features">
+                            <li><i class="fas fa-check check"></i> 無料版で基本機能利用可能</li>
+                            <li><i class="fas fa-check check"></i> ブラウザで動作、インストール不要</li>
+                            <li><i class="fas fa-check check"></i> リアルタイム共同編集</li>
+                            <li><i class="fas fa-check check"></i> プロトタイピング機能</li>
+                            <li><i class="fas fa-check check"></i> 豊富なプラグイン</li>
+                        </ul>
+                        <div class="tool-pricing">
+                            <div class="pricing-label">料金</div>
+                            <div class="pricing-value">無料〜$12/月</div>
+                        </div>
+                        <span class="difficulty-badge difficulty-easy">初心者向け</span>
+                    </div>
+                </div>
+
+                <!-- Photoshop -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🖼️</div>
+                        <div class="tool-name">Adobe Photoshop</div>
+                        <div class="tool-type">画像編集・レタッチ</div>
+                    </div>
+                    <div class="tool-content">
+                        <p class="tool-description">
+                            画像編集のデファクトスタンダード。写真の加工・合成からWebデザインまで幅広く使用されています。
+                        </p>
+                        <ul class="tool-features">
+                            <li><i class="fas fa-check check"></i> 高度な画像編集機能</li>
+                            <li><i class="fas fa-check check"></i> 豊富なフィルター・エフェクト</li>
+                            <li><i class="fas fa-check check"></i> レイヤー機能</li>
+                            <li><i class="fas fa-check check"></i> 業界標準ツール</li>
+                            <li><i class="fas fa-check check"></i> 大量のチュートリアル</li>
+                        </ul>
+                        <div class="tool-pricing">
+                            <div class="pricing-label">料金</div>
+                            <div class="pricing-value">2,728円/月</div>
+                        </div>
+                        <span class="difficulty-badge difficulty-medium">中級者向け</span>
+                    </div>
+                </div>
+
+                <!-- Illustrator -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">✏️</div>
+                        <div class="tool-name">Adobe Illustrator</div>
+                        <div class="tool-type">ベクターグラフィック</div>
+                    </div>
+                    <div class="tool-content">
+                        <p class="tool-description">
+                            ベクター形式でのイラスト作成・ロゴデザインに最適。印刷物のデザインでは必須のツールです。
+                        </p>
+                        <ul class="tool-features">
+                            <li><i class="fas fa-check check"></i> ベクター形式で拡大縮小自由</li>
+                            <li><i class="fas fa-check check"></i> ロゴ・アイコン制作に最適</li>
+                            <li><i class="fas fa-check check"></i> 印刷物デザインに強い</li>
+                            <li><i class="fas fa-check check"></i> 豊富な描画ツール</li>
+                            <li><i class="fas fa-check check"></i> Photoshopとの連携</li>
+                        </ul>
+                        <div class="tool-pricing">
+                            <div class="pricing-label">料金</div>
+                            <div class="pricing-value">2,728円/月</div>
+                        </div>
+                        <span class="difficulty-badge difficulty-medium">中級者向け</span>
+                    </div>
+                </div>
+
+                <!-- Canva -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🌟</div>
+                        <div class="tool-name">Canva</div>
+                        <div class="tool-type">グラフィックデザイン</div>
+                    </div>
+                    <div class="tool-content">
+                        <p class="tool-description">
+                            テンプレートが豊富で、デザイン初心者でも簡単に美しいグラフィックを作成できます。
+                        </p>
+                        <ul class="tool-features">
+                            <li><i class="fas fa-check check"></i> 豊富なテンプレート</li>
+                            <li><i class="fas fa-check check"></i> ドラッグ&ドロップ操作</li>
+                            <li><i class="fas fa-check check"></i> SNS投稿に最適</li>
+                            <li><i class="fas fa-check check"></i> チーム機能</li>
+                            <li><i class="fas fa-check check"></i> 学習コストが低い</li>
+                        </ul>
+                        <div class="tool-pricing">
+                            <div class="pricing-label">料金</div>
+                            <div class="pricing-value">無料〜1,500円/月</div>
+                        </div>
+                        <span class="difficulty-badge difficulty-easy">初心者向け</span>
+                    </div>
+                </div>
+
+                <!-- Sketch -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">💎</div>
+                        <div class="tool-name">Sketch</div>
+                        <div class="tool-type">UI/UXデザイン (Mac専用)</div>
+                    </div>
+                    <div class="tool-content">
+                        <p class="tool-description">
+                            MacユーザーのUI/UXデザイナーに人気。シンプルな操作性とデザインシステム機能が特徴。
+                        </p>
+                        <ul class="tool-features">
+                            <li><i class="fas fa-check check"></i> UI/UXデザインに特化</li>
+                            <li><i class="fas fa-check check"></i> シンボル・ライブラリ機能</li>
+                            <li><i class="fas fa-check check"></i> プラグインエコシステム</li>
+                            <li><i class="fas fa-times" style="color: #ef4444;"></i> Mac専用</li>
+                            <li><i class="fas fa-check check"></i> 軽快な動作</li>
+                        </ul>
+                        <div class="tool-pricing">
+                            <div class="pricing-label">料金</div>
+                            <div class="pricing-value">$9/月</div>
+                        </div>
+                        <span class="difficulty-badge difficulty-medium">中級者向け</span>
+                    </div>
+                </div>
+
+                <!-- GIMP -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">🆓</div>
+                        <div class="tool-name">GIMP</div>
+                        <div class="tool-type">画像編集 (無料)</div>
+                    </div>
+                    <div class="tool-content">
+                        <p class="tool-description">
+                            完全無料の画像編集ソフト。Photoshopの代替として多くの機能を提供しています。
+                        </p>
+                        <ul class="tool-features">
+                            <li><i class="fas fa-check check"></i> 完全無料</li>
+                            <li><i class="fas fa-check check"></i> オープンソース</li>
+                            <li><i class="fas fa-check check"></i> 高度な画像編集機能</li>
+                            <li><i class="fas fa-check check"></i> プラグイン拡張可能</li>
+                            <li><i class="fas fa-times" style="color: #ef4444;"></i> 操作性が独特</li>
+                        </ul>
+                        <div class="tool-pricing">
+                            <div class="pricing-label">料金</div>
+                            <div class="pricing-value">完全無料</div>
+                        </div>
+                        <span class="difficulty-badge difficulty-hard">上級者向け</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 比較表 -->
+            <section class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ツール名</th>
+                            <th>主な用途</th>
+                            <th>料金</th>
+                            <th>学習難易度</th>
+                            <th>おすすめ度</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Figma</strong></td>
+                            <td>UI/UXデザイン</td>
+                            <td>無料〜$12/月</td>
+                            <td><span class="difficulty-badge difficulty-easy">易</span></td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Canva</strong></td>
+                            <td>グラフィックデザイン</td>
+                            <td>無料〜1,500円/月</td>
+                            <td><span class="difficulty-badge difficulty-easy">易</span></td>
+                            <td>⭐⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Photoshop</strong></td>
+                            <td>画像編集</td>
+                            <td>2,728円/月</td>
+                            <td><span class="difficulty-badge difficulty-medium">中</span></td>
+                            <td>⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Illustrator</strong></td>
+                            <td>ベクター制作</td>
+                            <td>2,728円/月</td>
+                            <td><span class="difficulty-badge difficulty-medium">中</span></td>
+                            <td>⭐⭐⭐⭐</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GIMP</strong></td>
+                            <td>画像編集</td>
+                            <td>無料</td>
+                            <td><span class="difficulty-badge difficulty-hard">難</span></td>
+                            <td>⭐⭐⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- 推奨組み合わせ -->
+            <section class="recommendation-section">
+                <h2 class="recommendation-title">目的別おすすめ組み合わせ</h2>
+                <div class="recommendation-cards">
+                    <div class="recommendation-card">
+                        <h4>💰 予算重視（無料で始めたい）</h4>
+                        <p><strong>Figma + Canva + GIMP</strong></p>
+                        <p>すべて無料で始められ、基本的なデザイン作業は十分にカバーできます。</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4>🎯 UI/UXデザイナー志望</h4>
+                        <p><strong>Figma + Photoshop</strong></p>
+                        <p>UI設計にはFigma、画像処理にはPhotoshopの組み合わせが最適です。</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4>🎨 グラフィックデザイナー志望</h4>
+                        <p><strong>Illustrator + Photoshop</strong></p>
+                        <p>印刷物やロゴ制作には、Adobeの組み合わせが業界標準です。</p>
+                    </div>
+                    
+                    <div class="recommendation-card">
+                        <h4>🌐 Webデザイナー志望</h4>
+                        <p><strong>Figma + Photoshop + Illustrator</strong></p>
+                        <p>UI設計から画像処理、アイコン制作まで幅広くカバーできます。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
