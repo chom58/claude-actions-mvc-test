@@ -1845,13 +1845,315 @@
         .api-card:hover {
             transform: translate3d(0, -5px, 0);
         }
+
+        /* ===========================================
+           レスポンシブ対応強化 - Issue #52
+           =========================================== */
+
+        /* タブレット横画面対応の強化 */
+        @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+            .hero {
+                min-height: 70vh; /* 横画面では高さを調整 */
+                padding: var(--spacing-xl) var(--spacing-lg);
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr); /* 横画面では3列 */
+                gap: var(--spacing-md);
+            }
+            
+            .nav-container {
+                padding: 0 var(--spacing-xl);
+            }
+            
+            .section {
+                padding: var(--spacing-xl) var(--spacing-lg);
+            }
+        }
+
+        /* タブレット縦画面対応の強化 */
+        @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+            .hero {
+                min-height: 85vh;
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--spacing-lg);
+            }
+            
+            .hero-title {
+                font-size: clamp(4rem, 8vw, 6rem);
+            }
+        }
+
+        /* 中型モバイル対応（iPhone 12 Pro等） */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .hero-title {
+                font-size: clamp(3.5rem, 9vw, 5rem);
+            }
+            
+            .category-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            
+            .cta-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: var(--spacing-sm);
+            }
+            
+            .btn {
+                width: auto;
+                min-width: 140px;
+                max-width: 200px;
+            }
+        }
+
+        /* スマートフォンの読み込み速度最適化 */
+        @media (max-width: 768px) {
+            /* 重いアニメーションを無効化 */
+            .hero::before,
+            .parallax-bg::before,
+            .glitch,
+            .logo-icon {
+                animation: none !important;
+            }
+            
+            /* 画像の遅延読み込み対応 */
+            img[loading="lazy"] {
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            img[loading="lazy"].loaded {
+                opacity: 1;
+            }
+            
+            /* モバイルナビゲーションの改善 */
+            .nav-links {
+                width: min(280px, 85vw); /* より柔軟な幅 */
+                padding: 80px 30px 30px;
+            }
+            
+            .nav-links a {
+                font-size: clamp(1rem, 3vw, 1.2rem);
+                padding: var(--spacing-sm) 0;
+                display: flex;
+                align-items: center;
+                gap: var(--spacing-xs);
+            }
+            
+            /* タッチフレンドリーなUI改善 */
+            .card {
+                padding: var(--spacing-lg);
+                margin-bottom: var(--spacing-lg);
+                border-radius: 12px; /* 角を丸く */
+            }
+            
+            /* スクロールスナップ対応 */
+            .section {
+                scroll-snap-align: start;
+            }
+            
+            .hero,
+            .section {
+                scroll-snap-type: y mandatory;
+            }
+        }
+
+        /* タッチジェスチャー対応の強化 */
+        @media (hover: none) and (pointer: coarse) {
+            /* タッチ用のアクティブ状態 */
+            .btn:active,
+            .card:active,
+            .nav-links a:active {
+                transform: scale(0.98);
+                opacity: 0.8;
+            }
+            
+            /* スワイプ可能な要素の視覚的ヒント */
+            .nav-links {
+                border-left: 3px solid var(--neon-pink);
+            }
+            
+            .nav-links::before {
+                content: "← スワイプして閉じる";
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 0.8rem;
+                color: rgba(255, 255, 255, 0.6);
+                font-family: var(--font-japanese);
+            }
+            
+            /* タッチターゲットの最適化 */
+            button,
+            .btn,
+            a,
+            input,
+            select,
+            textarea {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            /* プルトゥリフレッシュヒント */
+            body::after {
+                content: "";
+                position: fixed;
+                top: -5px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 60px;
+                height: 5px;
+                background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+                border-radius: 0 0 10px 10px;
+                z-index: 9999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            body.pull-to-refresh::after {
+                opacity: 1;
+            }
+        }
+
+        /* アクセシビリティ向上の追加対応 */
+        
+        /* 色覚異常対応 */
+        @media (prefers-contrast: more) {
+            :root {
+                --neon-pink: #ff007f;
+                --neon-blue: #0099ff;
+                --neon-green: #00cc00;
+                --color-border: #666666;
+            }
+            
+            .btn,
+            .card,
+            input,
+            textarea,
+            select {
+                border: 2px solid var(--color-border);
+            }
+        }
+        
+        /* フォーカス表示の強化 */
+        .enhanced-focus:focus {
+            outline: 3px solid var(--neon-blue);
+            outline-offset: 3px;
+            box-shadow: 
+                0 0 0 1px var(--color-background),
+                0 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* スクリーンリーダー用の改善されたテキスト */
+        .sr-announce {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        
+        /* キーボードナビゲーション用のスキップリンク強化 */
+        .skip-links-enhanced {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .skip-links-enhanced a {
+            position: absolute;
+            left: -10000px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 2px solid var(--neon-pink);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .skip-links-enhanced a:focus {
+            position: static;
+            left: auto;
+        }
+        
+        /* ARIAライブリージョンのスタイル */
+        .live-region {
+            position: absolute;
+            left: -10000px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+        
+        /* 大きなテキスト表示対応 */
+        @media (min-resolution: 192dpi) {
+            body {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            
+            .hero-title,
+            .section-title {
+                text-rendering: optimizeLegibility;
+            }
+        }
+        
+        /* モバイル横画面での改善 */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .hero {
+                min-height: 100vh;
+                padding: var(--spacing-md);
+            }
+            
+            .nav-container {
+                height: 50px; /* 横画面では高さを削減 */
+            }
+            
+            .hero-title {
+                font-size: clamp(2.5rem, 8vw, 4rem);
+                margin-bottom: var(--spacing-sm);
+            }
+            
+            .hero-subtitle {
+                font-size: clamp(0.9rem, 2vw, 1.1rem);
+            }
+            
+            .section {
+                padding: var(--spacing-lg) var(--spacing-md);
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Enhanced Skip Links for Accessibility - Issue #52 -->
+    <div class="skip-links-enhanced">
+        <a href="#main-content">メインコンテンツにスキップ</a>
+        <a href="#navigation">ナビゲーションにスキップ</a>
+        <a href="#search">検索にスキップ</a>
+        <a href="#footer">フッターにスキップ</a>
+    </div>
+    
+    <!-- ARIA Live Region for Dynamic Content Announcements -->
+    <div aria-live="polite" aria-atomic="true" class="live-region" id="announcements">
+        <!-- ページ読み込み完了やエラーなどの動的な変更をスクリーンリーダーに通知 -->
+    </div>
+    
     <!-- Header -->
-    <header class="header">
-        <nav class="nav-container">
-            <a href="#" class="logo">
+    <header class="header" role="banner">
+        <nav class="nav-container" id="navigation" role="navigation" aria-label="メインナビゲーション">
+            <a href="#" class="logo" aria-label="原宿クリエイティブコミュニティ ホームページ">
                 <svg class="logo-svg" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg" aria-label="原宿クリエイティブコミュニティロゴ">
                     <defs>
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -1895,13 +2197,13 @@
                     </text>
                 </svg>
             </a>
-            <ul class="nav-links">
-                <li><a href="#home">ホーム</a></li>
-                <li><a href="#categories">カテゴリ</a></li>
-                <li><a href="#features">機能</a></li>
-                <li><a href="#designer-jobs">求人</a></li>
-                <li class="auth-menu" id="authMenu">
-                    <a href="login.html" id="loginLink">ログイン</a>
+            <ul class="nav-links" role="menubar" aria-label="メインメニュー">
+                <li role="none"><a href="#home" role="menuitem" aria-label="ホームセクションに移動">ホーム</a></li>
+                <li role="none"><a href="#categories" role="menuitem" aria-label="カテゴリセクションに移動">カテゴリ</a></li>
+                <li role="none"><a href="#features" role="menuitem" aria-label="機能セクションに移動">機能</a></li>
+                <li role="none"><a href="#designer-jobs" role="menuitem" aria-label="求人セクションに移動">求人</a></li>
+                <li class="auth-menu" id="authMenu" role="none">
+                    <a href="login.html" id="loginLink" role="menuitem" aria-label="ログインページに移動">ログイン</a>
                 </li>
             </ul>
             <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
@@ -1916,23 +2218,25 @@
     </header>
 
     <!-- Mobile Navigation Drawer -->
-    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
-    <nav class="mobile-nav" id="mobileNav">
-        <ul class="mobile-nav-links">
-            <li><a href="#home" class="mobile-nav-link">ホーム</a></li>
-            <li><a href="#categories" class="mobile-nav-link">カテゴリ</a></li>
-            <li><a href="#features" class="mobile-nav-link">機能</a></li>
-            <li><a href="#designer-jobs" class="mobile-nav-link">求人</a></li>
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
+    <nav class="mobile-nav" id="mobileNav" role="navigation" aria-label="モバイルナビゲーション" aria-hidden="true">
+        <ul class="mobile-nav-links" role="menubar">
+            <li role="none"><a href="#home" class="mobile-nav-link" role="menuitem" aria-label="ホームセクションに移動">ホーム</a></li>
+            <li role="none"><a href="#categories" class="mobile-nav-link" role="menuitem" aria-label="カテゴリセクションに移動">カテゴリ</a></li>
+            <li role="none"><a href="#features" class="mobile-nav-link" role="menuitem" aria-label="機能セクションに移動">機能</a></li>
+            <li role="none"><a href="#designer-jobs" class="mobile-nav-link" role="menuitem" aria-label="求人セクションに移動">求人</a></li>
         </ul>
         <div class="mobile-auth-menu" id="mobileAuthMenu">
-            <a href="login.html" id="mobileLoginLink">ログイン</a>
+            <a href="login.html" id="mobileLoginLink" aria-label="ログインページに移動">ログイン</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <!-- Hero Section -->
+        <section class="hero" id="home" aria-labelledby="hero-title">
         <div class="hero-content">
-            <h1 class="hero-title" data-text="CREATE. CONNECT. INSPIRE.">CREATE. CONNECT. INSPIRE.</h1>
+            <h1 class="hero-title" id="hero-title" data-text="CREATE. CONNECT. INSPIRE.">CREATE. CONNECT. INSPIRE.</h1>
             <p class="hero-subtitle">
                 原宿から発信するデザインとファッションの最前線。<br>
                 多様なクリエイターが出会い、新たな価値を生み出すハブ。
