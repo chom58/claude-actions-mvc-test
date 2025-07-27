@@ -5,7 +5,7 @@ const mime = require('mime-types');
 const imageService = require('../services/imageService');
 const storageService = require('../services/storageService');
 const { Image, ImageUsage } = require('../models');
-const asyncHandler = require('../utils/asyncHandler');
+const { asyncHandler } = require('../utils/asyncHandler');
 const { validationResult } = require('express-validator');
 
 // Multer設定（一時ファイル保存）
