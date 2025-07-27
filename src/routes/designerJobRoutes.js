@@ -163,14 +163,14 @@ router.get('/', designerJobController.getJobs);
 // 求人詳細取得
 router.get('/:id', designerJobController.getJobById);
 
-// 求人クリック追跡
-router.post('/:id/click', designerJobController.trackClick);
+// 求人クリック追跡（RESTful: POST /designer-jobs/:id/actions/click）
+router.post('/:id/actions/click', designerJobController.trackClick);
 
-// おすすめ求人取得
-router.get('/featured/list', designerJobController.getFeaturedJobs);
+// おすすめ求人取得（RESTful: GET /designer-jobs/collections/featured）
+router.get('/collections/featured', designerJobController.getFeaturedJobs);
 
-// 統計情報取得
-router.get('/stats/entry-level', designerJobController.getEntryLevelStats);
+// 統計情報取得（RESTful: GET /designer-jobs/analytics/entry-level-stats）
+router.get('/analytics/entry-level-stats', designerJobController.getEntryLevelStats);
 
 // 検索サジェスト
 router.get('/search/suggestions', designerJobController.getSearchSuggestions);

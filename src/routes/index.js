@@ -66,8 +66,8 @@ router.get('/', (req, res) => {
       // デザイナー採用メディア特別エンドポイント
       entryLevelJobs: '/api/designer-jobs?experience=entry_level',
       newGraduateJobs: '/api/designer-jobs?experience=new_graduate',
-      featuredJobs: '/api/designer-jobs/featured/list',
-      jobStats: '/api/designer-jobs/stats/entry-level',
+      featuredJobs: '/api/designer-jobs/collections/featured',
+      jobStats: '/api/designer-jobs/analytics/entry-level-stats',
       popularJobSites: '/api/job-sites/popular/list'
     }
   });

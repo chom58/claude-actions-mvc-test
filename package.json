@@ -61,9 +61,12 @@
     "socket.io": "^4.7.0",
     "@socket.io/redis-adapter": "^8.2.0",
     "sqlite3": "^5.1.6",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1",
     "validator": "^13.11.0",
-    "winston": "^3.11.0"
+    "winston": "^3.11.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
