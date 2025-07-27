@@ -2212,6 +2212,7 @@
     </footer>
 
     <!-- JavaScript -->
+    <script src="js/auth.js"></script>
     <script>
         // Header scroll effect
         window.addEventListener('scroll', () => {
@@ -2612,24 +2613,30 @@
 
         // 認証状態管理
         function checkAuthStatus() {
-            const token = localStorage.getItem('authToken');
+            const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
             const user = localStorage.getItem('user');
             const authMenu = document.getElementById('authMenu');
             const mobileAuthMenu = document.getElementById('mobileAuthMenu');
 
-            if (token && user) {
+            if (isAuthenticated && user) {
                 try {
                     const userData = JSON.parse(user);
                     authMenu.innerHTML = `
                         <div class="user-info">
                             <span class="user-name">${userData.username}</span>
-                            <button id="logoutBtn" onclick="logout()">ログアウト</button>
+                            <div class="user-actions">
+                                <a href="profile.html" style="color: #00ffff; margin-right: 10px;">プロフィール</a>
+                                <button id="logoutBtn" onclick="logout()">ログアウト</button>
+                            </div>
                         </div>
                     `;
                     mobileAuthMenu.innerHTML = `
                         <div class="user-info">
                             <span class="user-name">${userData.username}</span>
-                            <button id="mobileLogoutBtn" onclick="logout()">ログアウト</button>
+                            <div class="user-actions">
+                                <a href="profile.html" style="color: #00ffff; display: block; margin: 10px 0;">プロフィール</a>
+                                <button id="mobileLogoutBtn" onclick="logout()">ログアウト</button>
+                            </div>
                         </div>
                     `;
                 } catch (error) {
@@ -2644,11 +2651,22 @@
         }
 
         // ログアウト処理
-        function logout() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user');
-            checkAuthStatus();
-            alert('ログアウトしました。');
+        async function logout() {
+            try {
+                // サーバーでログアウト処理
+                await fetch('http://localhost:3000/api/users/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+            } catch (error) {
+                console.error('ログアウトエラー:', error);
+            } finally {
+                // ローカルストレージをクリア
+                localStorage.removeItem('isAuthenticated');
+                localStorage.removeItem('user');
+                checkAuthStatus();
+                alert('ログアウトしました。');
+            }
         }
 
         // モバイルメニューの制御
