@@ -163,7 +163,24 @@ module.exports = (err, req, res, next) => {
     logger.warn('Client Error:', logData);
   }
 
-  // レスポンス
+  // バリデーションエラーの特別処理
+  if (processedError.name === 'ValidationError' && Array.isArray(processedError.details)) {
+    // express-validatorのエラー形式に合わせる
+    const responseData = {
+      errors: processedError.details.map(detail => ({
+        type: 'field',
+        msg: detail.message || detail.msg,
+        path: detail.field || detail.path,
+        location: 'body',
+        value: detail.value
+      }))
+    };
+    
+    res.status(processedError.statusCode || 400).json(responseData);
+    return;
+  }
+
+  // 標準エラーレスポンス
   const responseData = {
     success: false,
     error: processedError.message,

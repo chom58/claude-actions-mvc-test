@@ -7,6 +7,50 @@ const { strictRateLimit, generalRateLimit, passwordResetRateLimit } = require('.
 const { sanitizeInput, preventSqlInjection } = require('../middleware/security');
 const { upload, uploadProfileImage } = require('../middleware/upload');
 
+/**
+ * @swagger
+ * /api/users/register:
+ *   post:
+ *     summary: ユーザー登録
+ *     description: 新規ユーザーを登録します。
+ *     tags: [ユーザー管理]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserRegistration'
+ *           example:
+ *             username: "john_doe"
+ *             email: "john@example.com"
+ *             password: "securepassword123"
+ *     responses:
+ *       201:
+ *         description: ユーザー登録成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "ユーザー登録が完了しました"
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   description: "JWT認証トークン"
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       409:
+ *         description: ユーザーが既に存在します
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/register', 
   strictRateLimit,
   sanitizeInput,
@@ -19,6 +63,49 @@ router.post('/register',
   userController.register
 );
 
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     summary: ユーザーログイン
+ *     description: 既存ユーザーでログインします。
+ *     tags: [ユーザー管理]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UserLogin'
+ *           example:
+ *             email: "john@example.com"
+ *             password: "securepassword123"
+ *     responses:
+ *       200:
+ *         description: ログイン成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "ログインに成功しました"
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   description: "JWT認証トークン"
+ *       400:
+ *         $ref: '#/components/responses/ValidationError'
+ *       401:
+ *         description: 認証に失敗しました
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.post('/login', 
   strictRateLimit,
   sanitizeInput,
@@ -30,6 +117,47 @@ router.post('/login',
   userController.login
 );
 
+/**
+ * @swagger
+ * /api/users/profile:
+ *   get:
+ *     summary: プロフィール取得
+ *     description: 現在ログインしているユーザーのプロフィール情報を取得します。
+ *     tags: [ユーザー管理]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: プロフィール取得成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   allOf:
+ *                     - $ref: '#/components/schemas/User'
+ *                     - type: object
+ *                       properties:
+ *                         posts:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               id:
+ *                                 type: integer
+ *                               title:
+ *                                 type: string
+ *                               published:
+ *                                 type: boolean
+ *                               createdAt:
+ *                                 type: string
+ *                                 format: date-time
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 router.get('/profile', 
   generalRateLimit,
   authMiddleware, 
