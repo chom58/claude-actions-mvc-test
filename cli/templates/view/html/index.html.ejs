@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{resourceName}} 一覧</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">{{resourceName}} 一覧</h1>
+                <a href="/{{resourcePath}}/new" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    新規作成
+                </a>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full table-auto border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="border border-gray-300 px-4 py-2 text-left">ID</th>
+{{tableHeaders}}
+                            <th class="border border-gray-300 px-4 py-2 text-left">作成日</th>
+                            <th class="border border-gray-300 px-4 py-2 text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="{{resourceName}}-list">
+                        <!-- データはJavaScriptで動的に読み込み -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // {{resourceName}}データを取得して表示
+        async function load{{resourceName}}List() {
+            try {
+                const response = await fetch('/api/{{resourcePath}}');
+                const data = await response.json();
+                
+                const tbody = document.getElementById('{{resourceName}}-list');
+                tbody.innerHTML = '';
+                
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = \`
+                        <td class="border border-gray-300 px-4 py-2">\${item.id}</td>
+{{tableDataCells}}
+                        <td class="border border-gray-300 px-4 py-2">\${new Date(item.createdAt).toLocaleDateString('ja-JP')}</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center">
+                            <a href="/{{resourcePath}}/\${item.id}" class="text-blue-500 hover:text-blue-700 mr-2">詳細</a>
+                            <a href="/{{resourcePath}}/\${item.id}/edit" class="text-green-500 hover:text-green-700 mr-2">編集</a>
+                            <button onclick="delete{{resourceName}}(\${item.id})" class="text-red-500 hover:text-red-700">削除</button>
+                        </td>
+                    \`;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('データの読み込みに失敗しました:', error);
+            }
+        }
+        
+        // {{resourceName}}を削除
+        async function delete{{resourceName}}(id) {
+            if (!confirm('本当に削除しますか？')) return;
+            
+            try {
+                const response = await fetch(\`/api/{{resourcePath}}/\${id}\`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    load{{resourceName}}List();
+                } else {
+                    alert('削除に失敗しました');
+                }
+            } catch (error) {
+                console.error('削除に失敗しました:', error);
+                alert('削除に失敗しました');
+            }
+        }
+        
+        // ページ読み込み時にデータを取得
+        document.addEventListener('DOMContentLoaded', load{{resourceName}}List);
+    </script>
+</body>
+</html>
