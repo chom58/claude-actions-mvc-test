@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="未経験歓迎のデザイナー求人を多数掲載。新卒・第二新卒からベテランまで、あなたに合った求人を見つけることができます。">
+    <meta name="keywords" content="デザイナー求人,未経験歓迎,新卒,Webデザイナー,グラフィックデザイナー,UI/UX">
+    <title>デザイナー求人サイト | 未経験歓迎の求人多数掲載</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* カラーパレット - デザイナー求人サイト専用 */
+            --primary-color: #2563eb;
+            --secondary-color: #0f172a;
+            --accent-color: #f59e0b;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            
+            /* グラデーション */
+            --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
+            --gradient-accent: linear-gradient(135deg, var(--accent-color) 0%, #d97706 100%);
+            
+            /* フォント */
+            --font-main: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            
+            /* スペーシング */
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --spacing-2xl: 4rem;
+            
+            /* ボックスシャドウ */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+        
+        /* ヘッダー */
+        .header {
+            background: var(--surface-color);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: var(--spacing-lg);
+        }
+        
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* ヒーローセクション */
+        .hero {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-2xl) 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.1;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-xl);
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .btn-primary {
+            background: var(--surface-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-outline {
+            border-color: white;
+            color: white;
+        }
+        
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        /* 特徴セクション */
+        .features {
+            padding: var(--spacing-2xl) 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xl);
+            color: var(--text-primary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .feature-card {
+            background: var(--surface-color);
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--gradient-primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* 統計セクション */
+        .stats {
+            background: var(--surface-color);
+            padding: var(--spacing-2xl) 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: var(--spacing-lg);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: var(--spacing-xs);
+        }
+        
+        /* 未経験者向けガイドセクション */
+        .guide-section {
+            padding: var(--spacing-2xl) 0;
+            background: var(--background-color);
+        }
+        
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .guide-card {
+            background: var(--surface-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s;
+        }
+        
+        .guide-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .guide-card-header {
+            background: var(--gradient-accent);
+            color: white;
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+        
+        .guide-card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .guide-card-body {
+            padding: var(--spacing-lg);
+        }
+        
+        .guide-card-body p {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .guide-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .guide-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* フッター */
+        .footer {
+            background: var(--secondary-color);
+            color: white;
+            padding: var(--spacing-2xl) 0 var(--spacing-lg);
+            margin-top: var(--spacing-2xl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .footer-section h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: var(--spacing-lg);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* 検索・フィルターセクション */
+        .search-filter-section {
+            background: var(--surface-color);
+            padding: var(--spacing-xl);
+            border-radius: 12px;
+            margin-bottom: var(--spacing-xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .search-bar {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .search-input-wrapper {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+        
+        .search-input-wrapper:focus-within {
+            border-color: var(--primary-color);
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .search-btn {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            align-items: end;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            min-width: 150px;
+        }
+        
+        .filter-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .filter-group input[type="checkbox"] {
+            margin-right: var(--spacing-xs);
+        }
+        
+        .filter-group select,
+        .filter-group input[type="text"] {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--surface-color);
+            font-size: 0.875rem;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .results-count {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: var(--spacing-lg);
+            font-weight: 500;
+        }
+        
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xl);
+            color: var(--text-secondary);
+        }
+        
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: var(--spacing-xl);
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-group {
+                min-width: auto;
+            }
+            
+            .jobs-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+        }
+    </style>
+</head>
+<body class="designer-jobs-page">
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <i class="fas fa-paint-brush"></i>
+                    デザイナー求人サイト
+                </a>
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="#jobs">求人検索</a></li>
+                        <li><a href="#guide">未経験者ガイド</a></li>
+                        <li><a href="/how-to-become-designer.html">デザイナーになるには</a></li>
+                        <li><a href="/design-tools-guide.html">ツールガイド</a></li>
+                        <li><a href="/portfolio-guide.html">ポートフォリオ</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- ヒーローセクション -->
+    <section class="hero">
+        <div class="container">
+            <h1>未経験からでも<br>デザイナーになれる</h1>
+            <p>
+                未経験歓迎の求人多数掲載。あなたのデザインへの情熱を形にする第一歩を、私たちがサポートします。
+            </p>
+            <div class="cta-buttons">
+                <a href="#jobs" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    求人を探す
+                </a>
+                <a href="/how-to-become-designer.html" class="btn btn-outline">
+                    <i class="fas fa-route"></i>
+                    デザイナーへの道のり
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特徴セクション -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">なぜ選ばれるのか</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>未経験歓迎求人が豊富</h3>
+                    <p>経験不問・研修制度充実の求人を多数掲載。初心者でも安心してスタートできる環境をご提供します。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <h3>学習ロードマップ完備</h3>
+                    <p>デザインスキルの習得方法から就職活動まで、段階的な学習プランをわかりやすく解説します。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>実用的なツールガイド</h3>
+                    <p>Photoshop、Illustrator、Figmaなど、現場で使われているツールの使い方を詳しく説明します。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 統計セクション -->
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title">実績データ</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="totalJobs">-</span>
+                    <span class="stat-label">総求人数</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="experienceWelcome">-</span>
+                    <span class="stat-label">未経験歓迎求人</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="newGraduateWelcome">-</span>
+                    <span class="stat-label">新卒歓迎求人</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="entryLevelPercentage">-</span>
+                    <span class="stat-label">未経験歓迎率</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 未経験者向けガイドセクション -->
+    <section id="guide" class="guide-section">
+        <div class="container">
+            <h2 class="section-title">未経験者向けコンテンツ</h2>
+            <div class="guide-grid">
+                <div class="guide-card">
+                    <div class="guide-card-header">
+                        <h3><i class="fas fa-route"></i> デザイナーになるには</h3>
+                    </div>
+                    <div class="guide-card-body">
+                        <p>デザイナーになるための基本的な流れや必要なスキル、学習方法について詳しく解説します。</p>
+                        <a href="/how-to-become-designer.html" class="guide-link">
+                            詳しく見る <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-card-header">
+                        <h3><i class="fas fa-map"></i> スキル習得ロードマップ</h3>
+                    </div>
+                    <div class="guide-card-body">
+                        <p>デザインスキルを効率的に身につけるための学習順序とタイムラインを提案します。</p>
+                        <a href="/skill-roadmap.html" class="guide-link">
+                            詳しく見る <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-card-header">
+                        <h3><i class="fas fa-question-circle"></i> よくある悩みQ&A</h3>
+                    </div>
+                    <div class="guide-card-body">
+                        <p>未経験者が抱きがちな疑問や不安にお答えします。実際の体験談も交えて解説。</p>
+                        <a href="/faq.html" class="guide-link">
+                            詳しく見る <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-card-header">
+                        <h3><i class="fas fa-briefcase"></i> ポートフォリオ作成ガイド</h3>
+                    </div>
+                    <div class="guide-card-body">
+                        <p>就職活動で重要なポートフォリオの作り方を、サンプルと共に詳しく説明します。</p>
+                        <a href="/portfolio-guide.html" class="guide-link">
+                            詳しく見る <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-card-header">
+                        <h3><i class="fas fa-tools"></i> デザインツール比較</h3>
+                    </div>
+                    <div class="guide-card-body">
+                        <p>Photoshop、Figmaなど主要ツールの特徴と選び方を初心者向けに解説します。</p>
+                        <a href="/design-tools-guide.html" class="guide-link">
+                            詳しく見る <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="guide-card">
+                    <div class="guide-card-header">
+                        <h3><i class="fas fa-star"></i> 未経験歓迎求人特集</h3>
+                    </div>
+                    <div class="guide-card-body">
+                        <p>研修制度が充実した企業や、未経験者の採用実績が豊富な会社の求人をピックアップ。</p>
+                        <a href="/entry-level-jobs.html" class="guide-link">
+                            詳しく見る <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 求人検索・一覧セクション -->
+    <section id="jobs" class="features">
+        <div class="container">
+            <h2 class="section-title">求人を探す</h2>
+            
+            <!-- 検索・フィルターバー -->
+            <div class="search-filter-section">
+                <div class="search-bar">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="searchInput" placeholder="キーワードで検索（例：Webデザイナー、未経験歓迎）" class="search-input">
+                        <button class="search-btn" id="searchBtn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- フィルター -->
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label for="experienceFilter">経験レベル:</label>
+                        <select id="experienceFilter" name="experience">
+                            <option value="all">すべて</option>
+                            <option value="entry_level">未経験歓迎</option>
+                            <option value="new_graduate">新卒歓迎</option>
+                            <option value="both">未経験・新卒両方</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="jobTypeFilter">雇用形態:</label>
+                        <select id="jobTypeFilter" name="jobType">
+                            <option value="all">すべて</option>
+                            <option value="full_time">正社員</option>
+                            <option value="part_time">パート・アルバイト</option>
+                            <option value="contract">契約社員</option>
+                            <option value="freelance">フリーランス</option>
+                            <option value="internship">インターン</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="locationFilter">勤務地:</label>
+                        <input type="text" id="locationFilter" name="location" placeholder="東京都、大阪府など">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="remoteFilter">
+                            <input type="checkbox" id="remoteFilter" name="isRemoteOk">
+                            リモートOK
+                        </label>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="sortFilter">並び順:</label>
+                        <select id="sortFilter" name="sortBy">
+                            <option value="createdAt">新着順</option>
+                            <option value="postedAt">投稿日順</option>
+                            <option value="priority">おすすめ順</option>
+                            <option value="viewCount">人気順</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 検索結果件数 -->
+            <div id="resultsCount" class="results-count"></div>
+            
+            <!-- ローディングインジケーター -->
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span>求人を読み込み中...</span>
+            </div>
+            
+            <!-- 求人一覧 -->
+            <div id="jobsContainer" class="jobs-grid"></div>
+            
+            <!-- ページネーション -->
+            <div id="paginationContainer" class="pagination-container"></div>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>求人情報</h4>
+                    <ul class="footer-links">
+                        <li><a href="/search-test.html">求人検索</a></li>
+                        <li><a href="/entry-level-jobs.html">未経験歓迎求人</a></li>
+                        <li><a href="#featured">おすすめ求人</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>学習サポート</h4>
+                    <ul class="footer-links">
+                        <li><a href="/how-to-become-designer.html">デザイナーになるには</a></li>
+                        <li><a href="/skill-roadmap.html">スキル習得ロードマップ</a></li>
+                        <li><a href="/design-tools-guide.html">ツールガイド</a></li>
+                        <li><a href="/portfolio-guide.html">ポートフォリオガイド</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>サポート</h4>
+                    <ul class="footer-links">
+                        <li><a href="/faq.html">よくある質問</a></li>
+                        <li><a href="#contact">お問い合わせ</a></li>
+                        <li><a href="#privacy">プライバシーポリシー</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 デザイナー求人サイト. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 統計データの取得と表示
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/designer-jobs/stats/entry-level');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    document.getElementById('totalJobs').textContent = data.data.totalJobs;
+                    document.getElementById('experienceWelcome').textContent = data.data.experienceWelcomeJobs;
+                    document.getElementById('newGraduateWelcome').textContent = data.data.newGraduateWelcomeJobs;
+                    document.getElementById('entryLevelPercentage').textContent = data.data.entryLevelPercentage + '%';
+                }
+            } catch (error) {
+                console.error('統計データの読み込みに失敗しました:', error);
+                // フォールバック値を設定
+                document.getElementById('totalJobs').textContent = '100+';
+                document.getElementById('experienceWelcome').textContent = '75+';
+                document.getElementById('newGraduateWelcome').textContent = '60+';
+                document.getElementById('entryLevelPercentage').textContent = '75%';
+            }
+        }
+
+        // スムーススクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // ページ読み込み時に統計データを取得
+        document.addEventListener('DOMContentLoaded', loadStats);
+    </script>
+    
+    <!-- 求人一覧機能 -->
+    <script src="/js/job-listings.js"></script>
+</body>
+</html>

@@ -265,30 +265,30 @@
         </form>
 
         <div class="links">
+            <a href="password-reset-request.html">パスワードを忘れた方はこちら</a>
             <div class="divider">アカウントをお持ちでない方</div>
             <a href="register.html">新規登録はこちら</a>
         </div>
     </div>
 
+    <script src="js/auth.js"></script>
     <script>
-        const API_BASE_URL = 'http://localhost:3000/api';
         let csrfToken = null;
         
-        // CSRFトークンを取得
-        async function fetchCsrfToken() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/csrf/token`, {
-                    credentials: 'include'
-                });
-                const data = await response.json();
-                csrfToken = data.csrfToken;
-            } catch (error) {
-                console.error('CSRFトークン取得エラー:', error);
+        // ページ読み込み時にCSRFトークンを取得
+        async function initPage() {
+            csrfToken = await window.authManager.getCsrfToken();
+            
+            // 既にログインしている場合はホームにリダイレクト
+            if (window.authManager.isAuthenticated()) {
+                const isValid = await window.authManager.verifyAuthStatus();
+                if (isValid) {
+                    window.location.href = 'index.html';
+                }
             }
         }
         
-        // ページ読み込み時にCSRFトークンを取得
-        fetchCsrfToken();
+        initPage();
         
         const loginForm = document.getElementById('loginForm');
         const errorMessage = document.getElementById('errorMessage');
@@ -329,9 +329,8 @@
                     successMessage.textContent = data.message || 'ログインに成功しました！';
                     successMessage.style.display = 'block';
                     
-                    // JWTトークンを保存
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
+                    // 認証状態を設定（自動リフレッシュも開始される）
+                    window.authManager.setAuthState(data.user);
                     
                     // 1秒後にホームページにリダイレクト
                     setTimeout(() => {
@@ -352,10 +351,6 @@
             }
         });
 
-        // 既にログインしている場合はホームにリダイレクト
-        if (localStorage.getItem('authToken')) {
-            window.location.href = 'index.html';
-        }
     </script>
 </body>
 </html>

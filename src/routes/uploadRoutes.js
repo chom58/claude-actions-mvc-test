@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const uploadController = require('../controllers/uploadController');
-const { authenticate } = require('../middleware/auth');
+const authenticate = require('../middleware/auth');
 const { uploadImageRateLimit } = require('../middleware/rateLimit');
 const { body, param } = require('express-validator');
 

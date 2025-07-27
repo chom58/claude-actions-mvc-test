@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { User, Post, sequelize } = require('../models');
 const { seedCreativeCommunity } = require('./creativeCommunitySeed');
+const { seedDesignerJobs } = require('./designerJobSeed');
 
 const seedData = async () => {
   try {
@@ -82,6 +83,10 @@ const seedData = async () => {
     console.log('\n🎨 原宿クリエイティブコミュニティデータを投入中...');
     const creativeData = await seedCreativeCommunity();
 
+    // デザイナー求人メディアデータの投入
+    console.log('\n💼 デザイナー求人メディアデータを投入中...');
+    const jobData = await seedDesignerJobs();
+
     console.log('\n🎉 シードデータの投入が完了しました！');
     console.log('\n📝 作成されたユーザー:');
     users.forEach(user => {
@@ -93,7 +98,15 @@ const seedData = async () => {
     console.log(`   - イベント: ${creativeData.events.length}件`);
     console.log(`   - コラボレーション: ${creativeData.collaborations.length}件`);
     console.log(`   - マッチングリクエスト: ${creativeData.matchingRequests.length}件`);
+    console.log('\n💼 デザイナー求人メディアデータ:');
+    console.log(`   - 求人サイト: ${jobData.jobSites.length}サイト`);
+    console.log(`   - 求人情報: ${jobData.jobs.length}件`);
+    console.log(`   - 未経験歓迎: ${jobData.stats.experienceWelcome}件`);
+    console.log(`   - 新卒歓迎: ${jobData.stats.newGraduateWelcome}件`);
+    console.log(`   - おすすめ求人: ${jobData.stats.featured}件`);
+    console.log(`   - リモートOK: ${jobData.stats.remoteOk}件`);
     console.log('\n💡 全てのユーザーのパスワードは元のパスワードを使用してください');
+    console.log('💡 求人データはAPIエンドポイント /api/designer-jobs で確認できます');
 
   } catch (error) {
     console.error('❌ シードデータの投入中にエラーが発生しました:', error);

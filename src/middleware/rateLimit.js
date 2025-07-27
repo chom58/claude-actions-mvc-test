@@ -43,6 +43,11 @@ const createRateLimit = (options = {}) => {
   } = options;
 
   return async (req, res, next) => {
+    // 開発環境でレート制限を無効化
+    if (process.env.NODE_ENV === 'development' && process.env.RATE_LIMIT_DISABLED === 'true') {
+      return next();
+    }
+    
     try {
       const identifier = keyGenerator(req);
       const now = Date.now();

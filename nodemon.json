@@ -1,0 +1,23 @@
+{
+  "watch": [
+    "src/**/*"
+  ],
+  "ignore": [
+    "node_modules/**/*",
+    "logs/**/*",
+    "uploads/**/*",
+    "tests/**/*",
+    "coverage/**/*",
+    ".git/**/*"
+  ],
+  "ext": "js,json",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "delay": 1000,
+  "verbose": true,
+  "restartable": "rs",
+  "events": {
+    "restart": "echo '\n🔄 アプリケーションを再起動しています...\n'"
+  }
+}

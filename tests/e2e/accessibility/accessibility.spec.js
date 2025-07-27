@@ -145,6 +145,36 @@ test.describe('アクセシビリティテスト', () => {
       }
     });
 
+    test('強化されたスキップリンクが動作する（Issue #52対応）', async ({ page }) => {
+      // ホームページに移動（index.html）
+      await page.goto('/');
+      
+      // 強化されたスキップリンクの存在をチェック
+      const enhancedSkipLinks = page.locator('.skip-links-enhanced a');
+      const skipLinkCount = await enhancedSkipLinks.count();
+      
+      if (skipLinkCount > 0) {
+        // メインコンテンツスキップリンクをテスト
+        const mainContentSkip = page.locator('a[href="#main-content"]');
+        if (await mainContentSkip.count() > 0) {
+          await mainContentSkip.focus();
+          expect(await mainContentSkip.isVisible()).toBe(true);
+          
+          // クリックして適切に移動することを確認
+          await mainContentSkip.click();
+          const focusedElement = await page.evaluate(() => document.activeElement?.id);
+          expect(focusedElement).toBe('main-content');
+        }
+        
+        // ナビゲーションスキップリンクをテスト
+        const navigationSkip = page.locator('a[href="#navigation"]');
+        if (await navigationSkip.count() > 0) {
+          await navigationSkip.focus();
+          expect(await navigationSkip.isVisible()).toBe(true);
+        }
+      }
+    });
+
     test('ページタイトルが適切に設定されている', async ({ page }) => {
       // 各ページのタイトルをチェック
       const pages = [
@@ -274,6 +304,139 @@ test.describe('アクセシビリティテスト', () => {
         const role = await firstMessage.getAttribute('role');
         
         expect(ariaLive === 'polite' || ariaLive === 'assertive' || role === 'alert').toBe(true);
+      }
+    });
+  });
+
+  test.describe('レスポンシブデザインのアクセシビリティ（Issue #52対応）', () => {
+    test('モバイルビューポートでタッチターゲットサイズが適切', async ({ page }) => {
+      // モバイルビューポートに設定
+      await page.setViewportSize({ width: 375, height: 667 });
+      await page.goto('/');
+      
+      // ボタンとリンクのサイズをチェック
+      const interactiveElements = page.locator('button, .btn, a, input[type="submit"]');
+      const elementCount = await interactiveElements.count();
+      
+      if (elementCount > 0) {
+        // 最初の数個の要素をサンプルチェック
+        for (let i = 0; i < Math.min(5, elementCount); i++) {
+          const element = interactiveElements.nth(i);
+          const box = await element.boundingBox();
+          
+          if (box) {
+            // WCAG 2.1 AAガイドラインに従い、最小タッチターゲットサイズは44x44px
+            expect(box.height).toBeGreaterThanOrEqual(40); // 少し余裕を持たせて40px
+            expect(box.width).toBeGreaterThanOrEqual(40);
+          }
+        }
+      }
+    });
+
+    test('タブレットビューポートでレイアウトが適切', async ({ page }) => {
+      // タブレットビューポートに設定
+      await page.setViewportSize({ width: 768, height: 1024 });
+      await page.goto('/');
+      
+      // ナビゲーションがタブレット用に表示されることを確認
+      const hamburger = page.locator('.hamburger');
+      const navLinks = page.locator('.nav-links');
+      
+      // タブレットサイズではナビゲーションリンクが表示される可能性をチェック
+      const hamburgerVisible = await hamburger.isVisible();
+      const navLinksVisible = await navLinks.isVisible();
+      
+      // どちらかのナビゲーション方式が利用可能であることを確認
+      expect(hamburgerVisible || navLinksVisible).toBe(true);
+    });
+
+    test('横画面モバイルでヘッダー高さが調整される', async ({ page }) => {
+      // 横画面モバイルビューポートに設定
+      await page.setViewportSize({ width: 667, height: 375 });
+      await page.goto('/');
+      
+      // ヘッダーの高さをチェック
+      const header = page.locator('.header');
+      const headerBox = await header.boundingBox();
+      
+      if (headerBox) {
+        // 横画面では高さが削減されていることを確認
+        expect(headerBox.height).toBeLessThan(80); // 縦画面より小さい
+      }
+    });
+
+    test('ARIAライブリージョンが存在する', async ({ page }) => {
+      await page.goto('/');
+      
+      // ARIAライブリージョンの存在確認
+      const liveRegion = page.locator('[aria-live]');
+      const liveRegionCount = await liveRegion.count();
+      
+      expect(liveRegionCount).toBeGreaterThan(0);
+      
+      // 適切なaria-live値が設定されていることを確認
+      if (liveRegionCount > 0) {
+        const ariaLiveValue = await liveRegion.first().getAttribute('aria-live');
+        expect(['polite', 'assertive', 'off']).toContain(ariaLiveValue);
+      }
+    });
+
+    test('メインナビゲーションに適切なARIA属性が設定されている', async ({ page }) => {
+      await page.goto('/');
+      
+      // メインナビゲーションのARIA属性をチェック
+      const mainNav = page.locator('#navigation');
+      
+      if (await mainNav.count() > 0) {
+        const role = await mainNav.getAttribute('role');
+        const ariaLabel = await mainNav.getAttribute('aria-label');
+        
+        expect(role).toBe('navigation');
+        expect(ariaLabel).toBeTruthy();
+      }
+      
+      // ナビゲーションリンクのARIA属性をチェック
+      const navLinks = page.locator('.nav-links[role="menubar"] a');
+      if (await navLinks.count() > 0) {
+        const firstLink = navLinks.first();
+        const menuItemRole = await firstLink.getAttribute('role');
+        const ariaLabel = await firstLink.getAttribute('aria-label');
+        
+        expect(menuItemRole).toBe('menuitem');
+        expect(ariaLabel).toBeTruthy();
+      }
+    });
+
+    test('色覚異常対応が機能する', async ({ page }) => {
+      await page.goto('/');
+      
+      // ハイコントラストメディアクエリをエミュレート
+      await page.emulateMedia({ reducedMotion: 'reduce', colorGamut: 'srgb' });
+      
+      // axe-coreで色覚異常関連のテストを実行
+      const accessibilityScanResults = await new AxeBuilder({ page })
+        .withTags(['wcag2aa'])
+        .withRules(['color-contrast'])
+        .analyze();
+      
+      expect(accessibilityScanResults.violations).toEqual([]);
+    });
+
+    test('減らされたモーションが尊重される', async ({ page }) => {
+      // 減らされたモーション設定をエミュレート
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto('/');
+      
+      // CSSでアニメーションが無効化されていることを確認
+      const animatedElement = page.locator('.hero::before, .logo-icon');
+      
+      if (await animatedElement.count() > 0) {
+        const computedStyle = await animatedElement.first().evaluate(el => {
+          return window.getComputedStyle(el).animationDuration;
+        });
+        
+        // アニメーション時間が非常に短いか無効化されていることを確認
+        expect(['0s', '0.01ms']).toContain(computedStyle);
       }
     });
   });

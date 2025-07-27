@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const authenticateToken = require('../middleware/auth');
 const notificationService = require('../services/notificationService');
 const { Notification, NotificationPreference } = require('../models');
-const asyncHandler = require('../utils/asyncHandler');
+const { asyncHandler } = require('../utils/asyncHandler');
 
 // 通知一覧取得
 router.get('/', authenticateToken, asyncHandler(async (req, res) => {

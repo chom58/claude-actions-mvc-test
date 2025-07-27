@@ -465,9 +465,9 @@
                     successMessage.textContent = data.message || 'アカウントの作成に成功しました！';
                     successMessage.style.display = 'block';
                     
-                    // JWTトークンを保存
-                    localStorage.setItem('authToken', data.token);
+                    // ユーザー情報をlocalStorageに保存（トークンはHTTP-onlyクッキーで管理）
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('isAuthenticated', 'true');
                     
                     // フォームをリセット
                     registerForm.reset();
@@ -508,9 +508,26 @@
         });
 
         // 既にログインしている場合はホームにリダイレクト
-        if (localStorage.getItem('authToken')) {
-            window.location.href = 'index.html';
+        async function checkAuthStatus() {
+            if (localStorage.getItem('isAuthenticated') === 'true') {
+                try {
+                    // サーバーで認証状態を確認
+                    const response = await fetch(`${API_BASE_URL}/users/profile`, {
+                        credentials: 'include'
+                    });
+                    if (response.ok) {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                } catch (error) {
+                    // 認証エラーの場合はlocalStorageをクリア
+                    localStorage.removeItem('isAuthenticated');
+                    localStorage.removeItem('user');
+                }
+            }
         }
+        
+        checkAuthStatus();
     </script>
 </body>
 </html>
