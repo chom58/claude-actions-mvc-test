@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const uploadController = require('../controllers/uploadController');
-const { authenticate } = require('../middleware/auth');
+const authenticate = require('../middleware/auth');
 const { param } = require('express-validator');
 
 // 認証が必要な全ルートに適用

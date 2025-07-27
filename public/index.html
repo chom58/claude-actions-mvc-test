@@ -1845,315 +1845,13 @@
         .api-card:hover {
             transform: translate3d(0, -5px, 0);
         }
-
-        /* ===========================================
-           レスポンシブ対応強化 - Issue #52
-           =========================================== */
-
-        /* タブレット横画面対応の強化 */
-        @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
-            .hero {
-                min-height: 70vh; /* 横画面では高さを調整 */
-                padding: var(--spacing-xl) var(--spacing-lg);
-            }
-            
-            .category-grid {
-                grid-template-columns: repeat(3, 1fr); /* 横画面では3列 */
-                gap: var(--spacing-md);
-            }
-            
-            .nav-container {
-                padding: 0 var(--spacing-xl);
-            }
-            
-            .section {
-                padding: var(--spacing-xl) var(--spacing-lg);
-            }
-        }
-
-        /* タブレット縦画面対応の強化 */
-        @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
-            .hero {
-                min-height: 85vh;
-            }
-            
-            .category-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: var(--spacing-lg);
-            }
-            
-            .hero-title {
-                font-size: clamp(4rem, 8vw, 6rem);
-            }
-        }
-
-        /* 中型モバイル対応（iPhone 12 Pro等） */
-        @media (max-width: 768px) and (min-width: 481px) {
-            .hero-title {
-                font-size: clamp(3.5rem, 9vw, 5rem);
-            }
-            
-            .category-grid {
-                grid-template-columns: 1fr;
-                gap: var(--spacing-md);
-            }
-            
-            .cta-buttons {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: var(--spacing-sm);
-            }
-            
-            .btn {
-                width: auto;
-                min-width: 140px;
-                max-width: 200px;
-            }
-        }
-
-        /* スマートフォンの読み込み速度最適化 */
-        @media (max-width: 768px) {
-            /* 重いアニメーションを無効化 */
-            .hero::before,
-            .parallax-bg::before,
-            .glitch,
-            .logo-icon {
-                animation: none !important;
-            }
-            
-            /* 画像の遅延読み込み対応 */
-            img[loading="lazy"] {
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-            
-            img[loading="lazy"].loaded {
-                opacity: 1;
-            }
-            
-            /* モバイルナビゲーションの改善 */
-            .nav-links {
-                width: min(280px, 85vw); /* より柔軟な幅 */
-                padding: 80px 30px 30px;
-            }
-            
-            .nav-links a {
-                font-size: clamp(1rem, 3vw, 1.2rem);
-                padding: var(--spacing-sm) 0;
-                display: flex;
-                align-items: center;
-                gap: var(--spacing-xs);
-            }
-            
-            /* タッチフレンドリーなUI改善 */
-            .card {
-                padding: var(--spacing-lg);
-                margin-bottom: var(--spacing-lg);
-                border-radius: 12px; /* 角を丸く */
-            }
-            
-            /* スクロールスナップ対応 */
-            .section {
-                scroll-snap-align: start;
-            }
-            
-            .hero,
-            .section {
-                scroll-snap-type: y mandatory;
-            }
-        }
-
-        /* タッチジェスチャー対応の強化 */
-        @media (hover: none) and (pointer: coarse) {
-            /* タッチ用のアクティブ状態 */
-            .btn:active,
-            .card:active,
-            .nav-links a:active {
-                transform: scale(0.98);
-                opacity: 0.8;
-            }
-            
-            /* スワイプ可能な要素の視覚的ヒント */
-            .nav-links {
-                border-left: 3px solid var(--neon-pink);
-            }
-            
-            .nav-links::before {
-                content: "← スワイプして閉じる";
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                font-size: 0.8rem;
-                color: rgba(255, 255, 255, 0.6);
-                font-family: var(--font-japanese);
-            }
-            
-            /* タッチターゲットの最適化 */
-            button,
-            .btn,
-            a,
-            input,
-            select,
-            textarea {
-                min-height: 44px;
-                min-width: 44px;
-            }
-            
-            /* プルトゥリフレッシュヒント */
-            body::after {
-                content: "";
-                position: fixed;
-                top: -5px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 60px;
-                height: 5px;
-                background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
-                border-radius: 0 0 10px 10px;
-                z-index: 9999;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-            
-            body.pull-to-refresh::after {
-                opacity: 1;
-            }
-        }
-
-        /* アクセシビリティ向上の追加対応 */
-        
-        /* 色覚異常対応 */
-        @media (prefers-contrast: more) {
-            :root {
-                --neon-pink: #ff007f;
-                --neon-blue: #0099ff;
-                --neon-green: #00cc00;
-                --color-border: #666666;
-            }
-            
-            .btn,
-            .card,
-            input,
-            textarea,
-            select {
-                border: 2px solid var(--color-border);
-            }
-        }
-        
-        /* フォーカス表示の強化 */
-        .enhanced-focus:focus {
-            outline: 3px solid var(--neon-blue);
-            outline-offset: 3px;
-            box-shadow: 
-                0 0 0 1px var(--color-background),
-                0 0 0 5px rgba(0, 255, 255, 0.3);
-        }
-        
-        /* スクリーンリーダー用の改善されたテキスト */
-        .sr-announce {
-            position: absolute;
-            left: -10000px;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        
-        /* キーボードナビゲーション用のスキップリンク強化 */
-        .skip-links-enhanced {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .skip-links-enhanced a {
-            position: absolute;
-            left: -10000px;
-            background: var(--color-background);
-            color: var(--color-primary);
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 6px;
-            border: 2px solid var(--neon-pink);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .skip-links-enhanced a:focus {
-            position: static;
-            left: auto;
-        }
-        
-        /* ARIAライブリージョンのスタイル */
-        .live-region {
-            position: absolute;
-            left: -10000px;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-        }
-        
-        /* 大きなテキスト表示対応 */
-        @media (min-resolution: 192dpi) {
-            body {
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-            
-            .hero-title,
-            .section-title {
-                text-rendering: optimizeLegibility;
-            }
-        }
-        
-        /* モバイル横画面での改善 */
-        @media (max-width: 768px) and (orientation: landscape) {
-            .hero {
-                min-height: 100vh;
-                padding: var(--spacing-md);
-            }
-            
-            .nav-container {
-                height: 50px; /* 横画面では高さを削減 */
-            }
-            
-            .hero-title {
-                font-size: clamp(2.5rem, 8vw, 4rem);
-                margin-bottom: var(--spacing-sm);
-            }
-            
-            .hero-subtitle {
-                font-size: clamp(0.9rem, 2vw, 1.1rem);
-            }
-            
-            .section {
-                padding: var(--spacing-lg) var(--spacing-md);
-            }
-        }
     </style>
 </head>
 <body>
-    <!-- Enhanced Skip Links for Accessibility - Issue #52 -->
-    <div class="skip-links-enhanced">
-        <a href="#main-content">メインコンテンツにスキップ</a>
-        <a href="#navigation">ナビゲーションにスキップ</a>
-        <a href="#search">検索にスキップ</a>
-        <a href="#footer">フッターにスキップ</a>
-    </div>
-    
-    <!-- ARIA Live Region for Dynamic Content Announcements -->
-    <div aria-live="polite" aria-atomic="true" class="live-region" id="announcements">
-        <!-- ページ読み込み完了やエラーなどの動的な変更をスクリーンリーダーに通知 -->
-    </div>
-    
     <!-- Header -->
-    <header class="header" role="banner">
-        <nav class="nav-container" id="navigation" role="navigation" aria-label="メインナビゲーション">
-            <a href="#" class="logo" aria-label="原宿クリエイティブコミュニティ ホームページ">
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">
                 <svg class="logo-svg" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg" aria-label="原宿クリエイティブコミュニティロゴ">
                     <defs>
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -2197,13 +1895,12 @@
                     </text>
                 </svg>
             </a>
-            <ul class="nav-links" role="menubar" aria-label="メインメニュー">
-                <li role="none"><a href="#home" role="menuitem" aria-label="ホームセクションに移動">ホーム</a></li>
-                <li role="none"><a href="#categories" role="menuitem" aria-label="カテゴリセクションに移動">カテゴリ</a></li>
-                <li role="none"><a href="#features" role="menuitem" aria-label="機能セクションに移動">機能</a></li>
-                <li role="none"><a href="#designer-jobs" role="menuitem" aria-label="求人セクションに移動">求人</a></li>
-                <li class="auth-menu" id="authMenu" role="none">
-                    <a href="login.html" id="loginLink" role="menuitem" aria-label="ログインページに移動">ログイン</a>
+            <ul class="nav-links">
+                <li><a href="#home">ホーム</a></li>
+                <li><a href="#categories">カテゴリ</a></li>
+                <li><a href="#features">機能</a></li>
+                <li class="auth-menu" id="authMenu">
+                    <a href="login.html" id="loginLink">ログイン</a>
                 </li>
             </ul>
             <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
@@ -2218,25 +1915,22 @@
     </header>
 
     <!-- Mobile Navigation Drawer -->
-    <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
-    <nav class="mobile-nav" id="mobileNav" role="navigation" aria-label="モバイルナビゲーション" aria-hidden="true">
-        <ul class="mobile-nav-links" role="menubar">
-            <li role="none"><a href="#home" class="mobile-nav-link" role="menuitem" aria-label="ホームセクションに移動">ホーム</a></li>
-            <li role="none"><a href="#categories" class="mobile-nav-link" role="menuitem" aria-label="カテゴリセクションに移動">カテゴリ</a></li>
-            <li role="none"><a href="#features" class="mobile-nav-link" role="menuitem" aria-label="機能セクションに移動">機能</a></li>
-            <li role="none"><a href="#designer-jobs" class="mobile-nav-link" role="menuitem" aria-label="求人セクションに移動">求人</a></li>
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <nav class="mobile-nav" id="mobileNav">
+        <ul class="mobile-nav-links">
+            <li><a href="#home" class="mobile-nav-link">ホーム</a></li>
+            <li><a href="#categories" class="mobile-nav-link">カテゴリ</a></li>
+            <li><a href="#features" class="mobile-nav-link">機能</a></li>
         </ul>
         <div class="mobile-auth-menu" id="mobileAuthMenu">
-            <a href="login.html" id="mobileLoginLink" aria-label="ログインページに移動">ログイン</a>
+            <a href="login.html" id="mobileLoginLink">ログイン</a>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main id="main-content" role="main">
-        <!-- Hero Section -->
-        <section class="hero" id="home" aria-labelledby="hero-title">
+    <!-- Hero Section -->
+    <section class="hero" id="home">
         <div class="hero-content">
-            <h1 class="hero-title" id="hero-title" data-text="CREATE. CONNECT. INSPIRE.">CREATE. CONNECT. INSPIRE.</h1>
+            <h1 class="hero-title" data-text="CREATE. CONNECT. INSPIRE.">CREATE. CONNECT. INSPIRE.</h1>
             <p class="hero-subtitle">
                 原宿から発信するデザインとファッションの最前線。<br>
                 多様なクリエイターが出会い、新たな価値を生み出すハブ。
@@ -2244,7 +1938,6 @@
             <p class="hero-host">hosted by Value Create</p>
             <div class="cta-buttons">
                 <a href="#categories" class="btn btn-primary"><span>参加企業・ブランドを見る</span></a>
-                <a href="#designer-jobs" class="btn btn-secondary"><span>未経験歓迎求人を見る</span></a>
             </div>
         </div>
     </section>
@@ -2256,16 +1949,13 @@
                 <input type="text" 
                        class="search-input" 
                        id="searchInput" 
-                       placeholder="求人、イベント、コラボレーションを検索..."
+                       placeholder="イベント、コラボレーションを検索..."
                        autocomplete="off">
                 <button class="search-button" id="searchButton">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
             <div class="search-filters">
-                <div class="filter-chip" data-filter="designer_job">
-                    <i class="fas fa-briefcase"></i> 求人
-                </div>
                 <div class="filter-chip" data-filter="event">
                     <i class="fas fa-calendar"></i> イベント
                 </div>
@@ -2343,64 +2033,6 @@
         </div>
     </section>
 
-    <!-- Designer Jobs Section -->
-    <section class="section" id="designer-jobs">
-        <div class="parallax-bg"></div>
-        <div class="container">
-            <h2 class="section-title">DESIGNER JOBS</h2>
-            <p class="section-subtitle">
-                未経験歓迎・新卒歓迎のデザイナー求人を厳選してお届け
-            </p>
-
-            <!-- 統計表示 -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
-                    <div class="stat-text" id="total-jobs">-</div>
-                    <div class="stat-label">総求人数</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
-                    <div class="stat-text" id="entry-level-jobs">-</div>
-                    <div class="stat-label">未経験歓迎求人</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-star"></i></div>
-                    <div class="stat-text" id="new-graduate-jobs">-</div>
-                    <div class="stat-label">新卒歓迎求人</div>
-                </div>
-            </div>
-
-            <!-- フィルター -->
-            <div class="job-filters" style="text-align: center; margin: 2rem 0;">
-                <select id="experience-filter" style="margin: 0 0.5rem; padding: 0.5rem; background: var(--color-surface); color: var(--color-primary); border: 1px solid var(--color-border); border-radius: 4px;">
-                    <option value="all">すべて</option>
-                    <option value="entry_level">未経験歓迎</option>
-                    <option value="new_graduate">新卒歓迎</option>
-                    <option value="both">両方歓迎</option>
-                </select>
-                <button id="load-jobs-btn" class="btn btn-primary" style="margin: 0 0.5rem;">
-                    <span>求人を読み込む</span>
-                </button>
-            </div>
-
-            <!-- 求人一覧 -->
-            <div id="jobs-container" class="api-grid" style="display: none;">
-                <!-- 求人が動的に読み込まれます -->
-            </div>
-
-            <!-- ローディング表示 -->
-            <div id="jobs-loading" style="text-align: center; display: none;">
-                <div class="loading" style="display: inline-block; margin: 2rem;"></div>
-                <p style="color: var(--color-secondary);">求人情報を読み込み中...</p>
-            </div>
-
-            <!-- エラー表示 -->
-            <div id="jobs-error" style="text-align: center; display: none; color: var(--neon-pink);">
-                <p>求人情報の取得に失敗しました。しばらく経ってから再度お試しください。</p>
-            </div>
-        </div>
-    </section>
 
     <!-- Future Vision -->
     <section class="section" id="vision">
@@ -2516,7 +2148,6 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="js/auth.js"></script>
     <script>
         // Header scroll effect
         window.addEventListener('scroll', () => {
@@ -2746,142 +2377,6 @@
             btn.textContent = originalText;
         }
 
-        // Designer Jobs functionality
-        let currentJobs = [];
-
-        // 統計データを読み込み
-        async function loadJobStats() {
-            try {
-                const response = await fetch('/api/designer-jobs/stats/entry-level');
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('total-jobs').textContent = data.data.totalJobs;
-                    document.getElementById('entry-level-jobs').textContent = data.data.experienceWelcomeJobs;
-                    document.getElementById('new-graduate-jobs').textContent = data.data.newGraduateWelcomeJobs;
-                }
-            } catch (error) {
-                console.error('統計データ取得エラー:', error);
-            }
-        }
-
-        // 求人データを読み込み
-        async function loadDesignerJobs() {
-            const experienceFilter = document.getElementById('experience-filter').value;
-            const loadingDiv = document.getElementById('jobs-loading');
-            const errorDiv = document.getElementById('jobs-error');
-            const containerDiv = document.getElementById('jobs-container');
-            
-            // UI状態をリセット
-            loadingDiv.style.display = 'block';
-            errorDiv.style.display = 'none';
-            containerDiv.style.display = 'none';
-            containerDiv.innerHTML = '';
-
-            try {
-                const url = `/api/designer-jobs?experience=${experienceFilter}&limit=6&sortBy=priority&sortOrder=DESC`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.success && data.data.jobs.length > 0) {
-                    currentJobs = data.data.jobs;
-                    displayJobs(currentJobs);
-                    containerDiv.style.display = 'grid';
-                } else {
-                    throw new Error('求人データが見つかりません');
-                }
-            } catch (error) {
-                console.error('求人データ取得エラー:', error);
-                errorDiv.style.display = 'block';
-            } finally {
-                loadingDiv.style.display = 'none';
-            }
-        }
-
-        // 求人を表示
-        function displayJobs(jobs) {
-            const container = document.getElementById('jobs-container');
-            
-            jobs.forEach(job => {
-                const jobCard = createJobCard(job);
-                container.appendChild(jobCard);
-            });
-        }
-
-        // 求人カードを作成
-        function createJobCard(job) {
-            const card = document.createElement('div');
-            card.className = 'api-card';
-            
-            const experienceText = job.isExperienceWelcome && job.isNewGraduateWelcome ? 
-                '未経験・新卒歓迎' : 
-                job.isExperienceWelcome ? '未経験歓迎' : 
-                job.isNewGraduateWelcome ? '新卒歓迎' : '経験者向け';
-
-            const salaryText = job.salaryMin && job.salaryMax ? 
-                `${job.salaryMin}〜${job.salaryMax}万円` : 
-                '給与応相談';
-
-            const tagsHtml = job.tags ? 
-                job.tags.slice(0, 3).map(tag => `<span style="background: var(--neon-pink); color: var(--color-background); padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; margin-right: 4px;">${tag}</span>`).join('') : 
-                '';
-
-            card.innerHTML = `
-                <h4><i class="fas fa-briefcase"></i> ${job.title}</h4>
-                <div style="margin-bottom: 0.5rem;">
-                    <strong style="color: var(--neon-blue);">${job.company}</strong>
-                    ${job.jobSite ? `<span style="color: var(--color-secondary); font-size: 0.85rem;"> (${job.jobSite.name})</span>` : ''}
-                </div>
-                <div style="margin-bottom: 0.5rem; font-size: 0.9rem;">
-                    <span style="color: var(--neon-green);">${experienceText}</span> | 
-                    <span style="color: var(--color-secondary);">${salaryText}</span>
-                </div>
-                <div style="margin-bottom: 0.5rem;">
-                    ${tagsHtml}
-                </div>
-                <p style="margin-bottom: 1rem;">${job.description ? job.description.substring(0, 120) + '...' : '詳細は求人ページをご確認ください。'}</p>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: var(--color-secondary); font-size: 0.85rem;">
-                        <i class="fas fa-map-marker-alt"></i> ${job.location || '勤務地未記載'}
-                        ${job.isRemoteOk ? ' | <i class="fas fa-home"></i> リモート可' : ''}
-                    </span>
-                    <button class="btn btn-secondary" onclick="openJobDetails(${job.id})" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
-                        <span>詳細を見る</span>
-                    </button>
-                </div>
-            `;
-            
-            return card;
-        }
-
-        // 求人詳細を開く
-        async function openJobDetails(jobId) {
-            try {
-                // クリック追跡
-                const trackResponse = await fetch(`/api/designer-jobs/${jobId}/click`, {
-                    method: 'POST'
-                });
-                
-                if (trackResponse.ok) {
-                    const trackData = await trackResponse.json();
-                    if (trackData.success && trackData.data.redirectUrl) {
-                        // 新しいタブで求人ページを開く
-                        window.open(trackData.data.redirectUrl, '_blank');
-                    }
-                } else {
-                    // フォールバック: 求人詳細を取得して表示
-                    const detailResponse = await fetch(`/api/designer-jobs/${jobId}`);
-                    const detailData = await detailResponse.json();
-                    
-                    if (detailData.success) {
-                        window.open(detailData.data.originalUrl, '_blank');
-                    }
-                }
-            } catch (error) {
-                console.error('求人詳細取得エラー:', error);
-                alert('求人詳細の取得に失敗しました。');
-            }
-        }
 
         // テーマ切り替え機能
         function initThemeToggle() {
@@ -2917,30 +2412,24 @@
 
         // 認証状態管理
         function checkAuthStatus() {
-            const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+            const token = localStorage.getItem('authToken');
             const user = localStorage.getItem('user');
             const authMenu = document.getElementById('authMenu');
             const mobileAuthMenu = document.getElementById('mobileAuthMenu');
 
-            if (isAuthenticated && user) {
+            if (token && user) {
                 try {
                     const userData = JSON.parse(user);
                     authMenu.innerHTML = `
                         <div class="user-info">
                             <span class="user-name">${userData.username}</span>
-                            <div class="user-actions">
-                                <a href="profile.html" style="color: #00ffff; margin-right: 10px;">プロフィール</a>
-                                <button id="logoutBtn" onclick="logout()">ログアウト</button>
-                            </div>
+                            <button id="logoutBtn" onclick="logout()">ログアウト</button>
                         </div>
                     `;
                     mobileAuthMenu.innerHTML = `
                         <div class="user-info">
                             <span class="user-name">${userData.username}</span>
-                            <div class="user-actions">
-                                <a href="profile.html" style="color: #00ffff; display: block; margin: 10px 0;">プロフィール</a>
-                                <button id="mobileLogoutBtn" onclick="logout()">ログアウト</button>
-                            </div>
+                            <button id="mobileLogoutBtn" onclick="logout()">ログアウト</button>
                         </div>
                     `;
                 } catch (error) {
@@ -2955,22 +2444,11 @@
         }
 
         // ログアウト処理
-        async function logout() {
-            try {
-                // サーバーでログアウト処理
-                await fetch('http://localhost:3000/api/users/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-            } catch (error) {
-                console.error('ログアウトエラー:', error);
-            } finally {
-                // ローカルストレージをクリア
-                localStorage.removeItem('isAuthenticated');
-                localStorage.removeItem('user');
-                checkAuthStatus();
-                alert('ログアウトしました。');
-            }
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            checkAuthStatus();
+            alert('ログアウトしました。');
         }
 
         // モバイルメニューの制御
@@ -3087,8 +2565,6 @@
                     // 検索結果をアラートで表示（本来は専用のUIで表示）
                     const resultSummary = data.results.slice(0, 5).map(item => {
                         switch(item.type) {
-                            case 'designer_job':
-                                return `求人: ${item.title} (${item.company})`;
                             case 'event':
                                 return `イベント: ${item.name}`;
                             case 'collaboration':
@@ -3185,17 +2661,7 @@
             // 検索機能の初期化
             initSearch();
             
-            loadJobStats();
             
-            // 求人読み込みボタンのイベントリスナー
-            document.getElementById('load-jobs-btn').addEventListener('click', loadDesignerJobs);
-            
-            // フィルター変更時の自動読み込み
-            document.getElementById('experience-filter').addEventListener('change', () => {
-                if (currentJobs.length > 0) {
-                    loadDesignerJobs();
-                }
-            });
         });
 
         // アニメーションパフォーマンス最適化

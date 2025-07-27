@@ -1,6 +1,6 @@
 const { Review, ReviewHelpful, User, DesignCompany, ApparelBrand, Collaboration } = require('../models');
 const { validationResult } = require('express-validator');
-const asyncHandler = require('../utils/asyncHandler');
+const { asyncHandler } = require('../utils/asyncHandler');
 const { Op } = require('sequelize');
 
 // レビュー作成
