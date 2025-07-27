@@ -361,3 +361,202 @@ th {
     padding: 0.75rem;
   }
 }
+
+/* ===========================================
+   レスポンシブ対応強化 - Issue #52 追加機能
+   =========================================== */
+
+/* タブレット向けアクセシビリティ改善 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* タッチターゲットサイズをタブレット用に調整 */
+  button,
+  .btn,
+  a {
+    min-height: 40px;
+    min-width: 40px;
+  }
+  
+  /* フォーカス表示の調整 */
+  a:focus,
+  button:focus {
+    outline-width: 2px;
+    outline-offset: 3px;
+  }
+  
+  /* テキストサイズの読みやすさ向上 */
+  body {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+}
+
+/* 横画面モバイル用アクセシビリティ */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* 横画面での操作性向上 */
+  .nav-links a,
+  button,
+  .btn {
+    min-height: 40px; /* 横画面では少し小さく */
+  }
+  
+  /* フォーカス可視性の向上 */
+  a:focus,
+  button:focus {
+    outline-width: 3px;
+    box-shadow: 0 0 0 2px var(--color-background), 0 0 0 5px rgba(0, 255, 255, 0.4);
+  }
+}
+
+/* タッチデバイス向けアクセシビリティ強化 */
+@media (hover: none) and (pointer: coarse) {
+  /* タッチフィードバックの改善 */
+  button:active,
+  .btn:active,
+  a:active {
+    background-color: rgba(0, 255, 255, 0.1);
+    transform: scale(0.98);
+    transition: all 0.1s ease;
+  }
+  
+  /* スワイプ可能領域の視覚的ヒント */
+  .mobile-nav::before {
+    content: "⤺ スワイプまたはタップで閉じる";
+    display: block;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+  }
+}
+
+/* 高解像度ディスプレイでの読みやすさ向上 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* テキストの滑らかさ向上 */
+  body,
+  h1, h2, h3, h4, h5, h6 {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* 境界線の鮮明化 */
+  .card,
+  button,
+  input,
+  textarea,
+  select {
+    border-width: 0.5px;
+  }
+}
+
+/* 縦横画面切り替え時の安定性 */
+@media (orientation: portrait) {
+  /* 縦画面での最適化 */
+  .hero-title {
+    text-align: center;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (orientation: landscape) {
+  /* 横画面での最適化 */
+  .hero-content {
+    text-align: left;
+  }
+  
+  .cta-buttons {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+
+/* 色覚バリアフリー対応の強化 */
+.contrast-enhanced {
+  --neon-pink: #e60073;
+  --neon-blue: #0066cc;
+  --neon-green: #009900;
+  --color-border: #666666;
+}
+
+/* パターンとアイコンによる情報伝達 */
+.status-success::before {
+  content: "✓ ";
+  color: var(--neon-green);
+  font-weight: bold;
+}
+
+.status-error::before {
+  content: "✗ ";
+  color: #ff4444;
+  font-weight: bold;
+}
+
+.status-warning::before {
+  content: "⚠ ";
+  color: var(--neon-yellow);
+  font-weight: bold;
+}
+
+/* カスタムスクロールバーのアクセシビリティ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neon-pink);
+  border-radius: 4px;
+  border: 1px solid var(--color-surface);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-blue);
+}
+
+/* プリントスタイルでの配慮 */
+@media print {
+  /* プリント時の読みやすさ */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  .hero::before,
+  .parallax-bg::before,
+  .mobile-nav,
+  .skip-links,
+  .skip-links-enhanced,
+  button:not(.print-friendly) {
+    display: none !important;
+  }
+  
+  a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  h1, h2, h3 {
+    color: black !important;
+    page-break-after: avoid;
+  }
+  
+  .card {
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+}
