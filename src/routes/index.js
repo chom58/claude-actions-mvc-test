@@ -12,6 +12,7 @@ const systemRoutes = require('./systemRoutes');
 const searchRoutes = require('./searchRoutes');
 const notificationRoutes = require('./notificationRoutes');
 const reviewRoutes = require('./reviewRoutes');
+const recommendationRoutes = require('./recommendationRoutes');
 
 router.get('/', (req, res) => {
   res.json({
@@ -39,7 +40,9 @@ router.get('/', (req, res) => {
       // 通知
       notifications: '/api/notifications',
       // レビュー・評価
-      reviews: '/api/reviews'
+      reviews: '/api/reviews',
+      // レコメンド
+      recommendations: '/api/recommendations'
     }
   });
 });
@@ -73,5 +76,8 @@ router.use('/notifications', notificationRoutes);
 
 // レビュー・評価ルート
 router.use('/reviews', reviewRoutes);
+
+// レコメンドルート
+router.use('/recommendations', recommendationRoutes);
 
 module.exports = router;

@@ -1,0 +1,279 @@
+/**
+ * レコメンド機能のスタイル
+ */
+
+/* レコメンドコンテナ */
+.recommendations-container {
+  margin: 2rem 0;
+}
+
+.recommendations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.recommendations-title {
+  color: #495057;
+  font-weight: 600;
+  margin: 0;
+}
+
+.recommendations-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* レコメンドグリッド */
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* レコメンドカード */
+.recommendation-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.recommendation-card .card {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.recommendation-card .card-header {
+  background-color: #f8f9fa;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.recommendation-card .card-body {
+  padding: 1rem;
+}
+
+.recommendation-card .card-footer {
+  background-color: #f8f9fa;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+/* レコメンドカードのタイトル */
+.recommendation-card .card-title {
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.recommendation-card .card-title a {
+  color: #343a40;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.recommendation-card .card-title a:hover {
+  color: #007bff;
+}
+
+/* レコメンド理由 */
+.recommendation-reason {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #e7f3ff;
+  border-left: 3px solid #007bff;
+  border-radius: 0 4px 4px 0;
+}
+
+/* 作者情報 */
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.author-info img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* レコメンドアクション */
+.recommendation-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.dismiss-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.dismiss-btn:hover {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+/* マッチ度インジケーター */
+.match-score {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+
+.match-score .bi-star-fill {
+  color: #ffc107;
+}
+
+/* ローディング状態 */
+.recommendation-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.recommendation-spinner .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  color: #007bff;
+}
+
+/* 空の状態 */
+.empty-recommendations {
+  background-color: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.empty-recommendations h5 {
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .recommendations-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .recommendations-controls {
+    justify-content: center;
+  }
+  
+  .recommendation-card .card-body {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .recommendations-container {
+    margin: 1rem 0;
+  }
+  
+  .recommendation-card .card-header,
+  .recommendation-card .card-footer {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.recommendation-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  .recommendation-card .card {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #f8f9fa;
+  }
+  
+  .recommendation-card .card-header,
+  .recommendation-card .card-footer {
+    background-color: #495057;
+    border-color: #6c757d;
+  }
+  
+  .recommendation-card .card-title a {
+    color: #f8f9fa;
+  }
+  
+  .recommendation-card .card-title a:hover {
+    color: #0d6efd;
+  }
+  
+  .recommendation-reason {
+    background-color: #1e3a5f;
+    border-left-color: #0d6efd;
+  }
+  
+  .empty-recommendations {
+    background-color: #343a40;
+    border-color: #495057;
+    color: #f8f9fa;
+  }
+}
+
+/* アクセシビリティ */
+.recommendation-card:focus-within {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.dismiss-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* プリント用スタイル */
+@media print {
+  .recommendations-controls,
+  .recommendation-actions,
+  .dismiss-btn {
+    display: none;
+  }
+  
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .recommendation-card {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+}

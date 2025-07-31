@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>レコメンド - デザイナー求人サイト</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <!-- カスタムCSS -->
+  <link href="../css/recommendations.css" rel="stylesheet">
+  
+  <style>
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <!-- ヘッダー -->
+    <div class="recommendations-header">
+      <h2 class="recommendations-title">
+        <i class="bi bi-stars"></i>
+        あなたへのおすすめ
+      </h2>
+      <div class="recommendations-controls">
+        <select id="recommendation-algorithm" class="form-select form-select-sm" style="width: auto;">
+          <option value="hybrid">ハイブリッド</option>
+          <option value="content">コンテンツベース</option>
+          <option value="collaborative">協調フィルタリング</option>
+        </select>
+        <button id="refresh-recommendations" class="btn btn-outline-primary btn-sm">
+          <i class="bi bi-arrow-clockwise"></i>
+          更新
+        </button>
+      </div>
+    </div>
+
+    <!-- レコメンドコンテナ -->
+    <div id="recommendations-container" class="recommendations-container">
+      <!-- レコメンドカードがここに動的に挿入されます -->
+    </div>
+
+    <!-- 統計情報パネル（デモ用） -->
+    <div class="mt-5">
+      <h3>レコメンド統計</h3>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-primary">24</h5>
+              <p class="card-text">総レコメンド数</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-success">18</h5>
+              <p class="card-text">閲覧済み</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-info">12</h5>
+              <p class="card-text">クリック済み</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5 class="card-title text-warning">75%</h5>
+              <p class="card-text">クリック率</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- デモ用のサンプルデータ表示ボタン -->
+    <div class="mt-4 text-center">
+      <button id="load-demo-data" class="btn btn-secondary">
+        <i class="bi bi-database"></i>
+        デモデータを表示
+      </button>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- レコメンド機能JavaScript -->
+  <script src="../js/recommendations.js"></script>
+  
+  <script>
+    // デモ用のサンプルデータ
+    const demoData = {
+      success: true,
+      data: {
+        recommendations: [
+          {
+            id: 1,
+            post: {
+              id: 101,
+              title: "React Hooksを使った効率的な状態管理",
+              content: "React Hooksを使って、より効率的でクリーンな状態管理を実現する方法について解説します。useStateやuseEffectの基本的な使い方から、カスタムフックの作成まで詳しく説明します。",
+              publishedAt: "2024-01-15T10:00:00Z",
+              viewCount: 156,
+              author: {
+                id: 1,
+                username: "yamada_dev",
+                profileImage: null
+              }
+            },
+            score: 0.92,
+            reason: {
+              type: "content-based",
+              matchedSkills: ["React", "JavaScript"],
+              message: "あなたのスキル「React, JavaScript」に関連しています"
+            }
+          },
+          {
+            id: 2,
+            post: {
+              id: 102,
+              title: "TypeScript入門：型安全なWebアプリケーション開発",
+              content: "TypeScriptの基礎から実践的な活用法まで、型安全なWebアプリケーション開発のポイントを解説します。JavaScript開発者がTypeScriptに移行する際の注意点も含めて紹介します。",
+              publishedAt: "2024-01-14T14:30:00Z",
+              viewCount: 89,
+              author: {
+                id: 2,
+                username: "tanaka_ts",
+                profileImage: null
+              }
+            },
+            score: 0.87,
+            reason: {
+              type: "content-based",
+              matchedSkills: ["TypeScript", "JavaScript"],
+              message: "あなたのスキル「TypeScript, JavaScript」に関連しています"
+            }
+          },
+          {
+            id: 3,
+            post: {
+              id: 103,
+              title: "デザインシステムの構築と運用",
+              content: "スケーラブルなデザインシステムの構築方法と、開発チームでの効果的な運用について解説します。コンポーネントライブラリの設計からドキュメント化まで実践的なノウハウを紹介します。",
+              publishedAt: "2024-01-13T09:15:00Z",
+              viewCount: 234,
+              author: {
+                id: 3,
+                username: "design_pro",
+                profileImage: null
+              }
+            },
+            score: 0.78,
+            reason: {
+              type: "collaborative",
+              message: "類似ユーザーが高く評価"
+            }
+          },
+          {
+            id: 4,
+            post: {
+              id: 104,
+              title: "モダンCSS：FlexboxとGrid Layoutの活用",
+              content: "FlexboxとCSS Grid Layoutを使った現代的なレイアウト設計について解説します。レスポンシブデザインに対応した柔軟なレイアウトの作り方を実例と共に紹介します。",
+              publishedAt: "2024-01-12T16:45:00Z",
+              viewCount: 178,
+              author: {
+                id: 4,
+                username: "css_master",
+                profileImage: null
+              }
+            },
+            score: 0.72,
+            reason: {
+              type: "content-based",
+              matchedSkills: ["CSS"],
+              message: "あなたのスキル「CSS」に関連しています"
+            }
+          }
+        ],
+        total: 4,
+        algorithm: "hybrid"
+      }
+    };
+
+    // デモ用のメソッドをオーバーライド
+    class DemoRecommendationManager extends RecommendationManager {
+      async loadRecommendations(algorithm = 'hybrid', limit = 10) {
+        this.showLoading();
+        
+        // 実際のAPIコールの代わりにデモデータを使用
+        setTimeout(() => {
+          this.currentRecommendations = demoData.data.recommendations;
+          this.renderRecommendations();
+          this.isLoading = false;
+        }, 1000);
+      }
+
+      async refreshRecommendations(algorithm = 'hybrid') {
+        this.showLoading();
+        
+        // デモ用の再生成
+        setTimeout(() => {
+          // スコアをランダムに変更してリフレッシュをシミュレート
+          const shuffledData = [...demoData.data.recommendations].map(rec => ({
+            ...rec,
+            score: Math.random() * 0.5 + 0.5 // 0.5 - 1.0の範囲
+          })).sort((a, b) => b.score - a.score);
+          
+          this.currentRecommendations = shuffledData;
+          this.renderRecommendations();
+          this.showSuccess('新しいレコメンドを生成しました！');
+          this.isLoading = false;
+        }, 1500);
+      }
+
+      async sendFeedback(recommendationId, action) {
+        // デモ用のフィードバック処理
+        console.log(`デモ: レコメンド ${recommendationId} に対するアクション "${action}" を記録`);
+        return { success: true };
+      }
+
+      async recordInteraction(targetId, targetType, interactionType, metadata = null) {
+        // デモ用のインタラクション記録
+        console.log(`デモ: ${targetType} ${targetId} への ${interactionType} インタラクションを記録`);
+        return { success: true };
+      }
+
+      getAuthToken() {
+        // デモ用の認証トークン
+        return 'demo-token';
+      }
+    }
+
+    // デモ用のマネージャーでグローバルインスタンスを置き換え
+    window.recommendationManager = new DemoRecommendationManager();
+
+    // ページ読み込み後に初期化
+    document.addEventListener('DOMContentLoaded', function() {
+      window.recommendationManager.init();
+      
+      // デモデータ読み込みボタン
+      document.getElementById('load-demo-data').addEventListener('click', function() {
+        window.recommendationManager.loadRecommendations();
+      });
+    });
+  </script>
+</body>
+</html>

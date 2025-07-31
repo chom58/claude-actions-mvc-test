@@ -1,6 +1,8 @@
 const sequelize = require('../config/database');
 const User = require('./User');
 const Post = require('./Post');
+const Recommendation = require('./Recommendation');
+const UserInteraction = require('./UserInteraction');
 
 // User-Post relationships
 User.hasMany(Post, {
@@ -11,6 +13,28 @@ User.hasMany(Post, {
 Post.belongsTo(User, {
   foreignKey: 'userId',
   as: 'author'
+});
+
+// User-Recommendation relationships
+User.hasMany(Recommendation, {
+  foreignKey: 'userId',
+  as: 'recommendations'
+});
+
+Recommendation.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+// User-UserInteraction relationships
+User.hasMany(UserInteraction, {
+  foreignKey: 'userId',
+  as: 'interactions'
+});
+
+UserInteraction.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
 });
 
 const syncDatabase = async () => {
@@ -32,5 +56,7 @@ module.exports = {
   sequelize,
   User,
   Post,
+  Recommendation,
+  UserInteraction,
   syncDatabase
 };
