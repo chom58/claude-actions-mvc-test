@@ -10,9 +10,11 @@ const { securityHeaders, sanitizeInput } = require('./middleware/security');
 const { generalRateLimit } = require('./middleware/rateLimit');
 const { csrfToken, webCsrfProtection } = require('./middleware/csrf');
 const { initializeSession } = require('./config/session');
+const { attachResponseHelpers } = require('./middleware/apiResponseHandler');
 const storageService = require('./services/storageService');
 const searchIndexService = require('./services/searchIndexService');
 const notificationService = require('./services/notificationService');
+const { swaggerSpec, swaggerUi, swaggerOptions } = require('./config/swagger');
 const fs = require('fs').promises;
 
 const app = express();
@@ -53,8 +55,20 @@ app.use(csrfToken);
 // 入力サニタイゼーション（APIルートのみ）
 app.use('/api', sanitizeInput);
 
+// APIレスポンスヘルパーの追加
+app.use('/api', attachResponseHelpers);
+
 // 静的ファイル配信設定
 app.use(express.static('public'));
+
+// Swagger UI設定
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerOptions));
+
+// OpenAPI仕様をJSONで提供
+app.get('/api-docs.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 app.use('/api', routes);
 
